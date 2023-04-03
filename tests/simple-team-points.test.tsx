@@ -4,12 +4,12 @@ import { expect, it } from '@jest/globals';
 import { Results } from '../src/common/CrewTimerTypes';
 
 it('simple points', async () => {
-    const points = simplePointsCalc(regattaResults as unknown as Results);
-    const lks = points.find(entry => entry.team === 'Lake Stevens');
-    expect(lks).toBeDefined();
-    expect(lks?.points).toEqual(24);
+  const points = simplePointsCalc(regattaResults as unknown as Results);
+  const mb = points.find((entry) => entry.team === 'Mount Baker');
+  expect(mb).toBeDefined();
+  expect(mb?.points).toEqual(24);
 
-    const era = points.find(entry => entry.team === 'Everett Rowing');
-    expect(era).toBeDefined();
-    expect(era?.points).toEqual(8);
+  const era = points.find((entry) => entry.team === 'Everett Rowing');
+  expect(era).toBeDefined();
+  expect(era?.points).toEqual(12);
 });

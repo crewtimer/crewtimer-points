@@ -1,3 +1,3 @@
 import SimpleTeamPoints from './components/SimpleTeamPointsView';
-
-export { SimpleTeamPoints }
+import { simplePointsCalc } from './calculators/SimpleTeamPointsCalc';
+export { SimpleTeamPoints, simplePointsCalc };
