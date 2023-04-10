@@ -1,7 +1,15 @@
-import { Results } from '../common/CrewTimerTypes';
-import { isAFinal, numSeatsFromName } from '../common/CrewTimerUtils';
+import { Results } from "../common/CrewTimerTypes";
+import {
+  genPlaces,
+  isAFinal,
+  numSeatsFromName,
+} from "../common/CrewTimerUtils";
 
-export type SimplePointsResult = { team: string; points: number }[];
+export type SimplePointsResult = {
+  team: string;
+  points: number;
+  place: number;
+}[];
 
 /**
  * Calculate points based on the number of seats in a boat and place.
@@ -29,6 +37,11 @@ export const simplePointsCalc = (resultData: Results): SimplePointsResult => {
 
   const sorted = Array.from(teamPoints.entries())
     .sort((a, b) => b[1] - a[1])
-    .map((v) => ({ team: v[0], points: v[1] }));
+    .map((v) => ({ team: v[0], points: v[1], place: 0 }));
+  const places = genPlaces(
+    sorted.map((entry) => entry.points),
+    "desc"
+  );
+  places.forEach((place, i) => (sorted[i].place = place));
   return sorted;
 };

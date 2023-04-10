@@ -8,11 +8,15 @@ export interface StoredProgressionRule {
   laneMapping?: string;
 }
 
-export interface AdvanceSpec { topCount: number, topTime: number, finalCount: number };
+export interface AdvanceSpec {
+  topCount: number;
+  topTime: number;
+  finalCount: number;
+}
 export interface ProgressionRules {
   isSimpleFinal: boolean; // True if this is a simple final event.  e.g. FA with no feeders.  bracket: string;
   bracketType: string; /// Base bracket type.  e.g H, SAB, FA
-  eventInfoAdvancement: string;  /// EventInfo field, if present
+  eventInfoAdvancement: string; /// EventInfo field, if present
   Event: string; /// Cooked Event name sans event num and bracket hints
   srcEventNums: string[]; /// List of event numbers that directly feed this event
   computeBrackets: string[]; /// List of brackets to compute, in order, for this bracket
@@ -27,8 +31,8 @@ export interface ProgressionRules {
 
 export const DefaultProgressionRule: ProgressionRules = {
   isSimpleFinal: false,
-  Event: '',
-  bracketType: 'FA',
+  Event: "",
+  bracketType: "FA",
   srcEventNums: [],
   eventNumByBracket: {},
   winnerEventNumList: [],
@@ -36,9 +40,9 @@ export const DefaultProgressionRule: ProgressionRules = {
   otherEventNumList: [],
   toFinalEventNumList: [],
   computeBrackets: [],
-  eventInfoAdvancement: '',
-  advanceMethod: 'T3',
-  advanceSpec: { topCount: 0, topTime: 0, finalCount: 0 }
+  eventInfoAdvancement: "",
+  advanceMethod: "T3",
+  advanceSpec: { topCount: 0, topTime: 0, finalCount: 0 },
 };
 
 export interface ProgressDetail {
@@ -157,18 +161,18 @@ export interface SSEventConfig {
 }
 
 export const DefaultSSEventConfig: SSEventConfig = {
-  Day: '',
-  Event: '',
-  EventInfo: '',
-  EventNum: '',
-  RaceType: '',
-  Start: '',
-  eventKey: '',
+  Day: "",
+  Event: "",
+  EventInfo: "",
+  EventNum: "",
+  RaceType: "",
+  Start: "",
+  eventKey: "",
   eventIndex: 0,
   eventItems: [] as SSEntry[],
-  LineNum: '',
+  LineNum: "",
   Rules: DefaultProgressionRule,
-  bracket: 'FA',
+  bracket: "FA",
 };
 /** Event Config indexed by EventNum */
 export interface SSEventConfigMap {
@@ -177,6 +181,6 @@ export interface SSEventConfigMap {
 
 export interface Warning {
   EventNum: string;
-  level: 'E' | 'W' | 'I';
+  level: "E" | "W" | "I";
   message: string;
 }
