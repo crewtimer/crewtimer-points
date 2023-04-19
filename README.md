@@ -4,9 +4,7 @@ The CrewTimer Points Engine provides result points calculators and [React visual
 
 The React Views for points presentation are rendered using the [Material UI is an open-source React component library](https://mui.com/material-ui/getting-started/overview/).
 
-
 ## Adding a new points engine
-
 
 ### Prerequisites
 
@@ -18,14 +16,14 @@ The React Views for points presentation are rendered using the [Material UI is a
 
 After making a fork of the repo invoke the following from the command line:
 
-```
+```bash
 cd crewtimer-points
 yarn install
 ```
 
 If you don't have yarn, you can get it from npm:
 
-```
+```bash
 npm install --global yarn
 ```
 
@@ -36,16 +34,19 @@ npm install --global yarn
 3. Add your calculator under src/calculators.
 4. Add a jest test under tests/.
 5. Add a [React visualizer](https://react.dev/) under src/components. If you are unfamiliar with React and don't want to learn React, ask Glenn to do this for you based on an example you provide.
-6. Reference your visualizer from example/App.tsx.
-7. Test
-8. Commit your changes and do a pull request to crewtimer-points.
+6. Add export references for your new points viewer in src/index.ts.
+7. Reference your visualizer from example/App.tsx.
+8. Test
+9. Commit your changes and do a pull request to crewtimer-points.
 
 ## Running Jest Tests
 
-Invoke 
-```
+Invoke
+
+```bash
 yarn test
 ```
+
 from the command line.
 
 ## Debugging jest tests
@@ -57,11 +58,17 @@ from the command line.
 
 ## Viewing your react component
 
-```
+```bash
 yarn start
 ```
 
 Open web browser to http://localhost:1234.
+
+## Publishing a new npm version
+
+1. Update the version in package.json
+2. First check for any errors by running ```yarn prepublishOnly```
+3. If not errors: ```npm publish```
 
 ## Contributors
 

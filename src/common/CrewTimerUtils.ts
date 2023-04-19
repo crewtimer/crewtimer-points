@@ -1,35 +1,103 @@
 /**
+ * Capitalize the first letter of a string.
+ * @param str
+ * @returns The original string with the first letter capitalized.
+ */
+export const capitalizeFirstLetter = (str: string): string => {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+};
+
+export const uppercaseLastLetter = (str: string): string => {
+  return str.slice(0, -1) + str.slice(-1).toUpperCase();
+};
+
+/**
+ * Given an event name, detect the gender.
+ * @param eventName
+ * @returns 'Men', 'Women', or 'Unknown'
+ */
+export const genderFromEventName = (eventName: string) => {
+  eventName = eventName.toLowerCase();
+  const matches = [
+    "women",
+    " wv",
+    " wjv",
+    " wn",
+    "mixed",
+    "mx",
+    "men",
+    " mv",
+    " mjv",
+    " mn",
+  ];
+  for (let i = 0; i < matches.length; i++) {
+    const match = matches[i];
+    if (eventName.includes(match)) {
+      if (match.includes("x")) {
+        return "Mixed";
+      }
+      return matches[i].startsWith("w") ? "Womens" : "Mens";
+    }
+  }
+  return "Unknown";
+};
+
+/**
+ * Given an event name, determine the type of boat involved.
+ * For example, 8+, 4x, 2x, K1, C2, etc
+ *
+ * @param eventName The event name to inspect.
+ * @returns The Class detected. '' if none detected.
+ */
+export const boatClassFromName = (eventName: string) => {
+  eventName = eventName.toLowerCase();
+  const matches = [
+    / [ck]-?[1-4]/,
+    / para[a-z]*/,
+    / [1-8]x/,
+    / [24]-/,
+    / [48]+/,
+  ];
+  for (let i = 0; i < matches.length; i++) {
+    const match = eventName.match(matches[i]);
+    if (match) {
+      const boatClass = match[0]
+        .trim()
+        .toUpperCase()
+        .replace("X", "x")
+        .replace("-", "");
+      return boatClass;
+    }
+  }
+  return "";
+};
+
+/**
  * Given an event name, determine the number of athletes (aka seats) involved.
  * @param eventName The event name to inspect.
  * @returns The number of athlets in each entry.
  */
 export const numSeatsFromName = (eventName: string) => {
-  if (eventName.match(/1x/i)) {
-    return 2;
-  }
-  if (eventName.match(/2x/i)) {
-    return 2;
-  }
-  if (eventName.match(/4[x+]/i)) {
-    return 4;
-  }
-  if (eventName.match(/8[x+]/i)) {
-    return 8;
-  }
-
-  // ACA Canoe Kayak
-  if (eventName.match(/[CK1]/i)) {
-    return 1;
-  }
-  if (eventName.match(/[CK]2/i)) {
-    return 2;
-  }
-  if (eventName.match(/[CK]4/i)) {
-    return 4;
+  const boatClass = boatClassFromName(eventName);
+  const match = boatClass.match(/[1-9]/);
+  if (match) {
+    return Number(match[0]);
   }
   return 1;
 };
 
+/**
+ * Given an event name, determine the distance involved.
+ * @param eventName The event name to inspect.
+ * @returns (number) The detected distance.
+ */
+export const distanceFromName = (eventName: string) => {
+  const match = eventName.match(/ ([1-9][0-9][0-9]+)/); // 3 or more digits
+  if (match) {
+    return Number(match[1]);
+  }
+  return 0;
+};
 /**
  * Define regex for detecting progression suffixes.  Each
  * entry is a triple of [Abbrev Prexix, RegEx to detect, RegEx for suffix | suffix, RefEx for timingIndex]
