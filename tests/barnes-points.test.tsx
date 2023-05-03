@@ -1,4 +1,4 @@
-import regattaResults from "./data/crewtimer-results-dev-r12033-export.json";
+import regattaResults from "./data/crewtimer-results-dev-r12033-export-with-B-entries.json";
 import { barnesPointsCalc } from "../src/calculators/BarnesPointsCalc";
 import { expect, it } from "@jest/globals";
 import { Results } from "../src/common/CrewTimerTypes";

@@ -41,7 +41,7 @@ const percentageOfPoints: Map<number, number[]> = new Map([
   [5, [1, .8, .4, .1]],
   [6, [1, .8, .4, .2, .1, .05]]
 ]);
-  
+
 
 const scalePoints = (numberOfEntries: number, place: number) => {
   if (numberOfEntries < 2) {
@@ -56,13 +56,13 @@ const scalePoints = (numberOfEntries: number, place: number) => {
   if (!scalars || place > scalars.length) {
     return 0;
   }
-  
+
   return scalars[place - 1];
 }
 
 const trimCrewName = (crewName: string) => {
-  crewName = crewName.toUpperCase();
-  const suffixExpression = /(.*) .^/;
+  crewName = crewName.toUpperCase().trim();
+  const suffixExpression = /(.*) .$/;
   const match = crewName.match(suffixExpression);
 
   if (match && match.length > 1) {
@@ -78,7 +78,7 @@ const trimCrewName = (crewName: string) => {
  */
 export const barnesPointsCalc = (resultData: Results): BarnesPointsResults => {
   const teamPoints = new Map<string, number>();
-  
+
   resultData.results.forEach((eventResult) => {
     const eventTeamPoints = new Map<string, number>();
 
@@ -92,10 +92,10 @@ export const barnesPointsCalc = (resultData: Results): BarnesPointsResults => {
     // track the team's we've seen in this event to exclude anything that is not
     // a primary entry (ex: B entries, second entries)
     const placingTeams = new Set<string>();
-    
+
     const sortedEntries = eventResult.entries.sort(
-        (lhs, rhs) => (lhs.Place || Number.MAX_VALUE) - (rhs.Place || Number.MAX_VALUE)
-      );
+      (lhs, rhs) => (lhs.Place || Number.MAX_VALUE) - (rhs.Place || Number.MAX_VALUE)
+    );
 
     sortedEntries.forEach((entry) => {
       if (!entry.Place) {
@@ -105,14 +105,14 @@ export const barnesPointsCalc = (resultData: Results): BarnesPointsResults => {
       // if a team has already placed in this event, skip subsequent entries
       const teamName = trimCrewName(entry.Crew);
       if (placingTeams.has(teamName)) {
-          return;
+        return;
       }
 
       placingTeams.add(teamName);
 
       const points = maxPoints * scalePoints(numberOfEntries, entry.Place);
 
-      eventTeamPoints.set(entry.Crew, points);
+      eventTeamPoints.set(teamName, points);
     });
 
     // aggregate the points from this event into the whole team points table
