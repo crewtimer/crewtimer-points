@@ -3,16 +3,27 @@ import { simplePointsCalc } from "../calculators/SimpleTeamPointsCalc";
 import Table from "@mui/material/Table";
 import { TableBody, TableCell, TableHead, TableRow } from "@mui/material";
 import { Results } from "../common/CrewTimerTypes";
+import { barnesPointsCalc } from "../calculators/BarnesPointsCalc";
+
+
+export interface SimplePointsProps {
+  results: Results;
+  barnesPoints?: boolean;
+}
 
 /**
  * Render a set of team points.
  * @param points - An array of points results in sorted order.
  *
  */
-export const SimpleTeamPoints: React.FC<{ results: Results }> = ({
+export const SimpleTeamPoints: React.FC<SimplePointsProps> = ({
   results,
+  barnesPoints
 }) => {
-  const points = simplePointsCalc(results);
+  const points = barnesPoints 
+    ? barnesPointsCalc(results)  
+    : simplePointsCalc(results);
+
   return (
     <Table>
       <TableHead>
@@ -34,3 +45,10 @@ export const SimpleTeamPoints: React.FC<{ results: Results }> = ({
     </Table>
   );
 };
+
+export const BarnesPoints: React.FC<SimplePointsProps> = ({
+  results,
+}) => {
+  // the simple barnes points can be calculated from the same results
+  return < SimpleTeamPoints barnesPoints results={results} />
+}
