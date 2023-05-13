@@ -1,6 +1,7 @@
 import React from "react";
 import { Results } from "./common/CrewTimerTypes";
-import { BarnesPoints, SimpleTeamPoints } from "./components/SimpleTeamPoints";
+import { SimpleTeamPoints } from "./components/SimpleTeamPoints";
+import { BarnesPointsTraditional, BarnesPointsWeighted } from "./components/BarnesPoints";
 import { ACATeamPoints, ACANationalsPoints } from "./components/ACATeamPoints";
 
 export interface PointsViewerInfo {
@@ -20,8 +21,13 @@ export const PointsViewers: PointsViewerInfo[] = [
   },
   {
     name: "Barnes Points",
-    key: "BarnesSimple",
-    ui: BarnesPoints,
+    key: "BarnesWeighted",
+    ui: BarnesPointsWeighted,
+  },
+  {
+    name: "Barnes Points Traditional",
+    key: "BarnesTraditional",
+    ui: BarnesPointsTraditional,
   },
   {
     name: "ACA Regatta",
