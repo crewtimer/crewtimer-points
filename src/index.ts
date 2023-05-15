@@ -1,8 +1,8 @@
-import React from "react";
-import { Results } from "./common/CrewTimerTypes";
-import { SimpleTeamPoints } from "./components/SimpleTeamPoints";
-import { BarnesPointsTraditional, BarnesPointsWeighted } from "./components/BarnesPoints";
-import { ACATeamPoints, ACANationalsPoints } from "./components/ACATeamPoints";
+import React from 'react';
+import { Results } from './common/CrewTimerTypes';
+import { SimpleTeamPoints } from './components/SimpleTeamPoints';
+import { BarnesPointsTraditional, BarnesPointsWeighted } from './components/BarnesPoints';
+import { ACATeamPoints, ACANationalsPoints } from './components/ACATeamPoints';
 
 export interface PointsViewerInfo {
   name: string; /// User presentable string
@@ -15,28 +15,28 @@ export interface PointsViewerInfo {
  */
 export const PointsViewers: PointsViewerInfo[] = [
   {
-    name: "Basic Points",
-    key: "Basic",
+    name: 'Basic Points',
+    key: 'Basic',
     ui: SimpleTeamPoints,
   },
   {
-    name: "Barnes Points",
-    key: "BarnesWeighted",
+    name: 'Barnes Points',
+    key: 'BarnesWeighted',
     ui: BarnesPointsWeighted,
   },
   {
-    name: "Barnes Points Traditional",
-    key: "BarnesTraditional",
+    name: 'Barnes Points Traditional',
+    key: 'BarnesTraditional',
     ui: BarnesPointsTraditional,
   },
   {
-    name: "ACA Regatta",
-    key: "ACA",
+    name: 'ACA Regatta',
+    key: 'ACA',
     ui: ACATeamPoints,
   },
   {
-    name: "ACA National Championships",
-    key: "ACANat",
+    name: 'ACA National Championships',
+    key: 'ACANat',
     ui: ACANationalsPoints,
   },
 ];

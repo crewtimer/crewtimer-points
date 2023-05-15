@@ -1,9 +1,8 @@
-import React from "react";
-import { simplePointsCalc } from "../calculators/SimpleTeamPointsCalc";
-import Table from "@mui/material/Table";
-import { TableBody, TableCell, TableHead, TableRow } from "@mui/material";
-import { Results } from "../common/CrewTimerTypes";
-
+import React from 'react';
+import { simplePointsCalc } from '../calculators/SimpleTeamPointsCalc';
+import Table from '@mui/material/Table';
+import { TableBody, TableCell, TableHead, TableRow } from '@mui/material';
+import { Results } from '../common/CrewTimerTypes';
 
 export interface SimplePointsProps {
   results: Results;
@@ -15,9 +14,7 @@ export interface SimplePointsProps {
  * @param points - An array of points results in sorted order.
  *
  */
-export const SimpleTeamPoints: React.FC<{ results: Results }> = ({
-  results
-}) => {
+export const SimpleTeamPoints: React.FC<{ results: Results }> = ({ results }) => {
   const points = simplePointsCalc(results);
 
   return (

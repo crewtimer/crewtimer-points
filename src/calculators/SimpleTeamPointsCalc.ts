@@ -1,9 +1,5 @@
-import { Results } from "../common/CrewTimerTypes";
-import {
-  genPlaces,
-  isAFinal,
-  numSeatsFromName,
-} from "../common/CrewTimerUtils";
+import { Results } from '../common/CrewTimerTypes';
+import { genPlaces, isAFinal, numSeatsFromName } from '../common/CrewTimerUtils';
 
 export type SimplePointsResult = {
   team: string;
@@ -40,7 +36,7 @@ export const simplePointsCalc = (resultData: Results): SimplePointsResult => {
     .map((v) => ({ team: v[0], points: v[1], place: 0 }));
   const places = genPlaces(
     sorted.map((entry) => entry.points),
-    "desc"
+    'desc',
   );
   places.forEach((place, i) => (sorted[i].place = place));
   return sorted;

@@ -1,4 +1,4 @@
-import { Results } from "../common/CrewTimerTypes";
+import { Results } from '../common/CrewTimerTypes';
 import {
   boatClassFromName,
   capitalizeFirstLetter,
@@ -8,7 +8,7 @@ import {
   isAFinal,
   numSeatsFromName,
   uppercaseLastLetter,
-} from "../common/CrewTimerUtils";
+} from '../common/CrewTimerUtils';
 
 /**
  * Calculate the Team Points for an ACA Regatta.
@@ -46,32 +46,19 @@ export type ACAPointsResult = {
  */
 export const eventLevelFromName = (eventName: string) => {
   eventName = eventName.toLowerCase();
-  const matches = [
-    /bantam/,
-    /juv/,
-    /junior/,
-    /senior/,
-    /u23/,
-    /masters ?[abc]/,
-    /open/,
-    /paracanoe/,
-    / dev/,
-  ];
+  const matches = [/bantam/, /juv/, /junior/, /senior/, /u23/, /masters ?[abc]/, /open/, /paracanoe/, / dev/];
   for (let i = 0; i < matches.length; i++) {
     const match = eventName.match(matches[i]);
     if (match) {
-      let eventLevel = match[0]
-        .trim()
-        .replace(" ", "")
-        .replace(/juv$/, "juvenile");
-      eventLevel = capitalizeFirstLetter(eventLevel).replace("canoe", "Canoe");
-      if (eventLevel.startsWith("Masters")) {
+      let eventLevel = match[0].trim().replace(' ', '').replace(/juv$/, 'juvenile');
+      eventLevel = capitalizeFirstLetter(eventLevel).replace('canoe', 'Canoe');
+      if (eventLevel.startsWith('Masters')) {
         eventLevel = uppercaseLastLetter(eventLevel);
       }
       return eventLevel;
     }
   }
-  return "Unknown";
+  return 'Unknown';
 };
 
 /**
@@ -87,7 +74,7 @@ const summarizePoints = (points: { [key: string]: number }) => {
     .map((v) => ({ club: v[0], points: v[1], place: 0 }));
   const places = genPlaces(
     totals.map((entry) => entry.points),
-    "desc"
+    'desc',
   );
   places.forEach((place, i) => (totals[i].place = place));
   return totals;
@@ -101,9 +88,7 @@ const summarizePoints = (points: { [key: string]: number }) => {
  * @param points
  * @returns
  */
-const sortAndSummarize = (points: {
-  [key: string]: { [club: string]: number };
-}) => {
+const sortAndSummarize = (points: { [key: string]: { [club: string]: number } }) => {
   const totals: { [key: string]: ACAResultRecord[] } = {};
   for (const [key, pointsForKey] of Object.entries(points)) {
     totals[key] = summarizePoints(pointsForKey);
@@ -138,18 +123,15 @@ export const acaPointsCalc = (resultData: Results): ACAPointsResult => {
     }
 
     // Ignore exhibitation races
-    if (
-      eventName.toLowerCase().includes("exhib") ||
-      eventName.toLowerCase().includes(" dev")
-    ) {
+    if (eventName.toLowerCase().includes('exhib') || eventName.toLowerCase().includes(' dev')) {
       return;
     }
 
     let boatClass = boatClassFromName(eventName);
     if (!boatClass) {
-      boatClass = "Unknown"; // mistake in spreadsheet
+      boatClass = 'Unknown'; // mistake in spreadsheet
     }
-    if (boatClass.toLowerCase().includes("exhib")) {
+    if (boatClass.toLowerCase().includes('exhib')) {
       return;
     }
 
@@ -163,20 +145,20 @@ export const acaPointsCalc = (resultData: Results): ACAPointsResult => {
     // criteria for placement and length of race.
     eventResult.entries.forEach((entry) => {
       // Extract the club abbreviations from the Stroke name
-      const clubs = entry.Stroke.replace(/,/g, ";")
-        .split(";")
+      const clubs = entry.Stroke.replace(/,/g, ';')
+        .split(';')
         .map((s) => {
           s = s.trim();
           if (s.match(/^(indep|indiv)/i)) {
-            s = "IND";
+            s = 'IND';
           }
           return s;
         });
 
       // Extract and normalize athlete names
       const athletes = entry.Crew.toLowerCase()
-        .split(";")
-        .map((c) => c.trim().replace(" ", ""));
+        .split(';')
+        .map((c) => c.trim().replace(' ', ''));
 
       // Keep an accounting of athlete count by club
       clubs.forEach((club, i) => {
@@ -204,10 +186,7 @@ export const acaPointsCalc = (resultData: Results): ACAPointsResult => {
       }
 
       // For a given place and distance, get the number of points available
-      const pointsAvail =
-        distance <= 1000
-          ? nonDistancePoints[place - 1]
-          : distancePoints[place - 1];
+      const pointsAvail = distance <= 1000 ? nonDistancePoints[place - 1] : distancePoints[place - 1];
 
       // Allocate the points to each athlete
       const pointsPerSeat = pointsAvail / seats;
@@ -216,25 +195,20 @@ export const acaPointsCalc = (resultData: Results): ACAPointsResult => {
       clubs.forEach((club) => {
         // Accumulate total club points
         clubPoints[club] = (clubPoints[club] || 0) + pointsPerSeat;
-        pointsByEventNum[eventNum] =
-          (pointsByEventNum[eventNum] || 0) + pointsPerSeat;
+        pointsByEventNum[eventNum] = (pointsByEventNum[eventNum] || 0) + pointsPerSeat;
 
         // boat class points accumulate (K1, K2 etc)
-        const boatClassPoints = (boatClassPointsByClub[boatClass] =
-          boatClassPointsByClub[boatClass] || {});
+        const boatClassPoints = (boatClassPointsByClub[boatClass] = boatClassPointsByClub[boatClass] || {});
         boatClassPoints[club] = (boatClassPoints[club] || 0) + pointsPerSeat;
 
         // Now do event level (Bantam, Junior, etc)
-        const eventLevelPoints = (eventLevelPointsByClub[eventLevel] =
-          eventLevelPointsByClub[eventLevel] || {});
+        const eventLevelPoints = (eventLevelPointsByClub[eventLevel] = eventLevelPointsByClub[eventLevel] || {});
         eventLevelPoints[club] = (eventLevelPoints[club] || 0) + pointsPerSeat;
 
         // Now do gendered event level (Mens Bantam,Womens Junior, etc)
         const genderClass = `${gender} ${boatClass}`;
-        const genderClassPoints = (genderClassPointsByClub[genderClass] =
-          genderClassPointsByClub[genderClass] || {});
-        genderClassPoints[club] =
-          (genderClassPoints[club] || 0) + pointsPerSeat;
+        const genderClassPoints = (genderClassPointsByClub[genderClass] = genderClassPointsByClub[genderClass] || {});
+        genderClassPoints[club] = (genderClassPoints[club] || 0) + pointsPerSeat;
       });
     }); // forEach entry
   }); // forEach event
