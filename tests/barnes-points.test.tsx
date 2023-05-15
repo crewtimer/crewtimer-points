@@ -1,4 +1,5 @@
 import regattaResults from "./data/crewtimer-results-dev-r12033-export-jr-nov-events.json";
+import simpleResults from "./data/crewtimer-results-dev-final-counts.json";
 import { barnesPointsCalc } from "../src/calculators/BarnesPointsCalc";
 import { expect, it } from "@jest/globals";
 import { Results } from "../src/common/CrewTimerTypes";
@@ -113,4 +114,9 @@ it("barnes points traditional", async () => {
 
   // validate combined points value and order
   expect(points.combined.map((entry) => entry.points)).toEqual([79.5, 58.5, 56, 50, 44, 14, 7, 0, 0]);
+});
+
+it("barnes points by number of entries", async () => {
+  const points = barnesPointsCalc(regattaResults as unknown as Results, false);
+  // check that exhibition crews are excluded from the number of entries
 });

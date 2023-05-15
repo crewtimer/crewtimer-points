@@ -1,4 +1,4 @@
-import { Results } from "../common/CrewTimerTypes";
+import { Entry, Results } from "../common/CrewTimerTypes";
 import {
   isAFinal,
 } from "../common/CrewTimerUtils";
@@ -75,7 +75,7 @@ export const maxPointsByBoatClass = (eventName: string) => {
 const percentageOfPoints: Map<number, number[]> = new Map([
   [2, [1, .2]],
   [3, [1, .4, .2]],
-  [4, [1, .6, .3, .5]],
+  [4, [1, .6, .3, .05]],
   [5, [1, .8, .4, .1]],
   [6, [1, .8, .4, .2, .1, .05]]
 ]);
@@ -201,6 +201,15 @@ const finalizeResults = (results: Map<string, BarnesPointsTeamResults>): BarnesC
 }
 
 /**
+ * Returns the number of entries, excluding any exhibition crews
+ * @param entries 
+ * @returns number of elligible entries
+ */
+export const calculateNumberOfEntries = (entries: Entry[]) => {
+  return entries.filter(entry => entry.PenaltyCode != "Exhib").length
+}
+
+/**
  * Calculate points based on the Barnes Scoring System, as described by MSRA:
  * https://sites.google.com/site/msrahome/regatta-rules/home
  */
@@ -219,7 +228,7 @@ export const barnesPointsCalc = (resultData: Results, useScaledEvents: boolean):
     }
 
     const maxPoints = maxPointsFromName(eventResult.Event, useScaledEvents);
-    const numberOfEntries = eventResult.entries.length;
+    const numberOfEntries = calculateNumberOfEntries(eventResult.entries);
 
     // track the team's we've seen in this event to exclude anything that is not
     // a primary entry (ex: B entries, second entries)
