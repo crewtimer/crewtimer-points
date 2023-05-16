@@ -1,4 +1,4 @@
-import { Results } from '../common/CrewTimerTypes';
+import { Entry, EventResult, Results } from '../common/CrewTimerTypes';
 import { isAFinal } from '../common/CrewTimerUtils';
 
 export type BarnesPointsTeamResults = {
@@ -73,7 +73,7 @@ export const maxPointsByBoatClass = (eventName: string) => {
 const percentageOfPoints: Map<number, number[]> = new Map([
   [2, [1, 0.2]],
   [3, [1, 0.4, 0.2]],
-  [4, [1, 0.6, 0.3, 0.5]],
+  [4, [1, 0.6, 0.3, 0.05]],
   [5, [1, 0.8, 0.4, 0.1]],
   [6, [1, 0.8, 0.4, 0.2, 0.1, 0.05]],
 ]);
@@ -184,6 +184,55 @@ const finalizeResults = (results: Map<string, BarnesPointsTeamResults>): BarnesC
 };
 
 /**
+ * Returns the number of entries, excluding any exhibition crews
+ *
+ * @param entries
+ * @returns number of elligible entries
+ */
+export const calculateNumberOfEntries = (entries: Entry[]) => {
+  return entries.filter((entry) => entry.PenaltyCode != 'Exhib').length;
+};
+
+export const calculateEventTeamPoints = (eventResult: EventResult, useScaledEvents: boolean): Map<string, number> => {
+  const eventTeamPoints = new Map<string, number>();
+
+  if (!isAFinal(eventResult.Event, eventResult.EventNum)) {
+    return eventTeamPoints; // not a final (e.g. Heat, TT)
+  }
+
+  const maxPoints = maxPointsFromName(eventResult.Event, useScaledEvents);
+  const numberOfEntries = calculateNumberOfEntries(eventResult.entries);
+
+  // track the team's we've seen in this event to exclude anything that is not
+  // a primary entry (ex: B entries, second entries)
+  const placingTeams = new Set<string>();
+
+  const sortedEntries = eventResult.entries.sort(
+    (lhs, rhs) => (lhs.Place || Number.MAX_VALUE) - (rhs.Place || Number.MAX_VALUE),
+  );
+
+  sortedEntries.forEach((entry) => {
+    const teamName = trimCrewName(entry.Crew);
+    if (!entry.Place) {
+      return; // DNF, DNS, DQ, Exhib etc
+    }
+
+    // if a team has already placed in this event, skip subsequent entries
+    if (placingTeams.has(teamName)) {
+      return;
+    }
+
+    placingTeams.add(teamName);
+
+    const points = maxPoints * scalePoints(numberOfEntries, entry.Place);
+
+    eventTeamPoints.set(teamName, points);
+  });
+
+  return eventTeamPoints;
+};
+
+/**
  * Calculate points based on the Barnes Scoring System, as described by MSRA:
  * https://sites.google.com/site/msrahome/regatta-rules/home
  */
@@ -191,44 +240,11 @@ export const barnesPointsCalc = (resultData: Results, useScaledEvents: boolean):
   const teamPoints = new Map<string, BarnesPointsTeamResults>();
 
   resultData.results.forEach((eventResult) => {
-    const eventTeamPoints = new Map<string, number>();
-
     const candidateMatches = [/WOMEN/, /GIRL/];
     const isWomensEvent = candidateMatches.some((candidate) => eventResult.Event.toUpperCase().search(candidate) != -1);
     const isScullingEvent = eventResult.Event.match(/[1234]x/) != null;
 
-    if (!isAFinal(eventResult.Event, eventResult.EventNum)) {
-      return; // not a final (e.g. Heat, TT)
-    }
-
-    const maxPoints = maxPointsFromName(eventResult.Event, useScaledEvents);
-    const numberOfEntries = eventResult.entries.length;
-
-    // track the team's we've seen in this event to exclude anything that is not
-    // a primary entry (ex: B entries, second entries)
-    const placingTeams = new Set<string>();
-
-    const sortedEntries = eventResult.entries.sort(
-      (lhs, rhs) => (lhs.Place || Number.MAX_VALUE) - (rhs.Place || Number.MAX_VALUE),
-    );
-
-    sortedEntries.forEach((entry) => {
-      const teamName = trimCrewName(entry.Crew);
-      if (!entry.Place) {
-        return; // DNF, DNS, DQ, Exhib etc
-      }
-
-      // if a team has already placed in this event, skip subsequent entries
-      if (placingTeams.has(teamName)) {
-        return;
-      }
-
-      placingTeams.add(teamName);
-
-      const points = maxPoints * scalePoints(numberOfEntries, entry.Place);
-
-      eventTeamPoints.set(teamName, points);
-    });
+    const eventTeamPoints = calculateEventTeamPoints(eventResult, useScaledEvents);
 
     // aggregate the points from this event into the whole team points table
     eventTeamPoints.forEach((points: number, teamName: string) => {
