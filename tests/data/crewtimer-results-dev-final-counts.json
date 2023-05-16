@@ -171,26 +171,6 @@
           "RawTime": "00:16.744",
           "S_time": "21:59:29.588",
           "Stroke": "Replogle M."
-        },
-        {
-          "AdjTime": "00:19.009",
-          "Bow": "7",
-          "Crew": "Green Lake Crew",
-          "CrewAbbrev": "GLC",
-          "Event": "Womens Varsity 8+ FA",
-          "EventAbbrev": "WV 8+ ",
-          "EventNum": "3",
-          "F_time": "",
-          "F_time_raw": "",
-          "Flight": "1",
-          "G_Finish_time_raw": "21:59:48.597",
-          "G_Start_time_raw": "21:59:29.588",
-          "Index": 6,
-          "PenaltyCode": "",
-          "Place": 6,
-          "RawTime": "00:19.009",
-          "S_time": "21:59:29.588",
-          "Stroke": "Olson C."
         }
       ],
       "eventIndex": 2,
@@ -278,8 +258,8 @@
         {
           "AdjTime": "00:30.824",
           "Bow": "4",
-          "Crew": "Green Lake Crew",
-          "CrewAbbrev": "GLC",
+          "Crew": "Holy Names Academy",
+          "CrewAbbrev": "HNA",
           "Event": "Mens Varsity 4+",
           "EventAbbrev": "MV 4+ ",
           "EventNum": "5",
@@ -401,8 +381,8 @@
         {
           "AdjTime": "00:30.824",
           "Bow": "4",
-          "Crew": "Green Lake Crew",
-          "CrewAbbrev": "GLC",
+          "Crew": "Holy Names Academy",
+          "CrewAbbrev": "HNA",
           "Event": "Mens Varsity 4+",
           "EventAbbrev": "MV 4+ ",
           "EventNum": "5",

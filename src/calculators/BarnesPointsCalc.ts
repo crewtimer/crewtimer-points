@@ -1,4 +1,4 @@
-import { Entry, Results } from "../common/CrewTimerTypes";
+import { Entry, EventResult, Results } from "../common/CrewTimerTypes";
 import {
   isAFinal,
 } from "../common/CrewTimerUtils";
@@ -209,6 +209,44 @@ export const calculateNumberOfEntries = (entries: Entry[]) => {
   return entries.filter(entry => entry.PenaltyCode != "Exhib").length
 }
 
+export const calculateEventTeamPoints = (eventResult: EventResult, useScaledEvents: boolean): Map<string, number> => {
+  const eventTeamPoints = new Map<string, number>();
+
+  if (!isAFinal(eventResult.Event, eventResult.EventNum)) {
+    return eventTeamPoints; // not a final (e.g. Heat, TT)
+  }
+
+  const maxPoints = maxPointsFromName(eventResult.Event, useScaledEvents);
+  const numberOfEntries = calculateNumberOfEntries(eventResult.entries);
+
+  // track the team's we've seen in this event to exclude anything that is not
+  // a primary entry (ex: B entries, second entries)
+  const placingTeams = new Set<string>();
+
+  const sortedEntries = eventResult.entries.sort(
+    (lhs, rhs) => (lhs.Place || Number.MAX_VALUE) - (rhs.Place || Number.MAX_VALUE)
+  );
+
+  sortedEntries.forEach((entry) => {
+    const teamName = trimCrewName(entry.Crew);
+    if (!entry.Place) {
+      return; // DNF, DNS, DQ, Exhib etc
+    }
+
+    // if a team has already placed in this event, skip subsequent entries
+    if (placingTeams.has(teamName)) {
+      return;
+    }
+
+    placingTeams.add(teamName);
+
+    const points = maxPoints * scalePoints(numberOfEntries, entry.Place);
+
+    eventTeamPoints.set(teamName, points);
+  });
+
+  return eventTeamPoints;
+}
 /**
  * Calculate points based on the Barnes Scoring System, as described by MSRA:
  * https://sites.google.com/site/msrahome/regatta-rules/home
@@ -217,44 +255,11 @@ export const barnesPointsCalc = (resultData: Results, useScaledEvents: boolean):
   const teamPoints = new Map<string, BarnesPointsTeamResults>();
 
   resultData.results.forEach((eventResult) => {
-    const eventTeamPoints = new Map<string, number>();
-
     const candidateMatches = [/WOMEN/, /GIRL/];
     const isWomensEvent = candidateMatches.some(candidate => eventResult.Event.toUpperCase().search(candidate) != -1)
     const isScullingEvent = eventResult.Event.match(/[1234]x/) != null;
 
-    if (!isAFinal(eventResult.Event, eventResult.EventNum)) {
-      return; // not a final (e.g. Heat, TT)
-    }
-
-    const maxPoints = maxPointsFromName(eventResult.Event, useScaledEvents);
-    const numberOfEntries = calculateNumberOfEntries(eventResult.entries);
-
-    // track the team's we've seen in this event to exclude anything that is not
-    // a primary entry (ex: B entries, second entries)
-    const placingTeams = new Set<string>();
-
-    const sortedEntries = eventResult.entries.sort(
-      (lhs, rhs) => (lhs.Place || Number.MAX_VALUE) - (rhs.Place || Number.MAX_VALUE)
-    );
-
-    sortedEntries.forEach((entry) => {
-      const teamName = trimCrewName(entry.Crew);
-      if (!entry.Place) {
-        return; // DNF, DNS, DQ, Exhib etc
-      }
-
-      // if a team has already placed in this event, skip subsequent entries
-      if (placingTeams.has(teamName)) {
-        return;
-      }
-
-      placingTeams.add(teamName);
-
-      const points = maxPoints * scalePoints(numberOfEntries, entry.Place);
-
-      eventTeamPoints.set(teamName, points);
-    });
+    const eventTeamPoints = calculateEventTeamPoints(eventResult, useScaledEvents);
 
     // aggregate the points from this event into the whole team points table
     eventTeamPoints.forEach((points: number, teamName: string) => {

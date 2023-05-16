@@ -20,7 +20,7 @@ export const PointsViewers: PointsViewerInfo[] = [
     ui: SimpleTeamPoints,
   },
   {
-    name: "Barnes Points",
+    name: "Barnes - Michigan States & Mitten Series",
     key: "BarnesWeighted",
     ui: BarnesPointsWeighted,
   },
