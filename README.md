@@ -4,6 +4,15 @@ The CrewTimer Points Engine provides result points calculators and [React visual
 
 The React Views for points presentation are rendered using the [Material UI is an open-source React component library](https://mui.com/material-ui/getting-started/overview/).
 
+Contributions for other points or award systems are welcome!  Please contribute.
+
+## Currently supported points engines
+
+* [ACA Regatta](docs/ACA-SprintRacingRules-v1-04.pdf)
+* [ACA National Championships](docs/ACA-SprintRacingRules-v1-04.pdf)
+* **Weighted Barnes System** Varsity events are worth the full 100% of points for the event, Junior/2V events are 80%, Novice/Freshman/3V are worth 60%. This is the system used by Midwest Scholastic Rowing Association and Scholastic Rowing Association of Michigan.
+* **Traditional Barnes System** Events of the same boat class across all rower experience level are weighted the same. For example, a varsity 8+ and a novice 8+ will both be worth 30 points.
+
 ## Adding a new points engine
 
 ### Prerequisites
@@ -36,8 +45,9 @@ npm install --global yarn
 5. Add a [React visualizer](https://react.dev/) under src/components. If you are unfamiliar with React and don't want to learn React, ask Glenn to do this for you based on an example you provide.
 6. Add export references for your new points viewer in src/index.ts.
 7. Reference your visualizer from example/App.tsx.
-8. Test
-9. Commit your changes and do a pull request to crewtimer-points.
+8. Test (see Running Jest Tests below)
+9. Lint and format your code: ```yarn npmprepublishOnly```
+10. Commit your changes and do a pull request to crewtimer-points.
 
 ## Running Jest Tests
 
@@ -62,7 +72,13 @@ from the command line.
 yarn start
 ```
 
-Open web browser to http://localhost:1234.
+Open web browser to [http://localhost:1234](http://localhost:1234).
+
+## Making a pull request
+
+Before making a pull request, be sure to run ```yarn prepublishOnly```.  This will format the source code, run tests, and verify lint rules.
+
+For mechanics of making a pull request from a fork, read [this article](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork)
 
 ## Publishing a new npm version
 
@@ -72,7 +88,8 @@ Open web browser to http://localhost:1234.
 
 ## Contributors
 
-* Glenn Engel
+<!-- markdownlint-disable-next-line -->
+[![](https://contrib.rocks/image?repo=glenne/crewtimer-points)](https://github.com/glenne/crewtimer-points/graphs/contributors)
 
 ## Kudos
 

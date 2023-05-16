@@ -31,8 +31,8 @@ export interface ProgressionRules {
 
 export const DefaultProgressionRule: ProgressionRules = {
   isSimpleFinal: false,
-  Event: "",
-  bracketType: "FA",
+  Event: '',
+  bracketType: 'FA',
   srcEventNums: [],
   eventNumByBracket: {},
   winnerEventNumList: [],
@@ -40,8 +40,8 @@ export const DefaultProgressionRule: ProgressionRules = {
   otherEventNumList: [],
   toFinalEventNumList: [],
   computeBrackets: [],
-  eventInfoAdvancement: "",
-  advanceMethod: "T3",
+  eventInfoAdvancement: '',
+  advanceMethod: 'T3',
   advanceSpec: { topCount: 0, topTime: 0, finalCount: 0 },
 };
 
@@ -161,18 +161,18 @@ export interface SSEventConfig {
 }
 
 export const DefaultSSEventConfig: SSEventConfig = {
-  Day: "",
-  Event: "",
-  EventInfo: "",
-  EventNum: "",
-  RaceType: "",
-  Start: "",
-  eventKey: "",
+  Day: '',
+  Event: '',
+  EventInfo: '',
+  EventNum: '',
+  RaceType: '',
+  Start: '',
+  eventKey: '',
   eventIndex: 0,
   eventItems: [] as SSEntry[],
-  LineNum: "",
+  LineNum: '',
   Rules: DefaultProgressionRule,
-  bracket: "FA",
+  bracket: 'FA',
 };
 /** Event Config indexed by EventNum */
 export interface SSEventConfigMap {
@@ -181,6 +181,6 @@ export interface SSEventConfigMap {
 
 export interface Warning {
   EventNum: string;
-  level: "E" | "W" | "I";
+  level: 'E' | 'W' | 'I';
   message: string;
 }
