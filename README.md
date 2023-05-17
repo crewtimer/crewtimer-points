@@ -2,7 +2,7 @@
 
 The CrewTimer Points Engine provides result points calculators and [React visualizers](https://react.dev/) for various points systems.  Both elements are integrated into the [crewtimer.com](https://crewtimer.com) website as an npm package.
 
-The React Views for points presentation are rendered using the [Material UI is an open-source React component library](https://mui.com/material-ui/getting-started/overview/).
+The React Views for points presentation are rendered using the [Material UI open-source React component library](https://mui.com/material-ui/getting-started/overview/).
 
 Contributions for other points or award systems are welcome!  Please contribute.
 
@@ -89,7 +89,7 @@ For mechanics of making a pull request from a fork, read [this article](https://
 ## Contributors
 
 <!-- markdownlint-disable-next-line -->
-[![](https://contrib.rocks/image?repo=glenne/crewtimer-points)](https://github.com/glenne/crewtimer-points/graphs/contributors)
+[![](https://contrib.rocks/image?repo=crewtimer/crewtimer-points)](https://github.com/crewtimer/crewtimer-points/graphs/contributors)
 
 ## Kudos
 
