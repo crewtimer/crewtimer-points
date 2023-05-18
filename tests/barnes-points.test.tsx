@@ -1,6 +1,7 @@
 import regattaResults from './data/crewtimer-results-dev-r12033-export-jr-nov-events.json';
 import simpleResults from './data/crewtimer-results-dev-final-counts.json';
 import {
+  barnesFullPointsCalc,
   barnesPointsCalc,
   calculateEventTeamPoints,
   calculateNumberOfEntries,
@@ -8,22 +9,21 @@ import {
 import { expect, it } from '@jest/globals';
 import { Results } from '../src/common/CrewTimerTypes';
 
-it('barnes points weighted', async () => {
-  const points = barnesPointsCalc(regattaResults as unknown as Results, true);
+it('barnes points full weighted', async () => {
+  const points = barnesFullPointsCalc(regattaResults as unknown as Results, true);
   // check that non-scoring teams are included in the display list
-  expect(points.combined.length).toEqual(9);
-  expect(points.womensScull.length).toEqual(9);
-  expect(points.mensScull.length).toEqual(9);
-  expect(points.womensSweep.length).toEqual(9);
-  expect(points.mensSweep.length).toEqual(9);
+  expect(points.combined.length).toEqual(8);
+  expect(points.womensScull.length).toEqual(8);
+  expect(points.mensScull.length).toEqual(8);
+  expect(points.womensSweep.length).toEqual(8);
+  expect(points.mensSweep.length).toEqual(8);
 
   const sp = points.combined.find((entry) => entry.team == 'Slow Poke');
   expect(sp).toBeDefined();
   expect(sp?.points).toEqual(0);
 
   const ifc = points.combined.find((entry) => entry.team == 'Illegally Fast Composite');
-  expect(ifc).toBeDefined();
-  expect(ifc?.points).toEqual(0);
+  expect(ifc).toBeUndefined();
 
   // check teams with B entries
   let mb = points.combined.find((entry) => entry.team === 'Mount Baker');
@@ -61,25 +61,67 @@ it('barnes points weighted', async () => {
   expect(ls_msweep?.points).toEqual(28.8);
 
   // validate combined points value and order
-  expect(points.combined.map((entry) => entry.points)).toEqual([65.95, 53.9, 46.4, 42.1, 37.8, 11.6, 5.8, 0, 0]);
+  expect(points.combined.map((entry) => entry.points)).toEqual([65.95, 53.9, 46.4, 42.1, 37.8, 11.6, 5.8, 0]);
 });
 
-it('barnes points traditional', async () => {
-  const points = barnesPointsCalc(regattaResults as unknown as Results, false);
+it('barnes points simple weighted', async () => {
+  const points = barnesPointsCalc(regattaResults as unknown as Results, true);
   // check that non-scoring teams are included in the display list
-  expect(points.combined.length).toEqual(9);
-  expect(points.womensScull.length).toEqual(9);
-  expect(points.mensScull.length).toEqual(9);
-  expect(points.womensSweep.length).toEqual(9);
-  expect(points.mensSweep.length).toEqual(9);
+  expect(points.combined.length).toEqual(8);
+  expect(points.womens.length).toEqual(8);
+  expect(points.mens.length).toEqual(8);
 
   const sp = points.combined.find((entry) => entry.team == 'Slow Poke');
   expect(sp).toBeDefined();
   expect(sp?.points).toEqual(0);
 
   const ifc = points.combined.find((entry) => entry.team == 'Illegally Fast Composite');
-  expect(ifc).toBeDefined();
-  expect(ifc?.points).toEqual(0);
+  expect(ifc).toBeUndefined();
+
+  // check teams with B entries
+  let mb = points.combined.find((entry) => entry.team === 'Mount Baker');
+  expect(mb).toBeDefined();
+  expect(mb?.points).toEqual(65.95);
+  mb = points.womens.find((entry) => entry.team === 'Mount Baker');
+  expect(mb).toBeDefined();
+  expect(mb?.points).toEqual(58);
+
+  const glc_mens = points.mens.find((entry) => entry.team === 'Green Lake Crew');
+  expect(glc_mens).toBeDefined();
+  expect(glc_mens?.points).toEqual(51);
+
+  // 4th place, 5 boats in final - .1 * 15 = 1.5
+  const mb_mens = points.mens.find((entry) => entry.team === 'Mount Baker');
+  expect(mb_mens).toBeDefined();
+  expect(mb_mens?.points).toEqual(7.95);
+
+  const glc_womens = points.womens.find((entry) => entry.team === 'Green Lake Crew');
+  expect(glc_womens).toBeDefined();
+  expect(glc_womens?.points).toEqual(2.9);
+
+  const ls_mens = points.mens.find((entry) => entry.team === 'Lakeside School');
+  expect(ls_mens).toBeDefined();
+  expect(ls_mens?.points).toEqual(37.8);
+
+  // validate combined points value and order
+  expect(points.combined.map((entry) => entry.points)).toEqual([65.95, 53.9, 46.4, 42.1, 37.8, 11.6, 5.8, 0]);
+});
+
+it('barnes points traditional', async () => {
+  const points = barnesFullPointsCalc(regattaResults as unknown as Results, false);
+  // check that non-scoring non-exhib-only teams are included in the display list
+  expect(points.combined.length).toEqual(8);
+  expect(points.womensScull.length).toEqual(8);
+  expect(points.mensScull.length).toEqual(8);
+  expect(points.womensSweep.length).toEqual(8);
+  expect(points.mensSweep.length).toEqual(8);
+
+  const sp = points.combined.find((entry) => entry.team == 'Slow Poke');
+  expect(sp).toBeDefined();
+  expect(sp?.points).toEqual(0);
+
+  const ifc = points.combined.find((entry) => entry.team == 'Illegally Fast Composite');
+  expect(ifc).toBeUndefined();
 
   // check teams with B entries
   let mb = points.combined.find((entry) => entry.team === 'Mount Baker');
@@ -117,7 +159,7 @@ it('barnes points traditional', async () => {
   expect(ls_msweep?.points).toEqual(32);
 
   // validate combined points value and order
-  expect(points.combined.map((entry) => entry.points)).toEqual([78.75, 58.5, 56, 48.5, 41, 14, 7, 0, 0]);
+  expect(points.combined.map((entry) => entry.points)).toEqual([78.75, 58.5, 56, 48.5, 41, 14, 7, 0]);
 });
 
 it('barnes points by number of entries', async () => {

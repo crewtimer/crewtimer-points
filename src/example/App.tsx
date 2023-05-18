@@ -14,7 +14,8 @@ import { PointsViewers } from '..';
 
 const ResultsForViewer: { [key: string]: Results } = {
   Basic: simpleResults as unknown as Results,
-  BarnesWeighted: barnesJrNovice as unknown as Results,
+  BarnesFullWeighted: barnesJrNovice as unknown as Results,
+  BarnesSimpleWeighted: barnesJrNovice as unknown as Results,
   BarnesTraditional: barnesTraditional as unknown as Results,
   ACA: acaResults as unknown as Results,
   ACANat: acaResults as unknown as Results,

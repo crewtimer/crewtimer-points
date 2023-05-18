@@ -1,7 +1,7 @@
 import React from 'react';
 import { Results } from './common/CrewTimerTypes';
 import { SimpleTeamPoints } from './components/SimpleTeamPoints';
-import { BarnesPointsTraditional, BarnesPointsWeighted } from './components/BarnesPoints';
+import { BarnesPointsTraditional, BarnesFullWeighted, BarnesSimpleWeighted } from './components/BarnesPoints';
 import { ACATeamPoints, ACANationalsPoints } from './components/ACATeamPoints';
 
 export interface PointsViewerInfo {
@@ -20,9 +20,14 @@ export const PointsViewers: PointsViewerInfo[] = [
     ui: SimpleTeamPoints,
   },
   {
-    name: 'Barnes - Michigan States & Mitten Series',
-    key: 'BarnesWeighted',
-    ui: BarnesPointsWeighted,
+    name: 'Barnes - Mitten Series',
+    key: 'BarnesFullWeighted',
+    ui: BarnesFullWeighted,
+  },
+  {
+    name: 'Barnes - Michigan States',
+    key: 'BarnesSimpleWeighted',
+    ui: BarnesSimpleWeighted,
   },
   {
     name: 'Barnes Points Traditional',

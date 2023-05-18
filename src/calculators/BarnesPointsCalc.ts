@@ -14,7 +14,7 @@ export type TeamPoints = {
   points: number;
 };
 
-export type BarnesCategoryResults = {
+export type BarnesFullCategoryResults = {
   combined: TeamPoints[];
   mensScull: TeamPoints[];
   womensScull: TeamPoints[];
@@ -22,7 +22,14 @@ export type BarnesCategoryResults = {
   womensSweep: TeamPoints[];
 };
 
+export type BarnesSimpleCategoryResults = {
+  combined: TeamPoints[];
+  mens: TeamPoints[];
+  womens: TeamPoints[];
+};
+
 const PLACEHOLD_TEAM_NAME = 'Empty';
+const EXHIB_PENALTY_CODE = 'Exhib';
 
 /**
  * The max possible number of points for this event given the boat class and event type
@@ -154,12 +161,12 @@ const trimCrewName = (crewName: string) => {
 };
 
 /**
- * Sort teams in each category by number of points
+ * Sort teams in each category by number of points, including sweep/sculling split out
  *
  * @param results
  * @returns
  */
-const finalizeResults = (results: Map<string, BarnesPointsTeamResults>): BarnesCategoryResults => {
+const finalizeFullResults = (results: Map<string, BarnesPointsTeamResults>): BarnesFullCategoryResults => {
   return {
     combined: Array.from(results.entries())
       .sort((a, b) => b[1].combined - a[1].combined)
@@ -180,6 +187,28 @@ const finalizeResults = (results: Map<string, BarnesPointsTeamResults>): BarnesC
     womensSweep: Array.from(results.entries())
       .sort((a, b) => b[1].womensSweep - a[1].womensSweep)
       .map((value) => ({ team: value[0], points: value[1].womensSweep })),
+  };
+};
+
+/**
+ * Sort teams in each category by number of points
+ *
+ * @param results
+ * @returns
+ */
+const finalizeResults = (results: Map<string, BarnesPointsTeamResults>) => {
+  return {
+    combined: Array.from(results.entries())
+      .sort((a, b) => b[1].combined - a[1].combined)
+      .map((value) => ({ team: value[0], points: value[1].combined })),
+
+    mens: Array.from(results.entries())
+      .sort((a, b) => b[1].mensScull + b[1].mensSweep - (a[1].mensScull + a[1].mensSweep))
+      .map((value) => ({ team: value[0], points: value[1].mensScull + value[1].mensSweep })),
+
+    womens: Array.from(results.entries())
+      .sort((a, b) => b[1].womensScull + b[1].womensSweep - (a[1].womensScull + a[1].womensSweep))
+      .map((value) => ({ team: value[0], points: value[1].womensScull + value[1].womensSweep })),
   };
 };
 
@@ -236,9 +265,11 @@ export const calculateEventTeamPoints = (eventResult: EventResult, useScaledEven
  * Calculate points based on the Barnes Scoring System, as described by MSRA:
  * https://sites.google.com/site/msrahome/regatta-rules/home
  */
-export const barnesPointsCalc = (resultData: Results, useScaledEvents: boolean): BarnesCategoryResults => {
+export const barnesPointsImpl = (
+  resultData: Results,
+  useScaledEvents: boolean,
+): Map<string, BarnesPointsTeamResults> => {
   const teamPoints = new Map<string, BarnesPointsTeamResults>();
-
   resultData.results.forEach((eventResult) => {
     const candidateMatches = [/WOMEN/, /GIRL/];
     const isWomensEvent = candidateMatches.some((candidate) => eventResult.Event.toUpperCase().search(candidate) != -1);
@@ -272,12 +303,13 @@ export const barnesPointsCalc = (resultData: Results, useScaledEvents: boolean):
 
   // check if there were teams entered which scored 0 points,
   // but which still need to be represented on the results page
+  // exhibition crews are ignored
   const scoringTeams = new Set<string>(teamPoints.keys());
   const missingTeams = new Set<string>();
   resultData.results.forEach((event) =>
     event.entries.forEach((entry) => {
       const teamName = trimCrewName(entry.Crew);
-      if (!scoringTeams.has(teamName) && teamName != PLACEHOLD_TEAM_NAME) {
+      if (!scoringTeams.has(teamName) && teamName != PLACEHOLD_TEAM_NAME && entry.PenaltyCode != EXHIB_PENALTY_CODE) {
         missingTeams.add(teamName);
       }
     }),
@@ -292,6 +324,26 @@ export const barnesPointsCalc = (resultData: Results, useScaledEvents: boolean):
       mensSweep: 0,
     }),
   );
+
+  return teamPoints;
+};
+
+/**
+ * Calculate points based on the Barnes Scoring System, as described by MSRA:
+ * https://sites.google.com/site/msrahome/regatta-rules/home
+ */
+export const barnesFullPointsCalc = (resultData: Results, useScaledEvents: boolean): BarnesFullCategoryResults => {
+  const teamPoints = barnesPointsImpl(resultData, useScaledEvents);
+
+  return finalizeFullResults(teamPoints);
+};
+
+/**
+ * Calculate points based on the Barnes Scoring System, as described by MSRA:
+ * https://sites.google.com/site/msrahome/regatta-rules/home
+ */
+export const barnesPointsCalc = (resultData: Results, useScaledEvents: boolean): BarnesSimpleCategoryResults => {
+  const teamPoints = barnesPointsImpl(resultData, useScaledEvents);
 
   return finalizeResults(teamPoints);
 };
