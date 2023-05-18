@@ -29,6 +29,7 @@ export type BarnesSimpleCategoryResults = {
 };
 
 const PLACEHOLD_TEAM_NAME = 'Empty';
+const EXHIB_PENALTY_CODE = 'Exhib';
 
 /**
  * The max possible number of points for this event given the boat class and event type
@@ -302,12 +303,13 @@ export const barnesPointsImpl = (
 
   // check if there were teams entered which scored 0 points,
   // but which still need to be represented on the results page
+  // exhibition crews are ignored
   const scoringTeams = new Set<string>(teamPoints.keys());
   const missingTeams = new Set<string>();
   resultData.results.forEach((event) =>
     event.entries.forEach((entry) => {
       const teamName = trimCrewName(entry.Crew);
-      if (!scoringTeams.has(teamName) && teamName != PLACEHOLD_TEAM_NAME) {
+      if (!scoringTeams.has(teamName) && teamName != PLACEHOLD_TEAM_NAME && entry.PenaltyCode != EXHIB_PENALTY_CODE) {
         missingTeams.add(teamName);
       }
     }),
