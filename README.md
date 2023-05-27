@@ -1,10 +1,17 @@
 # CrewTimer Points Engine
 
-The CrewTimer Points Engine provides result points calculators and [React visualizers](https://react.dev/) for various points systems.  Both elements are integrated into the [crewtimer.com](https://crewtimer.com) website as an npm package.
+The CrewTimer Points Engine provides support for user contributed points and trophy calculations.
 
-The React Views for points presentation are rendered using the [Material UI open-source React component library](https://mui.com/material-ui/getting-started/overview/).
+| Barnes - Michigan States                       | ACA                                      |
+| ---------------------------------------------- | ---------------------------------------- |
+| ![Barnes Example](./docs/Barnes%20Example.png) | ![ACA Example](./docs/ACA%20Example.png) |
 
-Contributions for other points or award systems are welcome!  Please contribute.
+Each contributed solution provides a calculation engine as well as a GUI rendering of the
+calculated results and are written in Typescript.  Results are updated real-time as events progress.
+
+The visualizers utilize the [React framework](https://react.dev/) along with the [Material UI open-source React component library](https://mui.com/material-ui/getting-started/overview/).
+
+Contributions for other points or award systems are welcome!  More details on how you can contribute your custom solution are described below.
 
 ## Currently supported points engines
 
@@ -18,14 +25,17 @@ Contributions for other points or award systems are welcome!  Please contribute.
 ### Prerequisites
 
 * [Visual Studio Code](https://code.visualstudio.com/) is the recommended IDE for editing code for this repo.  If you don't have it installed, please do that first.
-* [Node.js](https://nodejs.org/en) for local development.
-* If you are unfamiliar with git, the [Atlassian Sourcetree](https://www.sourcetreeapp.com/) program provides a nice GUI.
+* [Node.js](https://nodejs.org/en) is required for local development.
+* Source code utilizes git.  If you are unfamiliar with git, the [Atlassian Sourcetree](https://www.sourcetreeapp.com/) program provides a nice GUI as does [Github Desktop](https://desktop.github.com/).
 
-### Installation
+### Getting started
 
-After making a fork of the repo invoke the following from the command line:
+Utilizing github, create an account and initiate a 'Fork' of the crewtimer-points repository.
+
+Then, get the code onto your local machine :
 
 ```bash
+git clone git@github.com:<your github login>/crewtimer-points.git
 cd crewtimer-points
 yarn install
 ```
@@ -38,16 +48,15 @@ npm install --global yarn
 
 ### Add your code
 
-1. Fork the crewtimer-points git repo.
-2. Review the code for other points engines.
-3. Add your calculator under src/calculators.
-4. Add a jest test under tests/.
-5. Add a [React visualizer](https://react.dev/) under src/components. If you are unfamiliar with React and don't want to learn React, ask Glenn to do this for you based on an example you provide.
-6. Add export references for your new points viewer in src/index.ts.
-7. Reference your visualizer from example/App.tsx.
-8. Test (see Running Jest Tests below)
-9. Lint and format your code: ```yarn npmprepublishOnly```
-10. Commit your changes and do a pull request to crewtimer-points.
+1. Review the code for other points engines.
+2. Add your calculator under src/calculators.
+3. Add a jest test under tests/.
+4. Add a [React visualizer](https://react.dev/) under src/components. If you are unfamiliar with React and don't want to learn React, ask Glenn to do this for you based on an example you provide.
+5. Add export references for your new points viewer in src/index.ts.
+6. Reference your visualizer from example/App.tsx.
+7. Test (see Running Jest Tests below)
+8. Lint and format your code: ```yarn npmprepublishOnly```
+9. Commit your changes and do a pull request to crewtimer-points.
 
 ## Running Jest Tests
 
@@ -73,6 +82,14 @@ yarn start
 ```
 
 Open web browser to [http://localhost:1234](http://localhost:1234).
+
+## Error 404
+
+If you get error 404 after using ```yarn start```, try clearing your dist directory and starting it again.
+
+```bash
+rm -rf dist/
+```
 
 ## Making a pull request
 

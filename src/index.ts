@@ -1,5 +1,5 @@
 import React from 'react';
-import { Results } from './common/CrewTimerTypes';
+import { Results } from 'crewtimer-common';
 import { SimpleTeamPoints } from './components/SimpleTeamPoints';
 import { BarnesPointsTraditional, BarnesFullWeighted, BarnesSimpleWeighted } from './components/BarnesPoints';
 import { ACATeamPoints, ACANationalsPoints } from './components/ACATeamPoints';
@@ -14,10 +14,16 @@ export interface PointsViewerInfo {
  * A list of points viewers.
  */
 export const PointsViewers: PointsViewerInfo[] = [
+  // Roughly alphabetic order
   {
-    name: 'Basic Points',
-    key: 'Basic',
-    ui: SimpleTeamPoints,
+    name: 'ACA Regatta',
+    key: 'ACA',
+    ui: ACATeamPoints,
+  },
+  {
+    name: 'ACA National Championships',
+    key: 'ACANat',
+    ui: ACANationalsPoints,
   },
   {
     name: 'Barnes - Mitten Series',
@@ -35,13 +41,8 @@ export const PointsViewers: PointsViewerInfo[] = [
     ui: BarnesPointsTraditional,
   },
   {
-    name: 'ACA Regatta',
-    key: 'ACA',
-    ui: ACATeamPoints,
-  },
-  {
-    name: 'ACA National Championships',
-    key: 'ACANat',
-    ui: ACANationalsPoints,
+    name: 'Basic Points',
+    key: 'Basic',
+    ui: SimpleTeamPoints,
   },
 ];

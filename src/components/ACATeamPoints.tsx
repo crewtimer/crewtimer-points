@@ -1,6 +1,6 @@
 import React from 'react';
 import { acaPointsCalc } from '../calculators/ACATeamPointsCalc';
-import { Results } from '../common/CrewTimerTypes';
+import { Results } from 'crewtimer-common';
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';

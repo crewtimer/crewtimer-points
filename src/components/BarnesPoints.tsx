@@ -1,7 +1,7 @@
 import React from 'react';
 import Table from '@mui/material/Table';
 import { TableBody, TableCell, TableHead, TableRow, styled } from '@mui/material';
-import { Results } from '../common/CrewTimerTypes';
+import { Results } from 'crewtimer-common';
 import { barnesFullPointsCalc, barnesPointsCalc } from '../calculators/BarnesPointsCalc';
 
 const categories = [

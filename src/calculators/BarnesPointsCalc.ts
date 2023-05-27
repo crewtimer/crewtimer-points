@@ -1,4 +1,4 @@
-import { Entry, EventResult, Results } from '../common/CrewTimerTypes';
+import { Entry, Event, Results } from 'crewtimer-common';
 import { isAFinal } from '../common/CrewTimerUtils';
 
 export type BarnesPointsTeamResults = {
@@ -222,7 +222,7 @@ export const calculateNumberOfEntries = (entries: Entry[]) => {
   return entries.filter((entry) => entry.PenaltyCode != 'Exhib').length;
 };
 
-export const calculateEventTeamPoints = (eventResult: EventResult, useScaledEvents: boolean): Map<string, number> => {
+export const calculateEventTeamPoints = (eventResult: Event, useScaledEvents: boolean): Map<string, number> => {
   const eventTeamPoints = new Map<string, number>();
 
   if (!isAFinal(eventResult.Event, eventResult.EventNum)) {

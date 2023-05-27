@@ -2,7 +2,7 @@ import React from 'react';
 import { simplePointsCalc } from '../calculators/SimpleTeamPointsCalc';
 import Table from '@mui/material/Table';
 import { TableBody, TableCell, TableHead, TableRow } from '@mui/material';
-import { Results } from '../common/CrewTimerTypes';
+import { Results } from 'crewtimer-common';
 
 export interface SimplePointsProps {
   results: Results;

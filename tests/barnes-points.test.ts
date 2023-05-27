@@ -7,7 +7,7 @@ import {
   calculateNumberOfEntries,
 } from '../src/calculators/BarnesPointsCalc';
 import { expect, it } from '@jest/globals';
-import { Results } from '../src/common/CrewTimerTypes';
+import { Results } from 'crewtimer-common';
 
 it('barnes points full weighted', async () => {
   const points = barnesFullPointsCalc(regattaResults as unknown as Results, true);

@@ -1,4 +1,4 @@
-import { Results } from '../common/CrewTimerTypes';
+import { Results } from 'crewtimer-common';
 import { genPlaces, isAFinal, numSeatsFromName } from '../common/CrewTimerUtils';
 
 export type SimplePointsResult = {

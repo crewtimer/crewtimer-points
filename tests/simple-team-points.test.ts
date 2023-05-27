@@ -1,7 +1,7 @@
 import regattaResults from './data/crewtimer-results-dev-r12033-export.json';
 import { simplePointsCalc } from '../src/calculators/SimpleTeamPointsCalc';
 import { expect, it } from '@jest/globals';
-import { Results } from '../src/common/CrewTimerTypes';
+import { Results } from 'crewtimer-common';
 
 it('simple points', async () => {
   const points = simplePointsCalc(regattaResults as unknown as Results);

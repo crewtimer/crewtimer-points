@@ -1,6 +1,6 @@
 import regattaResults from './data/crewtimer-results-aca-ted-houck-results.json';
 import { expect, it } from '@jest/globals';
-import { Results } from '../src/common/CrewTimerTypes';
+import { Results } from 'crewtimer-common';
 import { acaPointsCalc } from '../src/calculators/ACATeamPointsCalc';
 
 //

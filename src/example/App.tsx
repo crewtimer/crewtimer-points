@@ -4,7 +4,7 @@ import barnesJrNovice from '../../tests/data/crewtimer-results-dev-r12033-export
 import barnesTraditional from '../../tests/data/crewtimer-results-dev-r12033-export-with-B-entries.json';
 import acaResults from '../../tests/data/crewtimer-results-aca-ted-houck-results.json';
 
-import { Results } from '../common/CrewTimerTypes';
+import { Results } from 'crewtimer-common';
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
