@@ -24,7 +24,7 @@ const nonDistancePoints = [9, 7, 5, 3, 2, 1];
 const distancePoints = [12, 10, 8, 6, 5, 4, 3, 2, 1];
 
 interface ACAResultRecord {
-  club: string;
+  index: string;
   points: number;
   place: number;
 }
@@ -34,6 +34,9 @@ export type ACAPointsResult = {
   levelTotals: { [eventLevel: string]: ACAResultRecord[] };
   genderLevelTotals: { [genderLevel: string]: ACAResultRecord[] };
   paddlersByClub: { [club: string]: Set<string> };
+
+  paddlerTotals: ACAResultRecord[];
+  paddlerClassTotals: { [paddler: string]: ACAResultRecord[] };
 };
 
 /**
@@ -71,7 +74,7 @@ export const eventLevelFromName = (eventName: string) => {
 const summarizePoints = (points: { [key: string]: number }) => {
   const totals = Object.entries(points)
     .sort((a, b) => b[1] - a[1])
-    .map((v) => ({ club: v[0], points: v[1], place: 0 }));
+    .map((v) => ({ index: v[0], points: v[1], place: 0 }));
   const places = genPlaces(
     totals.map((entry) => entry.points),
     'desc',
@@ -99,18 +102,15 @@ const sortAndSummarize = (points: { [key: string]: { [club: string]: number } })
  * Calculate points based on the ACA National Championships Point Scoring section 71.
  */
 export const acaPointsCalc = (resultData: Results): ACAPointsResult => {
-  const boatClassPointsByClub: {
-    [boatClass: string]: { [club: string]: number };
-  } = {};
-  const eventLevelPointsByClub: {
-    [eventLevel: string]: { [club: string]: number };
-  } = {};
-  const genderClassPointsByClub: {
-    [genderClass: string]: { [club: string]: number };
-  } = {};
+  const boatClassPointsByClub: { [boatClass: string]: { [club: string]: number } } = {};
+  const eventLevelPointsByClub: { [eventLevel: string]: { [club: string]: number } } = {};
+  const genderClassPointsByClub: { [genderClass: string]: { [club: string]: number } } = {};
   const pointsByEventNum: { [eventNum: string]: number } = {};
   const clubPoints: { [club: string]: number } = {};
   const paddlersByClub: { [club: string]: Set<string> } = {};
+  //** Points by Paddler By Class (juvenile, junior, etc) */
+  const paddlerPointsByClass: { [eventClass: string]: { [paddler: string]: number } } = {};
+  const paddlerPoints: { [paddler: string]: number } = {};
 
   // Iterate over each Event, accumulating points into various useful buckets
   resultData.results.forEach((eventResult) => {
@@ -138,7 +138,7 @@ export const acaPointsCalc = (resultData: Results): ACAPointsResult => {
     // Furhter parse the event name into useful fields
     const distance = distanceFromName(eventName) || 200;
     const seats = numSeatsFromName(eventName);
-    const eventLevel = eventLevelFromName(eventName);
+    const eventClass = eventLevelFromName(eventName);
     const gender = genderFromEventName(eventName);
 
     // For each entry in this event, accumulate points according to the
@@ -156,9 +156,7 @@ export const acaPointsCalc = (resultData: Results): ACAPointsResult => {
         });
 
       // Extract and normalize athlete names
-      const athletes = entry.Crew.toLowerCase()
-        .split(';')
-        .map((c) => c.trim().replace(' ', ''));
+      const athletes = entry.Crew.split(';').map((c) => c.trim().replace(' ', ''));
 
       // Keep an accounting of athlete count by club
       clubs.forEach((club, i) => {
@@ -191,6 +189,15 @@ export const acaPointsCalc = (resultData: Results): ACAPointsResult => {
       // Allocate the points to each athlete
       const pointsPerSeat = pointsAvail / seats;
 
+      // Accumulate points per paddler
+      const classPoints = paddlerPointsByClass[eventClass] || {};
+      paddlerPointsByClass[eventClass] = classPoints;
+      athletes.forEach((athlete) => {
+        const points = classPoints[athlete] || 0;
+        classPoints[athlete] = points + pointsPerSeat;
+        paddlerPoints[athlete] = (paddlerPoints[athlete] || 0) + pointsPerSeat;
+      });
+
       // Accumulate points for each club in various categories
       clubs.forEach((club) => {
         // Accumulate total club points
@@ -202,7 +209,7 @@ export const acaPointsCalc = (resultData: Results): ACAPointsResult => {
         boatClassPoints[club] = (boatClassPoints[club] || 0) + pointsPerSeat;
 
         // Now do event level (Bantam, Junior, etc)
-        const eventLevelPoints = (eventLevelPointsByClub[eventLevel] = eventLevelPointsByClub[eventLevel] || {});
+        const eventLevelPoints = (eventLevelPointsByClub[eventClass] = eventLevelPointsByClub[eventClass] || {});
         eventLevelPoints[club] = (eventLevelPoints[club] || 0) + pointsPerSeat;
 
         // Now do gendered event level (Mens Bantam,Womens Junior, etc)
@@ -216,10 +223,16 @@ export const acaPointsCalc = (resultData: Results): ACAPointsResult => {
   // Organize points for export
   const clubTotals = summarizePoints(clubPoints);
   const classTotals = sortAndSummarize(boatClassPointsByClub);
+
   const levelTotals = sortAndSummarize(eventLevelPointsByClub);
   const genderLevelTotals = sortAndSummarize(genderClassPointsByClub);
 
+  const paddlerClassTotals = sortAndSummarize(paddlerPointsByClass);
+  const paddlerTotals = summarizePoints(paddlerPoints);
+
   return {
+    paddlerTotals,
+    paddlerClassTotals,
     clubTotals,
     classTotals,
     levelTotals,

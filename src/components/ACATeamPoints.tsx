@@ -8,6 +8,12 @@ import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Box from '@mui/material/Box';
+import { Stack, FormControlLabel, Switch } from '@mui/material';
+import { UseDatum } from 'react-usedatum';
+
+// Global shared state for showPaddlers boolean.  This allows the
+// paddler state to be retained while switching between other points engines.
+const [useShowPaddlers] = UseDatum(false);
 
 /**
  * Given a list of strings sort them so any that match a preferred list maintain the order
@@ -38,6 +44,8 @@ const PreferredLevelOrder = [
   'MastersA',
   'MastersB',
   'MastersC',
+  'MastersD',
+  'MastersE',
   'Open',
   'ParaCanoe',
 ];
@@ -119,15 +127,6 @@ export const ACATeamPoints: React.FC<ACATeamPointsProps> = ({ results, nationals
             </HeaderTableCell>
           ))}
         </TableRow>
-        {/* <TableRow>
-          <HeaderTableCell colSpan={7} sx={{ fontSize: 16, fontWeight: 'bold' }}></HeaderTableCell>
-
-          {partialLevelColumns.map((l) => (
-            <HeaderTableCell key={l} align="center">
-              {Trophies[l] || ''}
-            </HeaderTableCell>
-          ))}
-        </TableRow> */}
         <TableRow>
           <HeaderTableCell align='center'>Place</HeaderTableCell>
           <HeaderTableCell>Club</HeaderTableCell>
@@ -142,19 +141,19 @@ export const ACATeamPoints: React.FC<ACATeamPointsProps> = ({ results, nationals
       </TableHead>
       <TableBody>
         {points.clubTotals.map((clubpoints) => {
-          const numPaddlers = points.paddlersByClub[clubpoints.club].size;
+          const numPaddlers = points.paddlersByClub[clubpoints.index].size;
           paddlers += numPaddlers;
           total += clubpoints.points;
           return (
-            <StyledTableRow key={clubpoints.club}>
+            <StyledTableRow key={clubpoints.index}>
               <TableCell align='center'>{clubpoints.place}</TableCell>
-              <TableCell sx={{ whiteSpace: 'nowrap' }}>{clubpoints.club}</TableCell>
+              <TableCell sx={{ whiteSpace: 'nowrap' }}>{clubpoints.index}</TableCell>
               <TableCell align='center'>{numPaddlers}</TableCell>
               <TableCell align='center' sx={{ backgroundColor: PlaceColors[clubpoints.place || 0] }}>
                 {clubpoints.points}
               </TableCell>
               {levelColumns.map((level) => {
-                const clubResult = levelTotals[level]?.find((lvlPoints) => lvlPoints.club === clubpoints.club);
+                const clubResult = levelTotals[level]?.find((lvlPoints) => lvlPoints.index === clubpoints.index);
                 return (
                   <TableCell
                     align='center'
@@ -181,6 +180,117 @@ export const ACATeamPoints: React.FC<ACATeamPointsProps> = ({ results, nationals
     </Table>
   );
 };
+
+/**
+ * Render individual points for an ACA regatta.
+ * @returns {React.ReactElement}
+ */
+export const ACAIndividualPoints: React.FC<ACATeamPointsProps> = ({ results }) => {
+  const points = acaPointsCalc(results);
+  const levelColumns = orderList(Object.keys(points.levelTotals), PreferredLevelOrder);
+  const paddlerClub: { [paddler: string]: string } = {};
+  Object.keys(points.paddlersByClub).forEach((club) =>
+    points.paddlersByClub[club].forEach((paddler) => (paddlerClub[paddler] = club)),
+  );
+
+  return (
+    <Table size='small'>
+      <TableHead>
+        <TableRow>
+          <HeaderTableCell colSpan={3}>Combined Points By Paddler by Level</HeaderTableCell>
+          <TableCell align='right'>Key:</TableCell>
+          <TableCell align='center'>
+            <Box sx={{ backgroundColor: PlaceColors[1] }}>1st</Box>
+          </TableCell>
+          <TableCell align='center'>
+            <Box sx={{ backgroundColor: PlaceColors[2] }}>2nd</Box>
+          </TableCell>
+          <TableCell align='center'>
+            <Box sx={{ backgroundColor: PlaceColors[3] }}>3rd</Box>
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <HeaderTableCell>Paddler</HeaderTableCell>
+          <HeaderTableCell>Club</HeaderTableCell>
+          <HeaderTableCell>Total</HeaderTableCell>
+
+          {levelColumns.map((level) => (
+            <HeaderTableCell align='center' key={level}>
+              {level}
+            </HeaderTableCell>
+          ))}
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {points.paddlerTotals.map((paddler) => {
+          return (
+            <StyledTableRow key={paddler.index}>
+              <TableCell sx={{ whiteSpace: 'nowrap' }}>{paddler.index}</TableCell>
+              <TableCell sx={{ whiteSpace: 'nowrap' }}>{paddlerClub[paddler.index]}</TableCell>
+              <TableCell align='center' sx={{ backgroundColor: PlaceColors[paddler.place || 0] }}>
+                {paddler.points}
+              </TableCell>
+              {levelColumns.map((level) => {
+                const levelPoints = points.paddlerClassTotals[level] || [];
+                const paddlerResult = levelPoints?.find((lvlPoints) => lvlPoints.index === paddler.index);
+                return (
+                  <TableCell
+                    align='center'
+                    key={level}
+                    sx={{
+                      backgroundColor: PlaceColors[paddlerResult?.place || 0],
+                    }}
+                  >
+                    {paddlerResult?.points || ''}
+                  </TableCell>
+                );
+              })}
+            </StyledTableRow>
+          );
+        })}
+      </TableBody>
+    </Table>
+  );
+};
+
+/**
+ * Render ACA Points as either individual points or as team points.
+ *
+ * If nationals boolean is true then a nationals version of points is shown.  Note however
+ * that for team points there is not a difference between nationals and non-nationals.
+ *
+ * @returns  {React.ReactElement} instance of ACAIndividualPoints or ACATeamPoints
+ */
+export const ACAPoints: React.FC<ACATeamPointsProps> = ({ nationals, results }) => {
+  const [showPaddlers, setShowPaddlers] = useShowPaddlers();
+  const Viewer = showPaddlers ? ACAIndividualPoints : ACATeamPoints;
+  return (
+    <Stack alignItems='center'>
+      <Stack direction='row' className='noprint'>
+        <FormControlLabel
+          labelPlacement='start'
+          control={
+            <Switch
+              size='small'
+              checked={showPaddlers}
+              onChange={(event) => setShowPaddlers(event.target.checked)}
+              name='showPaddlers'
+              color='primary'
+            />
+          }
+          label='Show Paddlers'
+        />
+      </Stack>
+      <Viewer nationals={nationals} results={results} />
+    </Stack>
+  );
+};
+
+/**
+ * A Component to render ACA Nationals points.
+ *
+ * @returns {React.ReactElement} instance of ACAPoints
+ */
 export const ACANationalsPoints: React.FC<ACATeamPointsProps> = ({ results }) => {
-  return <ACATeamPoints nationals results={results} />; // For now use the same result.  TODO: Add Trophies.
+  return <ACAPoints results={results} nationals />;
 };

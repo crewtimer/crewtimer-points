@@ -2,7 +2,7 @@ import React from 'react';
 import { Results } from 'crewtimer-common';
 import { SimpleTeamPoints } from './components/SimpleTeamPoints';
 import { BarnesPointsTraditional, BarnesFullWeighted, BarnesSimpleWeighted } from './components/BarnesPoints';
-import { ACATeamPoints, ACANationalsPoints } from './components/ACATeamPoints';
+import { ACANationalsPoints, ACAPoints } from './components/ACATeamPoints';
 
 export interface PointsViewerInfo {
   name: string; /// User presentable string
@@ -18,7 +18,7 @@ export const PointsViewers: PointsViewerInfo[] = [
   {
     name: 'ACA Regatta',
     key: 'ACA',
-    ui: ACATeamPoints,
+    ui: ACAPoints,
   },
   {
     name: 'ACA National Championships',

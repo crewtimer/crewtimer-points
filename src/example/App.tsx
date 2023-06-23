@@ -6,11 +6,18 @@ import acaResults from '../../tests/data/crewtimer-results-aca-ted-houck-results
 
 import { Results } from 'crewtimer-common';
 import Box from '@mui/material/Box';
-import Tab from '@mui/material/Tab';
-import TabContext from '@mui/lab/TabContext';
-import TabList from '@mui/lab/TabList';
-import TabPanel from '@mui/lab/TabPanel';
+import { SxProps } from '@mui/system';
+import { Theme } from '@mui/material/styles';
 import { PointsViewers } from '..';
+import LiveData from './LiveData';
+import './App.css';
+import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { UseDatum } from 'react-usedatum';
+
+/**
+ * Global shared state for test page selection
+ */
+const [useTestPage] = UseDatum('ACA');
 
 const ResultsForViewer: { [key: string]: Results } = {
   Basic: simpleResults as unknown as Results,
@@ -20,33 +27,48 @@ const ResultsForViewer: { [key: string]: Results } = {
   ACA: acaResults as unknown as Results,
   ACANat: acaResults as unknown as Results,
 };
-export const App = () => {
-  const [value, setValue] = React.useState('1');
 
-  const handleChange = (_event: React.SyntheticEvent, newValue: string) => {
-    setValue(newValue);
-  };
+const Viewers = [{ key: 'Live', name: 'Live Data', ui: LiveData }, ...PointsViewers];
+
+interface SelectTestPageProps {
+  sx?: SxProps<Theme>;
+}
+export const SelectTestPage: React.FC<SelectTestPageProps> = ({ sx }) => {
+  const [testPage, setTestPage] = useTestPage();
 
   return (
+    <FormControl sx={{ minWidth: 200 }}>
+      <InputLabel id='points-engine-label'>Test Page</InputLabel>
+      <Select
+        id='points-engine'
+        size='small'
+        labelId='points-engine-label'
+        variant='outlined'
+        value={testPage}
+        label='Points Engine'
+        name='points-engine'
+        onChange={(event) => setTestPage(event.target.value)}
+        sx={sx}
+      >
+        {Viewers.map((item) => (
+          <MenuItem key={item.key} value={item.key}>
+            {item.name}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
+  );
+};
+export const App = () => {
+  const [testPage] = useTestPage();
+
+  const Viewer = Viewers.find((viewer) => testPage === viewer.key)?.ui;
+  const results = ResultsForViewer[testPage] || simpleResults;
+  const viewer = Viewer ? <Viewer results={results} /> : <></>;
+  return (
     <Box sx={{ width: '100%', typography: 'body1' }}>
-      <TabContext value={value}>
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <TabList onChange={handleChange}>
-            {PointsViewers.map((viewer, i) => (
-              <Tab key={viewer.key} label={viewer.name} value={`${i}`} />
-            ))}
-          </TabList>
-        </Box>
-        {PointsViewers.map((viewer, i) => {
-          const Viewer = viewer.ui;
-          const results = ResultsForViewer[viewer.key] || simpleResults;
-          return (
-            <TabPanel key={viewer.key} value={`${i}`}>
-              <Viewer results={results} />
-            </TabPanel>
-          );
-        })}
-      </TabContext>
+      <SelectTestPage sx={{ marginBottom: '1em' }} />
+      {viewer}
     </Box>
   );
 };
