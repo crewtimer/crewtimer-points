@@ -2305,10 +2305,10 @@ cosmiconfig@^7.0.0, cosmiconfig@^7.0.1:
     path-type "^4.0.0"
     yaml "^1.10.0"
 
-crewtimer-common@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/crewtimer-common/-/crewtimer-common-1.0.3.tgz#1356f34ca7c7b772e8b441ca1ceedfd5468b9fc2"
-  integrity sha512-x4yPZAR4A1c4LFYBqgX9WyvKlcWcqivlqKmWN8v+yzzd0TpzToU4U8xJIGZZTOqsx8T3CWYEauGnpS68sc80+g==
+crewtimer-common@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/crewtimer-common/-/crewtimer-common-1.0.6.tgz#9cc1e783c083b894632f8d2dd4092b32a16083c7"
+  integrity sha512-GzDhGB4aVdUP1cspV05faJHUGy+JH5yPOHVTlsNsJgdaytYHIa1P9tHqoE2GlG1h6OAZtCsJ/URlgt4HA2qhRw==
 
 cross-spawn@^7.0.2, cross-spawn@^7.0.3:
   version "7.0.3"
@@ -2874,7 +2874,7 @@ expect@^29.0.0, expect@^29.5.0:
     jest-message-util "^29.5.0"
     jest-util "^29.5.0"
 
-fast-deep-equal@^3.1.1, fast-deep-equal@^3.1.3:
+fast-deep-equal@>=3.1.3, fast-deep-equal@^3.1.1, fast-deep-equal@^3.1.3:
   version "3.1.3"
   resolved "https://registry.yarnpkg.com/fast-deep-equal/-/fast-deep-equal-3.1.3.tgz#3a7d56b559d6cbc3eb512325244e619a65c6c525"
   integrity sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==
@@ -4795,12 +4795,12 @@ react-transition-group@^4.4.5:
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
 
-react-usedatum@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/react-usedatum/-/react-usedatum-1.0.4.tgz#503489fa9423de881bc38bce68333b79a50ca04c"
-  integrity sha512-erspxYHPG0vmVA10aAh9QRI7YwLdXntsDm4fqZA7YdPiaCtL2bn2z/cFizx0avnMAI8/3fG4waSAcAp8bV0bLg==
+react-usedatum@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/react-usedatum/-/react-usedatum-1.0.5.tgz#8c81f6d5f0db4f11ee70c182e6114c49e223a54e"
+  integrity sha512-nXJmPt0O4rXr/Kj66Gb2tlFp6j/fiqz66SuHHLbK68Mi4mFwa3i37vIgxiymImiAEl1UT5tydoNLbA1z2V2Glg==
   dependencies:
-    fast-deep-equal "^3.1.3"
+    fast-deep-equal ">=3.1.3"
 
 react@^18.2.0:
   version "18.2.0"
@@ -5235,10 +5235,10 @@ tr46@^3.0.0:
   dependencies:
     punycode "^2.1.1"
 
-ts-jest@^29.0.5:
-  version "29.0.5"
-  resolved "https://registry.yarnpkg.com/ts-jest/-/ts-jest-29.0.5.tgz#c5557dcec8fe434fcb8b70c3e21c6b143bfce066"
-  integrity sha512-PL3UciSgIpQ7f6XjVOmbi96vmDHUqAyqDr8YxzopDqX3kfgYtX1cuNeBjP+L9sFXi6nzsGGA6R3fP3DDDJyrxA==
+ts-jest@^29.1.0:
+  version "29.1.0"
+  resolved "https://registry.yarnpkg.com/ts-jest/-/ts-jest-29.1.0.tgz#4a9db4104a49b76d2b368ea775b6c9535c603891"
+  integrity sha512-ZhNr7Z4PcYa+JjMl62ir+zPiNJfXJN6E8hSLnaUKhOgqcn8vb3e537cpkd0FuAfRK3sR1LSqM1MOhliXNgOFPA==
   dependencies:
     bs-logger "0.x"
     fast-json-stable-stringify "2.x"
