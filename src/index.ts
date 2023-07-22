@@ -3,6 +3,7 @@ import { Results } from 'crewtimer-common';
 import { SimpleTeamPoints } from './components/SimpleTeamPoints';
 import { BarnesPointsTraditional, BarnesFullWeighted, BarnesSimpleWeighted } from './components/BarnesPoints';
 import { ACANationalsPoints, ACAPoints } from './components/ACATeamPoints';
+import { FIRAPointsTraditional } from './components/FIRAPoints';
 
 export interface PointsViewerInfo {
   name: string; /// User presentable string
@@ -44,5 +45,10 @@ export const PointsViewers: PointsViewerInfo[] = [
     name: 'Basic Points',
     key: 'Basic',
     ui: SimpleTeamPoints,
+  },
+  {
+    name: 'FIRA Points Traditional (Mitchell System)',
+    key: 'FIRATraditional',
+    ui: FIRAPointsTraditional,
   },
 ];
