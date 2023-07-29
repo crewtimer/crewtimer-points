@@ -1,4 +1,4 @@
-import { Entry, Event, Results } from 'crewtimer-common';
+import { Entry, Event, Results, genPlaces } from 'crewtimer-common';
 import { isAFinal } from '../common/CrewTimerUtils';
 
 export type FIRAPointsTeamResults = {
@@ -10,6 +10,7 @@ export type FIRAPointsTeamResults = {
 export type FIRAResult = {
   team: string;
   points: number;
+  place: number;
 };
 
 export type FIRAPoints = {
@@ -155,18 +156,17 @@ const finalizeResults = (results: Map<string, FIRAPointsTeamResults>) => {
   // sort the three groups with respect to their points
   let overallArray = Array.from(results.entries())
     .sort((a, b) => b[1].overall - a[1].overall)
-    .map((value) => ({ team: value[0], points: value[1].overall }));
+    .map((value) => ({ team: value[0], points: value[1].overall, place: 0 }));
 
   let menArray = Array.from(results.entries())
     .sort((a, b) => b[1].men - a[1].men)
-    .map((value) => ({ team: value[0], points: value[1].men }));
+    .map((value) => ({ team: value[0], points: value[1].men, place: 0 }));
 
   let womenArray = Array.from(results.entries())
     .sort((a, b) => b[1].women - a[1].women)
-    .map((value) => ({ team: value[0], points: value[1].women }));
+    .map((value) => ({ team: value[0], points: value[1].women, place: 0 }));
 
   // now remove the teams with 0 points (D1 and IRA primarily)
-
   while (overallArray[overallArray.length - 1].points === 0) {
     overallArray.pop();
   }
@@ -176,6 +176,21 @@ const finalizeResults = (results: Map<string, FIRAPointsTeamResults>) => {
   while (womenArray[womenArray.length - 1].points === 0) {
     womenArray.pop();
   }
+
+  const places_o = genPlaces(
+    overallArray.map((entry) => entry.points),
+    'desc',);
+  places_o.forEach((place, i) => (overallArray[i].place = place));
+
+  const places_m = genPlaces(
+    menArray.map((entry) => entry.points),
+    'desc',);
+  places_m.forEach((place, i) => (menArray[i].place = place));
+
+  const places_w = genPlaces(
+    womenArray.map((entry) => entry.points),
+    'desc',);
+  places_w.forEach((place, i) => (womenArray[i].place = place));
 
   return {
     overall: overallArray,
