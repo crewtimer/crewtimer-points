@@ -5980,6 +5980,124 @@
       ],
       "eventIndex": 46,
       "eventKey": "48"
+    },
+    {
+      "Day": "Sat AM",
+      "DispOrder": [
+        1,
+        0
+      ],
+      "Event": "30 Men's 2-",
+      "EventInfo": "",
+      "EventNum": "30",
+      "Finished": false,
+      "Flight": "",
+      "Official": true,
+      "RaceType": "Sprint",
+      "Start": "11:00",
+      "entries": [
+        {
+          "AdjTime": "07:12.39",
+          "Bow": "4",
+          "Crew": "Tie Breaker Rowing",
+          "CrewAbbrev": "TBR",
+          "Event": "Men's 2-",
+          "EventAbbrev": "M 2- ",
+          "EventNum": "30",
+          "Flight": "1",
+          "G_Finish2_time": "07:09.950",
+          "G_Finish2_time_raw": "11:05:44.21",
+          "G_Finish_time_raw": "11:05:46.65",
+          "G_Start_time_raw": "10:58:34.26",
+          "Index": 1,
+          "PenaltyCode": "",
+          "Place": 1,
+          "RawTime": "07:12.39",
+          "S_time": "10:58:34.26",
+          "Stroke": ""
+        },
+        {
+          "AdjTime": "10:03.72",
+          "Bow": "5",
+          "Crew": "On The Bubble",
+          "CrewAbbrev": "OTB",
+          "Event": "Men's 2-",
+          "EventAbbrev": "M 2- ",
+          "EventNum": "30",
+          "Flight": "1",
+          "G_Finish2_time": "10:05.090",
+          "G_Finish2_time_raw": "11:08:39.35",
+          "G_Finish_time_raw": "11:08:37.98",
+          "G_Start_time_raw": "10:58:34.26",
+          "Index": 2,
+          "PenaltyCode": "",
+          "Place": 3,
+          "RawTime": "10:03.72",
+          "S_time": "10:58:34.26",
+          "Stroke": ""
+        }
+      ],
+      "eventIndex": 99,
+      "eventKey": "30"
+    },
+    {
+      "Day": "Sat AM",
+      "DispOrder": [
+        1,
+        0
+      ],
+      "Event": "30 Men's 2x",
+      "EventInfo": "",
+      "EventNum": "30",
+      "Finished": false,
+      "Flight": "",
+      "Official": true,
+      "RaceType": "Sprint",
+      "Start": "11:00",
+      "entries": [
+        {
+          "AdjTime": "07:12.39",
+          "Bow": "4",
+          "Crew": "On The Bubble",
+          "CrewAbbrev": "TBR",
+          "Event": "Men's 2x",
+          "EventAbbrev": "M 2x ",
+          "EventNum": "30",
+          "Flight": "1",
+          "G_Finish2_time": "07:09.950",
+          "G_Finish2_time_raw": "11:05:44.21",
+          "G_Finish_time_raw": "11:05:46.65",
+          "G_Start_time_raw": "10:58:34.26",
+          "Index": 1,
+          "PenaltyCode": "",
+          "Place": 1,
+          "RawTime": "07:12.39",
+          "S_time": "10:58:34.26",
+          "Stroke": ""
+        },
+        {
+          "AdjTime": "10:03.72",
+          "Bow": "5",
+          "Crew": "Tie Breaker Rowing",
+          "CrewAbbrev": "OTB",
+          "Event": "Men's 2x",
+          "EventAbbrev": "M 2x ",
+          "EventNum": "30",
+          "Flight": "1",
+          "G_Finish2_time": "10:05.090",
+          "G_Finish2_time_raw": "11:08:39.35",
+          "G_Finish_time_raw": "11:08:37.98",
+          "G_Start_time_raw": "10:58:34.26",
+          "Index": 2,
+          "PenaltyCode": "",
+          "Place": 3,
+          "RawTime": "10:03.72",
+          "S_time": "10:58:34.26",
+          "Stroke": ""
+        }
+      ],
+      "eventIndex": 100,
+      "eventKey": "30"
     }
   ]
 }
