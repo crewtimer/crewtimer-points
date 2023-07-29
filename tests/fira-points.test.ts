@@ -7,8 +7,8 @@ import { Results } from 'crewtimer-common';
 it('FIRA Mitchell Points', async () => {
   const points = firaPointsCalc(regattaResults as unknown as Results);
   // check that non-scoring teams are included in the display list
-  expect(points.overall.length).toEqual(11);
-  expect(points.men.length).toEqual(8);
+  expect(points.overall.length).toEqual(13);
+  expect(points.men.length).toEqual(10);
   expect(points.women.length).toEqual(10);
 
   const sp = points.overall.find((entry) => entry.team == 'University of Tampa');
@@ -29,9 +29,9 @@ it('FIRA Mitchell Points', async () => {
 it('fira points traditional', async () => {
   const points = firaPointsCalc(regattaResults as unknown as Results);
   // check that non-scoring non-exhib-only teams are included in the display list
-  expect(points.overall.length).toEqual(11);
+  expect(points.overall.length).toEqual(13);
   expect(points.women.length).toEqual(10);
-  expect(points.men.length).toEqual(8);
+  expect(points.men.length).toEqual(10);
 
   // verify the D1 teams were excluded (not points eligible in D1 events)
   const sp = points.overall.find((entry) => entry.team == 'Kansas State University');
@@ -52,10 +52,14 @@ it('fira points traditional', async () => {
   expect(uf?.points).toEqual(8.5);
 
   // validate combined points value and order
-  expect(points.men.map((entry) => entry.points)).toEqual([113.5, 60, 59, 45, 27, 24.25, 17.5, 8.5]);
-  expect(points.women.map((entry) => entry.points)).toEqual([74.5, 67, 62, 54.5, 49.25, 38.75, 24.25, 23, 5.5, 2.25]);
+  expect(points.men.map((entry) => entry.points)).toEqual([
+    113.5, 60, 59, 45, 27, 24.25, 17.5, 10, 10, 8.5]);
+
+  expect(points.women.map((entry) => entry.points)).toEqual([
+    74.5, 67, 62, 54.5, 49.25, 38.75, 24.25, 23, 5.5, 2.25]);
+
   expect(points.overall.map((entry) => entry.points)).toEqual([
-    134.5, 113.5, 94, 82, 78.75, 69.25, 62, 57.75, 38.75, 19.75, 5.5,
+    134.5, 113.5, 94, 82, 78.75, 69.25, 62, 57.75, 38.75, 19.75, 10, 10, 5.5,
   ]);
 });
 
