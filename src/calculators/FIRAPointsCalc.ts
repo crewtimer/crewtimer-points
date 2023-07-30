@@ -154,28 +154,22 @@ const trimCrewName = (crewName: string) => {
  */
 const finalizeResults = (results: Map<string, FIRAPointsTeamResults>) => {
   // sort the three groups with respect to their points
-  const overallArray = Array.from(results.entries())
+  let overallArray = Array.from(results.entries())
     .sort((a, b) => b[1].overall - a[1].overall)
     .map((value) => ({ team: value[0], points: value[1].overall, place: 0 }));
 
-  const menArray = Array.from(results.entries())
+  let menArray = Array.from(results.entries())
     .sort((a, b) => b[1].men - a[1].men)
     .map((value) => ({ team: value[0], points: value[1].men, place: 0 }));
 
-  const womenArray = Array.from(results.entries())
+  let womenArray = Array.from(results.entries())
     .sort((a, b) => b[1].women - a[1].women)
     .map((value) => ({ team: value[0], points: value[1].women, place: 0 }));
 
   // now remove the teams with 0 points (D1 and IRA primarily)
-  while (overallArray[overallArray.length - 1].points === 0) {
-    overallArray.pop();
-  }
-  while (menArray[menArray.length - 1].points === 0) {
-    menArray.pop();
-  }
-  while (womenArray[womenArray.length - 1].points === 0) {
-    womenArray.pop();
-  }
+  overallArray = overallArray.filter((result) => result.points !== 0);
+  menArray = menArray.filter((result) => result.points !== 0);
+  womenArray = womenArray.filter((result) => result.points !== 0);
 
   const places_o = genPlaces(
     overallArray.map((entry) => entry.points),
