@@ -11,14 +11,15 @@ calculated results and are written in Typescript.  Results are updated real-time
 
 The visualizers utilize the [React framework](https://react.dev/) along with the [Material UI open-source React component library](https://mui.com/material-ui/getting-started/overview/).
 
-Contributions for other points or award systems are welcome!  More details on how you can contribute your custom solution are described below.
+**Contributions for other points or award systems are welcome!**  More details on how you can contribute your custom solution are described below.
 
 ## Currently supported points engines
 
-* [ACA Regatta](docs/ACA-SprintRacingRules-v1-04.pdf)
-* [ACA National Championships](docs/ACA-SprintRacingRules-v1-04.pdf)
-* **Weighted Barnes System** Varsity events are worth the full 100% of points for the event, Junior/2V events are 80%, Novice/Freshman/3V are worth 60%. This is the system used by Midwest Scholastic Rowing Association and Scholastic Rowing Association of Michigan.
-* **Traditional Barnes System** Events of the same boat class across all rower experience level are weighted the same. For example, a varsity 8+ and a novice 8+ will both be worth 30 points.
+* [ACA Regional and National Regattas](docs/ACA-SprintRacingRules-v2023.pdf)
+* [Traditional Barnes System](https://en.wikipedia.org/wiki/Julius_H._Barnes_Points_Trophy) Events of the same boat class across all rower experience level are weighted the same. For example, a varsity 8+ and a novice 8+ will both be worth 30 points.
+* **Barnes System - Michigan States** Varsity events are worth the full 100% of points for the event, Junior/2V events are 80%, Novice/Freshman/3V are worth 60%. This is the system used by Midwest Scholastic Rowing Association and Scholastic Rowing Association of Michigan.
+* **Barnes System - Mitten Series** Render team points calculated by the Barnes Points system for basic points categories.  An event's point values are scaled by Novice/Junior/Varsity category.
+* [FIRA Points](docs/FIRAPointsRules.pdf) The FIRA points system is similar to the Barnes Weighted system in that there are max points on offer for specified events with a weighting system applied based on the number of finishers in the given event
 
 ## Adding a new points engine
 
@@ -46,17 +47,27 @@ If you don't have yarn, you can get it from npm:
 npm install --global yarn
 ```
 
+## Run the demo server
+
+```bash
+yarn clean && yarn build && yarn start
+```
+
+Open web browser to [http://localhost:1234](http://localhost:1234).
+
+If you get error 404 after using ```yarn start```, try running ```yarn clean`````` and starting it again.
+
 ### Add your code
 
-1. Review the code for other points engines.
-2. Add your calculator under src/calculators.
-3. Add a jest test under tests/.
-4. Add a [React visualizer](https://react.dev/) under src/components. If you are unfamiliar with React and don't want to learn React, ask Glenn to do this for you based on an example you provide.
-5. Add export references for your new points viewer in src/index.ts.
-6. Reference your visualizer from example/App.tsx.
-7. Test (see Running Jest Tests below)
-8. Lint and format your code: ```yarn npmprepublishOnly```
-9. Commit your changes and do a pull request to crewtimer-points.
+1. Review the demo for other points engines such as FIRA Points or Barnes Points that may be close to what you need.
+2. Add your custom calculator under src/calculators. See [FIRA Points](src/calculators/FIRAPointsCalc.ts) or [Barnes Points](src/calculators/BarnesPointsCalc.ts). Be sure to deal with ties in calculation results.  For example, a tie for second place would result in omission of a third place result. Use the [genPlaces helper](https://github.com/crewtimer/crewtimer-points/blob/main/src/calculators/FIRAPointsCalc.ts#L180C3-L183C67).  See other helpers dealing with event names in [src/common/CrewTimerUtils.ts](src/common/CrewTimerUtils.ts).
+3. Add a jest test under tests/.  To use actual test data from a regatta (recommended), start the demo and select Live Data and export a json file for an existing regatta.
+4. Add a [React visualizer](https://react.dev/) under src/components. See [FIRA Points](src/components/FIRAPoints.tsx) or [Barnes Points](src/components/BarnesPoints.tsx). If you are unfamiliar with React and don't want to learn React, ask Glenn to do this for you or get you started based on an example you provide.  React components from the [Material UI](https://mui.com/material-ui/getting-started/) project are utilized.
+5. Add export references for your new points viewer in [src/index.ts](src/index.ts).
+6. Optionally reference your visualizer from example/App.tsx.  Regardless, your viewer will be available under 'Live Data' test page after adding to index.ts.  `yarn clean` may be needd to see your changes to index.ts or App.ts.
+7. Test your code (see Running Jest Tests below).
+8. Lint and format your code: ```yarn prepublishOnly```
+9. Commit your changes and do a pull request to crewtimer-points. (see Makig a pull requewst below)
 
 ## Running Jest Tests
 
@@ -75,33 +86,40 @@ from the command line.
 3. Click on the debug icon and select Debug Jest Tests.
 4. Click on the Play icon.
 
-## Viewing your react component
-
-```bash
-yarn start
-```
-
-Open web browser to [http://localhost:1234](http://localhost:1234).
-
-## Error 404
-
-If you get error 404 after using ```yarn start```, try clearing your dist directory and starting it again.
-
-```bash
-rm -rf dist/
-```
-
 ## Making a pull request
 
 Before making a pull request, be sure to run ```yarn prepublishOnly```.  This will format the source code, run tests, and verify lint rules.
 
-For mechanics of making a pull request from a fork, read [this article](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork)
+You will also need to push your forked changes to the github server by using `git push` or `git push origin`.
 
-## Publishing a new npm version
+For mechanics of making a pull request from your fork, read [this article](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork).  You don't need to make a special branch but can use your 'main' branch in your fork.
+
+## Pulling main branch changes into your fork
+
+If your fork is behind the main crewtimer-points repository you can "catch up" by adding a remote reference to the upstream branch and pulling it into your repo:
+
+```bash
+git remote add upstream git@github.com:crewtimer/crewtimer-points.git
+git pull upstream main
+```
+
+If you have committed any changes to your local repo, you can rebase your changes on top of the latest crewtimer-points repo:
+
+```bash
+git rebase upstream/main
+```
+
+Remember, after pulling changes, be sure to update your local libraries:
+
+```bash
+yarn install && yarn clean && yarn build
+```
+
+## Publishing a new npm version (maintainers only)
 
 1. Update the version in package.json
 2. First check for any errors by running ```yarn prepublishOnly```
-3. If not errors: ```npm publish```
+3. If no errors: ```npm publish```
 
 ## Contributors
 
