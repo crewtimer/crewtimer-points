@@ -48,15 +48,13 @@ it('fira points traditional', async () => {
   expect(rc).toBeDefined();
   expect(rc?.points).toEqual(74.5);
 
-  let uf = points.men.find((entry) => entry.team === 'University of Florida');
+  const uf = points.men.find((entry) => entry.team === 'University of Florida');
   expect(uf?.points).toEqual(8.5);
 
   // validate combined points value and order
-  expect(points.men.map((entry) => entry.points)).toEqual([
-    113.5, 60, 59, 45, 27, 24.25, 17.5, 10, 10, 8.5]);
+  expect(points.men.map((entry) => entry.points)).toEqual([113.5, 60, 59, 45, 27, 24.25, 17.5, 10, 10, 8.5]);
 
-  expect(points.women.map((entry) => entry.points)).toEqual([
-    74.5, 67, 62, 54.5, 49.25, 38.75, 24.25, 23, 5.5, 2.25]);
+  expect(points.women.map((entry) => entry.points)).toEqual([74.5, 67, 62, 54.5, 49.25, 38.75, 24.25, 23, 5.5, 2.25]);
 
   expect(points.overall.map((entry) => entry.points)).toEqual([
     134.5, 113.5, 94, 82, 78.75, 69.25, 62, 57.75, 38.75, 19.75, 10, 10, 5.5,
@@ -71,9 +69,9 @@ it('Excluded entries and events', async () => {
   expect(calculateNumberOfEntries(results.results[5].entries)).toEqual(3);
   expect(calculateNumberOfEntries(results.results[6].entries)).toEqual(5);
 
-  let ks = points.overall.find((entry) => entry.team === 'Kansas State University');
+  const ks = points.overall.find((entry) => entry.team === 'Kansas State University');
   expect(ks).toBeUndefined();
 
-  let bu = points.overall.find((entry) => entry.team === 'Brown University');
+  const bu = points.overall.find((entry) => entry.team === 'Brown University');
   expect(bu).toBeUndefined();
 });

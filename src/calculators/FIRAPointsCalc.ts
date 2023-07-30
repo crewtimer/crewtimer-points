@@ -154,15 +154,15 @@ const trimCrewName = (crewName: string) => {
  */
 const finalizeResults = (results: Map<string, FIRAPointsTeamResults>) => {
   // sort the three groups with respect to their points
-  let overallArray = Array.from(results.entries())
+  const overallArray = Array.from(results.entries())
     .sort((a, b) => b[1].overall - a[1].overall)
     .map((value) => ({ team: value[0], points: value[1].overall, place: 0 }));
 
-  let menArray = Array.from(results.entries())
+  const menArray = Array.from(results.entries())
     .sort((a, b) => b[1].men - a[1].men)
     .map((value) => ({ team: value[0], points: value[1].men, place: 0 }));
 
-  let womenArray = Array.from(results.entries())
+  const womenArray = Array.from(results.entries())
     .sort((a, b) => b[1].women - a[1].women)
     .map((value) => ({ team: value[0], points: value[1].women, place: 0 }));
 
@@ -179,17 +179,20 @@ const finalizeResults = (results: Map<string, FIRAPointsTeamResults>) => {
 
   const places_o = genPlaces(
     overallArray.map((entry) => entry.points),
-    'desc',);
+    'desc',
+  );
   places_o.forEach((place, i) => (overallArray[i].place = place));
 
   const places_m = genPlaces(
     menArray.map((entry) => entry.points),
-    'desc',);
+    'desc',
+  );
   places_m.forEach((place, i) => (menArray[i].place = place));
 
   const places_w = genPlaces(
     womenArray.map((entry) => entry.points),
-    'desc',);
+    'desc',
+  );
   places_w.forEach((place, i) => (womenArray[i].place = place));
 
   return {
@@ -264,7 +267,7 @@ export const firaPointsImpl = (resultData: Results): Map<string, FIRAPointsTeamR
   const teamPoints = new Map<string, FIRAPointsTeamResults>();
   resultData.results.forEach((eventResult) => {
     const excludedMatches = [/DIVI/, /DI/, /DIV1/, /D1/, /DIV-I/, /DIV-1/, /IRA/];
-    var isExcludedEvent = excludedMatches.some((excluded) => eventResult.Event.toUpperCase().search(excluded) != -1);
+    let isExcludedEvent = excludedMatches.some((excluded) => eventResult.Event.toUpperCase().search(excluded) != -1);
 
     // handle special cases like 'DII' (we want to keep DII but it would be matched to 'D1')
 

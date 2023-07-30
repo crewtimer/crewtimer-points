@@ -26,14 +26,20 @@ export const FIRAPointsTraditional: React.FC<{ results: Results }> = ({ results 
   for (let row = 0; row < maxDataRows; row++) {
     tableBody.push(
       <StyledTableRow key={row}>
-        <TableCell sx={{ borderLeft: '1px solid #808080' }} ></TableCell>
-        <TableCell align='left' colSpan={1}>{points.men[row]?.place || ''}</TableCell>
+        <TableCell sx={{ borderLeft: '1px solid #808080' }}></TableCell>
+        <TableCell align='left' colSpan={1}>
+          {points.men[row]?.place || ''}
+        </TableCell>
         <TableCell>{points.men[row]?.team || ''}</TableCell>
         <TableCell>{points.men[row]?.points || ''}</TableCell>
-        <TableCell sx={{ borderLeft: '1px solid #808080' }} align='left'>{points.women[row]?.place || ''}</TableCell>
+        <TableCell sx={{ borderLeft: '1px solid #808080' }} align='left'>
+          {points.women[row]?.place || ''}
+        </TableCell>
         <TableCell>{points.women[row]?.team || ''}</TableCell>
         <TableCell>{points.women[row]?.points || ''}</TableCell>
-        <TableCell sx={{ borderLeft: '1px solid #808080' }} align='left'>{points.overall[row]?.place || ''}</TableCell>
+        <TableCell sx={{ borderLeft: '1px solid #808080' }} align='left'>
+          {points.overall[row]?.place || ''}
+        </TableCell>
         <TableCell>{points.overall[row]?.team || ''}</TableCell>
         <TableCell>{points.overall[row]?.points || ''}</TableCell>
       </StyledTableRow>,
@@ -50,9 +56,13 @@ export const FIRAPointsTraditional: React.FC<{ results: Results }> = ({ results 
             >{`FIRA Points Competition (FIRA Member Schools & guests only)`}</HeaderTableCell>
           </TableRow>
           <TableRow>
-            <HeaderTableCell align='right' colSpan={2}>Place</HeaderTableCell>
+            <HeaderTableCell align='right' colSpan={2}>
+              Place
+            </HeaderTableCell>
             <HeaderTableCell colSpan={2}>Men</HeaderTableCell>
-            <HeaderTableCell align='center' colSpan={1}>Place</HeaderTableCell>
+            <HeaderTableCell align='center' colSpan={1}>
+              Place
+            </HeaderTableCell>
             <HeaderTableCell colSpan={2}>Women</HeaderTableCell>
             <HeaderTableCell colSpan={1}>Place</HeaderTableCell>
             <HeaderTableCell colSpan={2}>Overall</HeaderTableCell>

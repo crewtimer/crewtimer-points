@@ -1,6 +1,6 @@
 {
   "name": "crewtimer-points",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Calculate points for CrewTimer",
   "main": "./dist/cjs/src/index.js",
   "module": "./dist/esm/src/index.js",
@@ -49,7 +49,7 @@
     "@mui/lab": "^5.0.0-alpha.124",
     "@mui/material": "^5.11.13",
     "@mui/styles": "^5.11.13",
-    "crewtimer-common": "^1.0.6",
+    "crewtimer-common": "^1.0.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-usedatum": "^1.0.5"
