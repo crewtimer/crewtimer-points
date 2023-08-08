@@ -1,6 +1,6 @@
 {
   "name": "crewtimer-points",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Calculate points for CrewTimer",
   "main": "./dist/cjs/src/index.js",
   "module": "./dist/esm/src/index.js",

@@ -51,6 +51,11 @@ const PreferredLevelOrder = [
 ];
 
 const Trophies: { [key: string]: string } = {
+  Juvenile: 'Thomas Horton Trophy',
+  Bantam: 'Columbia-Murphy Trophy',
+  '(Masters)': 'Jack Blendinger Trophy',
+  Junior: 'Black Anvil Trophy',
+  Senior: 'Washington  Canoe Club Trophy',
   C4: 'Coach Bill Bragg Trophy',
   'Mens K4': 'Chris Barlow Trophy',
   'Womens K4': 'Alan Anderson Trophy',
@@ -103,81 +108,108 @@ export const ACATeamPoints: React.FC<ACATeamPointsProps> = ({ results, nationals
     ? { ...points.levelTotals, C4: c4, 'Mens K4': mk4, 'Womens K4': wk4 }
     : points.levelTotals;
 
-  const [, , , ...partialLevelColumns] = levelColumns;
-
   return (
-    <Table size='small'>
-      <TableHead>
-        <TableRow>
-          <HeaderTableCell colSpan={3}>Combined Points By Club by Level</HeaderTableCell>
-          <TableCell align='right'>Key:</TableCell>
-          <TableCell align='center'>
-            <Box sx={{ backgroundColor: PlaceColors[1] }}>1st</Box>
-          </TableCell>
-          <TableCell align='center'>
-            <Box sx={{ backgroundColor: PlaceColors[2] }}>2nd</Box>
-          </TableCell>
-          <TableCell align='center'>
-            <Box sx={{ backgroundColor: PlaceColors[3] }}>3rd</Box>
-          </TableCell>
+    <Stack>
+      <Table size='small'>
+        <TableHead>
+          <TableRow>
+            <HeaderTableCell colSpan={3}>
+              <Stack>
+                <Box>Combined Points By Club by Level</Box>
+                <Stack direction='row'>
+                  <Box>Key:</Box>
+                  <Box sx={{ textAlign: 'center', width: '4em', backgroundColor: PlaceColors[1] }}>1st</Box>
+                  <Box sx={{ textAlign: 'center', width: '4em', backgroundColor: PlaceColors[2] }}>2nd</Box>
+                  <Box sx={{ textAlign: 'center', width: '4em', backgroundColor: PlaceColors[3] }}>3rd</Box>
+                </Stack>
+              </Stack>
+            </HeaderTableCell>
+            <HeaderTableCell align='center'>{nationals ? 'National Champions Yonkers Trophy' : ''}</HeaderTableCell>
 
-          {partialLevelColumns.map((l) => (
-            <HeaderTableCell key={l} align='center'>
-              {Trophies[l] || ''}
-            </HeaderTableCell>
-          ))}
-        </TableRow>
-        <TableRow>
-          <HeaderTableCell align='center'>Place</HeaderTableCell>
-          <HeaderTableCell>Club</HeaderTableCell>
-          <HeaderTableCell align='center'>Paddlers</HeaderTableCell>
-          <HeaderTableCell align='center'>Club Score</HeaderTableCell>
-          {levelColumns.map((level) => (
-            <HeaderTableCell align='center' key={level}>
-              {level}
-            </HeaderTableCell>
-          ))}
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {points.clubTotals.map((clubpoints) => {
-          const numPaddlers = points.paddlersByClub[clubpoints.index].size;
-          paddlers += numPaddlers;
-          total += clubpoints.points;
-          return (
-            <StyledTableRow key={clubpoints.index}>
-              <TableCell align='center'>{clubpoints.place}</TableCell>
-              <TableCell sx={{ whiteSpace: 'nowrap' }}>{clubpoints.index}</TableCell>
-              <TableCell align='center'>{numPaddlers}</TableCell>
-              <TableCell align='center' sx={{ backgroundColor: PlaceColors[clubpoints.place || 0] }}>
-                {clubpoints.points}
-              </TableCell>
-              {levelColumns.map((level) => {
-                const clubResult = levelTotals[level]?.find((lvlPoints) => lvlPoints.index === clubpoints.index);
-                return (
-                  <TableCell
-                    align='center'
-                    key={level}
-                    sx={{
-                      backgroundColor: PlaceColors[clubResult?.place || 0],
-                    }}
-                  >
-                    {clubResult?.points || ''}
-                  </TableCell>
-                );
-              })}
-            </StyledTableRow>
-          );
-        })}
-        <StyledTableRow key={'summary'}>
-          <TableCell></TableCell>
-          <HeaderTableCell align='right'>Totals:</HeaderTableCell>
-          <HeaderTableCell align='center'>{paddlers}</HeaderTableCell>
-          <HeaderTableCell align='center'>{total}</HeaderTableCell>
-          <TableCell colSpan={levelColumns.length}></TableCell>
-        </StyledTableRow>
-      </TableBody>
-    </Table>
+            {levelColumns.map((l) => (
+              <HeaderTableCell key={l} align='center'>
+                {(nationals && Trophies[l]) || ''}
+              </HeaderTableCell>
+            ))}
+          </TableRow>
+          <TableRow>
+            <HeaderTableCell align='center'>Place</HeaderTableCell>
+            <HeaderTableCell>Club</HeaderTableCell>
+            <HeaderTableCell align='center'>Paddlers</HeaderTableCell>
+            <HeaderTableCell align='center'>Club Score</HeaderTableCell>
+            {levelColumns.map((level) => (
+              <HeaderTableCell align='center' key={level}>
+                {level}
+              </HeaderTableCell>
+            ))}
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {points.clubTotals.map((clubpoints) => {
+            const numPaddlers = points.paddlersByClub[clubpoints.index].size;
+            paddlers += numPaddlers;
+            total += clubpoints.points;
+            return (
+              <StyledTableRow key={clubpoints.index}>
+                <TableCell align='center'>{clubpoints.place}</TableCell>
+                <TableCell sx={{ whiteSpace: 'nowrap' }}>{clubpoints.index}</TableCell>
+                <TableCell align='center'>{numPaddlers}</TableCell>
+                <TableCell align='center' sx={{ backgroundColor: PlaceColors[clubpoints.place || 0] }}>
+                  {clubpoints.points}
+                </TableCell>
+                {levelColumns.map((level) => {
+                  const clubResult = levelTotals[level]?.find((lvlPoints) => lvlPoints.index === clubpoints.index);
+                  return (
+                    <TableCell
+                      align='center'
+                      key={level}
+                      sx={{
+                        backgroundColor: PlaceColors[clubResult?.place || 0],
+                      }}
+                    >
+                      {clubResult?.points || ''}
+                    </TableCell>
+                  );
+                })}
+              </StyledTableRow>
+            );
+          })}
+          <StyledTableRow key={'summary'}>
+            <TableCell></TableCell>
+            <HeaderTableCell align='right'>Totals:</HeaderTableCell>
+            <HeaderTableCell align='center'>{paddlers}</HeaderTableCell>
+            <HeaderTableCell align='center'>{total}</HeaderTableCell>
+            <TableCell colSpan={levelColumns.length}></TableCell>
+          </StyledTableRow>
+        </TableBody>
+      </Table>
+      {nationals && (
+        <Table size='small' sx={{ marginTop: '2em', pageBreakInside: 'avoid' }}>
+          <TableHead>
+            <TableRow>
+              <HeaderTableCell>Award</HeaderTableCell>
+              <HeaderTableCell>Criteria</HeaderTableCell>
+              <HeaderTableCell>Winner</HeaderTableCell>
+              <HeaderTableCell>Club</HeaderTableCell>
+              <HeaderTableCell>Race</HeaderTableCell>
+              <HeaderTableCell>Time</HeaderTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {points.trophies.map((trophy, row) => (
+              <StyledTableRow key={row}>
+                <TableCell>{trophy.name}</TableCell>
+                <TableCell>{trophy.criteria}</TableCell>
+                <TableCell>{trophy.winner}</TableCell>
+                <TableCell>{trophy.winnerClub}</TableCell>
+                <TableCell>{trophy.winnerRaceNum}</TableCell>
+                <TableCell>{trophy.winnerTime}</TableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
+      )}
+    </Stack>
   );
 };
 

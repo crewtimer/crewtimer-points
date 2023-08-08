@@ -25,4 +25,9 @@ it('aca team points', async () => {
 
   expect(points.paddlerTotals[0]).toEqual({ index: 'So,Veronica', points: 44, place: 1 });
   expect(points.paddlerClassTotals['Junior']?.[0]).toEqual({ index: 'Scoggins,Abby', points: 23.5, place: 1 });
+  expect(points.trophies[0].winner).toEqual('Scoggins,Ellie');
+  expect(points.trophies[0].winnerClub).toEqual('BHAM');
+  expect(points.trophies[0].winnerTime).toEqual('02:17.302');
+  expect(points.trophies[0].name).toEqual('Francine Fox Award');
+  expect(points.trophies[0].criteria).toEqual('Winner of the K1 500 U16 (Juvenile)Women');
 });

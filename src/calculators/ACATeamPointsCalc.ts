@@ -23,10 +23,42 @@ import {
 const nonDistancePoints = [9, 7, 5, 3, 2, 1];
 const distancePoints = [12, 10, 8, 6, 5, 4, 3, 2, 1];
 
+// Winner of the C1 1000 Senior Men -Jim Terrell Award.
+const trophyDefinitions = [
+  'Winner of the K1 500 U16 (Juvenile)Women -Francine Fox Award',
+  'Winner of the K1 500 U18 (Junior)Women -Mimi LeBeau Memorial Award',
+  'Winner of the C1 200 U18 (Junior)Men -Andy Toro Award',
+  'Winner of the K1 1000 U18 (Junior)Men -Greg Barton Award',
+  'Winner of the K1 1000 Senior Men -Donald Dodge Memorial Award',
+  'Winner of the K2 200 Senior Men-Eugene & Henry Krawczyk Award',
+  'Winner of the K2 1000 Senior Men -Beachem & Van Dyke Award',
+  'Winner of the K4 500 (was 1000)Senior Men -Eric Feicht Memorial Award',
+  'Winner of the K1 500 Senior Women -Marcia Smoke Award',
+  'Winner of the K4 500 Senior Women',
+  'Winner of the C1 5000 Senior Men -Frank Havens Award',
+  // Award20.53.Burgee Awards at  National  Championships
+  'Winner of the C1 500 U16(Juvenile)Women -Nancy Kalafus Award',
+  'Winner of the C1 500 U18(Junior)Women -Debby Smith Page Award',
+  'Winner of the C1 1000 Senior Men -Jim Terrell Award',
+];
+
 interface ACAResultRecord {
   index: string;
   points: number;
   place: number;
+}
+
+interface TrophyWinner {
+  name: string;
+  criteria: string;
+  distance: number;
+  boatClass: string;
+  level: string;
+  gender: string;
+  winner: string;
+  winnerClub: string;
+  winnerTime: string;
+  winnerRaceNum: string;
 }
 export type ACAPointsResult = {
   clubTotals: ACAResultRecord[];
@@ -37,6 +69,7 @@ export type ACAPointsResult = {
 
   paddlerTotals: ACAResultRecord[];
   paddlerClassTotals: { [paddler: string]: ACAResultRecord[] };
+  trophies: TrophyWinner[];
 };
 
 /**
@@ -49,7 +82,7 @@ export type ACAPointsResult = {
  */
 export const eventLevelFromName = (eventName: string) => {
   eventName = eventName.toLowerCase();
-  const matches = [/bantam/, /juv/, /junior/, /senior/, /u23/, /masters ?[abc]/, /open/, /paracanoe/, / dev/];
+  const matches = [/bantam/, /juv/, /junior/, /senior/, /u23/, /masters ?[abcdef]/, /open/, /paracanoe/, / dev/];
   for (let i = 0; i < matches.length; i++) {
     const match = eventName.match(matches[i]);
     if (match) {
@@ -61,7 +94,7 @@ export const eventLevelFromName = (eventName: string) => {
       return eventLevel;
     }
   }
-  return 'Unknown';
+  return 'Other';
 };
 
 /**
@@ -94,6 +127,10 @@ const summarizePoints = (points: { [key: string]: number }) => {
 const sortAndSummarize = (points: { [key: string]: { [club: string]: number } }) => {
   const totals: { [key: string]: ACAResultRecord[] } = {};
   for (const [key, pointsForKey] of Object.entries(points)) {
+    // console.log(`Key=+${key}`);
+    // if (key.includes('(Masters)')) {
+    //   continue;
+    // }
     totals[key] = summarizePoints(pointsForKey);
   }
   return totals;
@@ -111,6 +148,25 @@ export const acaPointsCalc = (resultData: Results): ACAPointsResult => {
   //** Points by Paddler By Class (juvenile, junior, etc) */
   const paddlerPointsByClass: { [eventClass: string]: { [paddler: string]: number } } = {};
   const paddlerPoints: { [paddler: string]: number } = {};
+
+  const trophies: TrophyWinner[] = [];
+  // Cache trophy attributes
+  for (const trophy of trophyDefinitions) {
+    const names = trophy.split('-').map((name) => name.trim());
+
+    trophies.push({
+      name: names[1] || 'Unnamed',
+      criteria: names[0],
+      distance: distanceFromName(trophy),
+      boatClass: boatClassFromName(trophy),
+      level: eventLevelFromName(trophy),
+      gender: genderFromEventName(trophy),
+      winner: '',
+      winnerClub: '',
+      winnerTime: '',
+      winnerRaceNum: '',
+    });
+  }
 
   // Iterate over each Event, accumulating points into various useful buckets
   resultData.results.forEach((eventResult) => {
@@ -183,6 +239,28 @@ export const acaPointsCalc = (resultData: Results): ACAPointsResult => {
         return;
       }
 
+      if (place === 1) {
+        const trophyIndex = trophies.findIndex(
+          (trophy) =>
+            trophy.boatClass === boatClass &&
+            trophy.distance === distance &&
+            trophy.gender === gender &&
+            trophy.level === eventClass,
+        );
+        if (trophyIndex >= 0) {
+          let trophy = trophies[trophyIndex];
+          if (trophy?.winner) {
+            // This level has already been used.  Must be a tie.
+            trophy = { ...trophy, name: '', criteria: '' };
+            trophies.splice(trophyIndex + 1, 0, trophy);
+          }
+          trophy.winner = athletes.join('; ');
+          trophy.winnerClub = clubs.join('; ');
+          trophy.winnerTime = entry.AdjTime;
+          trophy.winnerRaceNum = entry.EventNum;
+        }
+      }
+
       // For a given place and distance, get the number of points available
       const pointsAvail = distance <= 1000 ? nonDistancePoints[place - 1] : distancePoints[place - 1];
 
@@ -212,6 +290,11 @@ export const acaPointsCalc = (resultData: Results): ACAPointsResult => {
         const eventLevelPoints = (eventLevelPointsByClub[eventClass] = eventLevelPointsByClub[eventClass] || {});
         eventLevelPoints[club] = (eventLevelPoints[club] || 0) + pointsPerSeat;
 
+        if (eventClass.startsWith('Masters')) {
+          const overallMastersPoints = (eventLevelPointsByClub['(Masters)'] =
+            eventLevelPointsByClub['(Masters)'] || {});
+          overallMastersPoints[club] = (overallMastersPoints[club] || 0) + pointsPerSeat;
+        }
         // Now do gendered event level (Mens Bantam,Womens Junior, etc)
         const genderClass = `${gender} ${boatClass}`;
         const genderClassPoints = (genderClassPointsByClub[genderClass] = genderClassPointsByClub[genderClass] || {});
@@ -238,5 +321,6 @@ export const acaPointsCalc = (resultData: Results): ACAPointsResult => {
     levelTotals,
     genderLevelTotals,
     paddlersByClub,
+    trophies,
   };
 };
