@@ -199,7 +199,7 @@ export const acaPointsCalc = (resultData: Results): ACAPointsResult => {
 
     // For each entry in this event, accumulate points according to the
     // criteria for placement and length of race.
-    eventResult.entries.forEach((entry) => {
+    eventResult.entries?.forEach((entry) => {
       // Extract the club abbreviations from the Stroke name
       const clubs = entry.Stroke.replace(/,/g, ';')
         .split(';')

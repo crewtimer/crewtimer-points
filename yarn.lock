@@ -2305,10 +2305,10 @@ cosmiconfig@^7.0.0, cosmiconfig@^7.0.1:
     path-type "^4.0.0"
     yaml "^1.10.0"
 
-crewtimer-common@^1.0.8:
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/crewtimer-common/-/crewtimer-common-1.0.8.tgz#aa98a1d72019715a85a47fee81f7cac86b0e5d50"
-  integrity sha512-RhAnXbE6iA/IRYs2IQRypaWKhZYfNg3JqcKZ9c9NKVzr3vEwON0dN4vdrinFyIav7gCTcIVqj00dJrkV+IsuUA==
+crewtimer-common@^1.0.9:
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/crewtimer-common/-/crewtimer-common-1.0.9.tgz#fc7455c874b03c9492c846503d5d102b1156443e"
+  integrity sha512-RnF2Mdvug3x+OZqc4IRvODGjpkU132AJutfZHjCDmdBXhkmdN91h46zHonMBesEotzhcW0fj8Q0I+PL8NehsjQ==
 
 cross-spawn@^7.0.2, cross-spawn@^7.0.3:
   version "7.0.3"
@@ -4795,10 +4795,10 @@ react-transition-group@^4.4.5:
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
 
-react-usedatum@^1.0.5:
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/react-usedatum/-/react-usedatum-1.0.5.tgz#8c81f6d5f0db4f11ee70c182e6114c49e223a54e"
-  integrity sha512-nXJmPt0O4rXr/Kj66Gb2tlFp6j/fiqz66SuHHLbK68Mi4mFwa3i37vIgxiymImiAEl1UT5tydoNLbA1z2V2Glg==
+react-usedatum@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/react-usedatum/-/react-usedatum-1.0.7.tgz#ccc4181e5a763899c103ad63c776d4c1d03eb993"
+  integrity sha512-2tdCqVFcRhvsPejvv2C6QvaJ/CodRNLdkqR9QiQqqL0/icrRrIXDLu+ZxgPUQcKD+s8uHNyquHOVf/L0NPnRfw==
   dependencies:
     fast-deep-equal ">=3.1.3"
 

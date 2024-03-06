@@ -220,13 +220,13 @@ export const calculateEventTeamPoints = (eventResult: Event): Map<string, number
   }
 
   const maxPoints = maxPointsFromName(eventResult.Event);
-  const numberOfEntries = calculateNumberOfEntries(eventResult.entries);
+  const numberOfEntries = calculateNumberOfEntries(eventResult.entries || []);
 
   // track the team's we've seen in this event to exclude anything that is not
   // a primary entry (ex: B entries, second entries)
   const placingTeams = new Set<string>();
 
-  const sortedEntries = eventResult.entries.sort(
+  const sortedEntries = (eventResult.entries || []).sort(
     (lhs, rhs) => (lhs.Place || Number.MAX_VALUE) - (rhs.Place || Number.MAX_VALUE),
   );
 
@@ -304,7 +304,7 @@ export const firaPointsImpl = (resultData: Results): Map<string, FIRAPointsTeamR
   const scoringTeams = new Set<string>(teamPoints.keys());
   const missingTeams = new Set<string>();
   resultData.results.forEach((event) =>
-    event.entries.forEach((entry) => {
+    event.entries?.forEach((entry) => {
       const teamName = trimCrewName(entry.Crew);
       if (!scoringTeams.has(teamName) && teamName != PLACEHOLD_TEAM_NAME && entry.PenaltyCode != EXHIB_PENALTY_CODE) {
         missingTeams.add(teamName);

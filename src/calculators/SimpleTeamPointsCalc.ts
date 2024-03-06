@@ -18,7 +18,7 @@ export const simplePointsCalc = (resultData: Results): SimplePointsResult => {
       return; // not a final (e.g. Heat, TT)
     }
     const seats = numSeatsFromName(eventResult.Event);
-    eventResult.entries.forEach((entry) => {
+    eventResult.entries?.forEach((entry) => {
       if (!entry.Place) {
         return; // DNF, DNS, DQ etc
       }

@@ -119,7 +119,8 @@ yarn install && yarn clean && yarn build
 
 1. Update the version in package.json
 2. First check for any errors by running ```yarn prepublishOnly```
-3. If no errors: ```npm publish```
+3. ```npm login``` as crewtimer
+4. If no errors: ```npm publish```
 
 ## Contributors
 
