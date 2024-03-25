@@ -32,24 +32,30 @@ export interface BarnesPointsProps {
   results: Results;
   useScaledEvents: boolean;
   useScullSweepCategories: boolean;
+  coedTeamsOnlyInCombined?: boolean;
 }
 
-const getTableRows = (results: Results, useScaledEvents: boolean, useScullSweepCategories: boolean) => {
+const getTableRows = (
+  results: Results,
+  useScaledEvents: boolean,
+  useScullSweepCategories: boolean,
+  coedTeamsOnlyInCombined?: boolean,
+) => {
   if (useScullSweepCategories === true) {
-    const points = barnesFullPointsCalc(results, useScaledEvents);
+    const points = barnesFullPointsCalc(results, useScaledEvents, coedTeamsOnlyInCombined);
     return points.combined.map((_, idx) => (
       <StyledTableRow key={idx}>
         <TableCell>{idx + 1}</TableCell>
         <TableCell>{points.combined[idx].team}</TableCell>
-        <TableCell align='right'>{points.combined[idx].points.toFixed(1)}</TableCell>
+        <TableCell align='right'>{points.combined[idx].points}</TableCell>
         <TableCell>{points.womensSweep[idx].team}</TableCell>
-        <TableCell align='right'>{points.womensSweep[idx].points.toFixed(1)}</TableCell>
+        <TableCell align='right'>{points.womensSweep[idx].points}</TableCell>
         <TableCell>{points.mensSweep[idx].team}</TableCell>
-        <TableCell align='right'>{points.mensSweep[idx].points.toFixed(1)}</TableCell>
+        <TableCell align='right'>{points.mensSweep[idx].points}</TableCell>
         <TableCell>{points.womensScull[idx].team}</TableCell>
-        <TableCell align='right'>{points.womensScull[idx].points.toFixed(1)}</TableCell>
+        <TableCell align='right'>{points.womensScull[idx].points}</TableCell>
         <TableCell>{points.mensScull[idx].team}</TableCell>
-        <TableCell align='right'>{points.mensScull[idx].points.toFixed(1)}</TableCell>
+        <TableCell align='right'>{points.mensScull[idx].points}</TableCell>
       </StyledTableRow>
     ));
   }
@@ -59,16 +65,21 @@ const getTableRows = (results: Results, useScaledEvents: boolean, useScullSweepC
     <StyledTableRow key={idx}>
       <TableCell>{idx + 1}</TableCell>
       <TableCell>{points.combined[idx].team}</TableCell>
-      <TableCell align='right'>{points.combined[idx].points.toFixed(1)}</TableCell>
+      <TableCell align='right'>{points.combined[idx].points}</TableCell>
       <TableCell>{points.womens[idx].team}</TableCell>
-      <TableCell align='right'>{points.womens[idx].points.toFixed(1)}</TableCell>
+      <TableCell align='right'>{points.womens[idx].points}</TableCell>
       <TableCell>{points.mens[idx].team}</TableCell>
-      <TableCell align='right'>{points.mens[idx].points.toFixed(1)}</TableCell>
+      <TableCell align='right'>{points.mens[idx].points}</TableCell>
     </StyledTableRow>
   ));
 };
 
-const BarnesPoints: React.FC<BarnesPointsProps> = ({ results, useScaledEvents, useScullSweepCategories }) => {
+const BarnesPoints: React.FC<BarnesPointsProps> = ({
+  results,
+  useScaledEvents,
+  useScullSweepCategories,
+  coedTeamsOnlyInCombined,
+}) => {
   const pointsCategories = useScullSweepCategories ? categories : simpleCategories;
   return (
     <Table size='small'>
@@ -81,8 +92,26 @@ const BarnesPoints: React.FC<BarnesPointsProps> = ({ results, useScaledEvents, u
           ])}
         </TableRow>
       </TableHead>
-      <TableBody>{getTableRows(results, useScaledEvents, useScullSweepCategories)}</TableBody>
+      <TableBody>{getTableRows(results, useScaledEvents, useScullSweepCategories, coedTeamsOnlyInCombined)}</TableBody>
     </Table>
+  );
+};
+
+/**
+ * Render team points calculated by the Barnes Points system for points categories including scull/sweep.
+ * An event's point values are scaled by Novice/Junior/Varsity category.
+ *
+ * @param points - An array of points results in sorted order.
+ *
+ */
+export const BarnesFullWeightedCoedCombined: React.FC<{ results: Results }> = ({ results }) => {
+  return (
+    <BarnesPoints
+      useScullSweepCategories={true}
+      useScaledEvents={true}
+      coedTeamsOnlyInCombined={true}
+      results={results}
+    />
   );
 };
 

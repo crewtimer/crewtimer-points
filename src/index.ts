@@ -1,7 +1,12 @@
 import React from 'react';
 import { Results } from 'crewtimer-common';
 import { SimpleTeamPoints } from './components/SimpleTeamPoints';
-import { BarnesPointsTraditional, BarnesFullWeighted, BarnesSimpleWeighted } from './components/BarnesPoints';
+import {
+  BarnesPointsTraditional,
+  BarnesFullWeighted,
+  BarnesSimpleWeighted,
+  BarnesFullWeightedCoedCombined,
+} from './components/BarnesPoints';
 import { ACANationalsPoints, ACAPoints } from './components/ACATeamPoints';
 import { FIRAPointsTraditional } from './components/FIRAPoints';
 
@@ -27,17 +32,22 @@ export const PointsViewers: PointsViewerInfo[] = [
     ui: ACANationalsPoints,
   },
   {
-    name: 'Barnes - Mitten Series',
+    name: 'Mitten Series (Barnes System)',
     key: 'BarnesFullWeighted',
     ui: BarnesFullWeighted,
   },
   {
-    name: 'Barnes - Michigan States',
+    name: 'Midwest Scholastic Championship (Barnes System)',
+    key: 'BarnesFullWeightedCoedCombined',
+    ui: BarnesFullWeightedCoedCombined,
+  },
+  {
+    name: 'Michigan States Scholastic Championship (Barnes System)',
     key: 'BarnesSimpleWeighted',
     ui: BarnesSimpleWeighted,
   },
   {
-    name: 'Barnes Points Traditional',
+    name: 'Barnes System',
     key: 'BarnesTraditional',
     ui: BarnesPointsTraditional,
   },
