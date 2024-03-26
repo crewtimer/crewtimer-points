@@ -4,15 +4,9 @@ import { TableBody, TableCell, TableHead, TableRow, styled } from '@mui/material
 import { Results } from 'crewtimer-common';
 import { barnesFullPointsCalc, barnesPointsCalc } from '../calculators/BarnesPointsCalc';
 
-const categories = [
-  'Combined Points',
-  "Women's Sweep Points",
-  "Men's Sweep Points",
-  "Women's Scull Points",
-  "Men's Scull Points",
-];
+const categories = ['Combined', "Women's Sweep", "Men's Sweep", "Women's Scull", "Men's Scull"];
 
-const simpleCategories = ['Combined Points', "Women's Points", "Men's Points"];
+const simpleCategories = ['Combined', 'Combined Sweep', 'Combined Scull', 'Women', 'Men'];
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:nth-of-type(odd)': {
@@ -73,6 +67,14 @@ const getTableRows = (
       <TableCell>{points.combined[idx].team}</TableCell>
       <TableCell align='right'>{points.combined[idx].points}</TableCell>
       <TableCell sx={{ borderLeft: '1px solid #808080' }}></TableCell>
+      <TableCell align='right'>{points.combinedSweep[idx].place}</TableCell>
+      <TableCell>{points.combinedSweep[idx].team}</TableCell>
+      <TableCell align='right'>{points.combinedSweep[idx].points}</TableCell>
+      <TableCell sx={{ borderLeft: '1px solid #808080' }}></TableCell>
+      <TableCell align='right'>{points.combinedScull[idx].place}</TableCell>
+      <TableCell>{points.combinedScull[idx].team}</TableCell>
+      <TableCell align='right'>{points.combinedScull[idx].points}</TableCell>
+      <TableCell sx={{ borderLeft: '1px solid #808080' }}></TableCell>
       <TableCell align='right'>{points.womens[idx].place}</TableCell>
       <TableCell>{points.womens[idx].team}</TableCell>
       <TableCell align='right'>{points.womens[idx].points}</TableCell>
@@ -95,9 +97,16 @@ const BarnesPoints: React.FC<BarnesPointsProps> = ({
     <Table size='small'>
       <TableHead>
         <TableRow>
+          <HeaderTableCell align='center' colSpan={pointsCategories.length * 4}>{`Points Trophies`}</HeaderTableCell>
+        </TableRow>
+        <TableRow>
           {pointsCategories.map((category) => [
-            <HeaderTableCell colSpan={2} align='right' key='place'>Place</HeaderTableCell>,
-            <HeaderTableCell colSpan={2} key={category}>{category}</HeaderTableCell>,
+            <HeaderTableCell colSpan={2} align='right' key='place'>
+              Place
+            </HeaderTableCell>,
+            <HeaderTableCell colSpan={2} key={category}>
+              {category}
+            </HeaderTableCell>,
           ])}
         </TableRow>
       </TableHead>

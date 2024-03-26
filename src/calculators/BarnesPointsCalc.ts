@@ -20,7 +20,7 @@ export type BarnesPointsTeamResultsRanked = {
 export type PointsPlace = {
   points: number;
   place: number;
-}
+};
 
 export type TeamPoints = {
   team: string;
@@ -38,6 +38,8 @@ export type BarnesFullCategoryResults = {
 
 export type BarnesSimpleCategoryResults = {
   combined: TeamPoints[];
+  combinedSweep: TeamPoints[];
+  combinedScull: TeamPoints[];
   mens: TeamPoints[];
   womens: TeamPoints[];
 };
@@ -177,15 +179,16 @@ const trimCrewName = (crewName: string) => {
 
 /**
  * Assign places to an array of TeamPoints
- * 
+ *
  * @param TeamPoints[]
  */
 const assignPlaces = (teamPoints: TeamPoints[]) => {
-  const places = genPlaces(teamPoints.map(teamEntry => teamEntry.points),
-    'desc'
-  )
-  places.forEach((place, i) => teamPoints[i].place = place)
-}
+  const places = genPlaces(
+    teamPoints.map((teamEntry) => teamEntry.points),
+    'desc',
+  );
+  places.forEach((place, i) => (teamPoints[i].place = place));
+};
 
 /**
  * Sort teams in each category by number of points, including sweep/sculling split out
@@ -236,6 +239,14 @@ const finalizeResults = (results: Map<string, BarnesPointsTeamResults>) => {
     combined: Array.from(results.entries())
       .sort((a, b) => b[1].combined - a[1].combined)
       .map((value) => ({ team: value[0], points: value[1].combined, place: 0 })),
+
+    combinedSweep: Array.from(results.entries())
+      .sort((a, b) => b[1].womensSweep + b[1].mensSweep - (a[1].womensSweep + a[1].mensSweep))
+      .map((value) => ({ team: value[0], points: value[1].womensSweep + value[1].mensSweep, place: 0 })),
+
+    combinedScull: Array.from(results.entries())
+      .sort((a, b) => b[1].womensScull + b[1].mensSweep - (a[1].womensScull + a[1].mensScull))
+      .map((value) => ({ team: value[0], points: value[1].womensScull + value[1].mensScull, place: 0 })),
 
     mens: Array.from(results.entries())
       .sort((a, b) => b[1].mensScull + b[1].mensSweep - (a[1].mensScull + a[1].mensSweep))
