@@ -197,7 +197,7 @@ const finalizeFullResults = (results: Map<string, BarnesPointsTeamResults>): Bar
   const sortedPoints = {
     combined: Array.from(results.entries())
       .sort((a, b) => b[1].combined - a[1].combined)
-      .map((value, i) => ({ team: value[0], points: value[1].combined, place: 0 })),
+      .map((value) => ({ team: value[0], points: value[1].combined, place: 0 })),
 
     mensScull: Array.from(results.entries())
       .sort((a, b) => b[1].mensScull - a[1].mensScull)

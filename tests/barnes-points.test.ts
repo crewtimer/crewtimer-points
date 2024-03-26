@@ -181,7 +181,6 @@ it('barnes points with coed and single gender teams', async () => {
 
   // check that single gender team does not get points in the combined trophy
   let womensTeam = points.combined.find((entry) => entry.team === 'Exclusively Womens Events Team');
-  console.log(points.combined);
   expect(womensTeam).toBeDefined();
   expect(womensTeam?.points).toEqual(0);
   womensTeam = points.womensSweep.find((entry) => entry.team === 'Exclusively Womens Events Team');
