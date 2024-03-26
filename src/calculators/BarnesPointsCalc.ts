@@ -1,4 +1,4 @@
-import { Entry, Event, Results } from 'crewtimer-common';
+import { Entry, Event, Results, genPlaces } from 'crewtimer-common';
 import { isAFinal } from '../common/CrewTimerUtils';
 
 export type BarnesPointsTeamResults = {
@@ -9,9 +9,23 @@ export type BarnesPointsTeamResults = {
   womensSweep: number;
 };
 
+export type BarnesPointsTeamResultsRanked = {
+  combined: PointsPlace;
+  mensScull: PointsPlace;
+  womensScull: PointsPlace;
+  mensSweep: PointsPlace;
+  womensSweep: PointsPlace;
+};
+
+export type PointsPlace = {
+  points: number;
+  place: number;
+}
+
 export type TeamPoints = {
   team: string;
   points: number;
+  place: number;
 };
 
 export type BarnesFullCategoryResults = {
@@ -162,33 +176,53 @@ const trimCrewName = (crewName: string) => {
 };
 
 /**
+ * Assign places to an array of TeamPoints
+ * 
+ * @param TeamPoints[]
+ */
+const assignPlaces = (teamPoints: TeamPoints[]) => {
+  const places = genPlaces(teamPoints.map(teamEntry => teamEntry.points),
+    'desc'
+  )
+  places.forEach((place, i) => teamPoints[i].place = place)
+}
+
+/**
  * Sort teams in each category by number of points, including sweep/sculling split out
  *
  * @param results
  * @returns
  */
 const finalizeFullResults = (results: Map<string, BarnesPointsTeamResults>): BarnesFullCategoryResults => {
-  return {
+  const sortedPoints = {
     combined: Array.from(results.entries())
       .sort((a, b) => b[1].combined - a[1].combined)
-      .map((value) => ({ team: value[0], points: value[1].combined })),
+      .map((value, i) => ({ team: value[0], points: value[1].combined, place: 0 })),
 
     mensScull: Array.from(results.entries())
       .sort((a, b) => b[1].mensScull - a[1].mensScull)
-      .map((value) => ({ team: value[0], points: value[1].mensScull })),
+      .map((value) => ({ team: value[0], points: value[1].mensScull, place: 0 })),
 
     womensScull: Array.from(results.entries())
       .sort((a, b) => b[1].womensScull - a[1].womensScull)
-      .map((value) => ({ team: value[0], points: value[1].womensScull })),
+      .map((value) => ({ team: value[0], points: value[1].womensScull, place: 0 })),
 
     mensSweep: Array.from(results.entries())
       .sort((a, b) => b[1].mensSweep - a[1].mensSweep)
-      .map((value) => ({ team: value[0], points: value[1].mensSweep })),
+      .map((value) => ({ team: value[0], points: value[1].mensSweep, place: 0 })),
 
     womensSweep: Array.from(results.entries())
       .sort((a, b) => b[1].womensSweep - a[1].womensSweep)
-      .map((value) => ({ team: value[0], points: value[1].womensSweep })),
+      .map((value) => ({ team: value[0], points: value[1].womensSweep, place: 0 })),
   };
+
+  assignPlaces(sortedPoints.combined);
+  assignPlaces(sortedPoints.mensScull);
+  assignPlaces(sortedPoints.womensScull);
+  assignPlaces(sortedPoints.mensSweep);
+  assignPlaces(sortedPoints.womensSweep);
+
+  return sortedPoints;
 };
 
 /**
@@ -198,19 +232,25 @@ const finalizeFullResults = (results: Map<string, BarnesPointsTeamResults>): Bar
  * @returns
  */
 const finalizeResults = (results: Map<string, BarnesPointsTeamResults>) => {
-  return {
+  const sortedPoints = {
     combined: Array.from(results.entries())
       .sort((a, b) => b[1].combined - a[1].combined)
-      .map((value) => ({ team: value[0], points: value[1].combined })),
+      .map((value) => ({ team: value[0], points: value[1].combined, place: 0 })),
 
     mens: Array.from(results.entries())
       .sort((a, b) => b[1].mensScull + b[1].mensSweep - (a[1].mensScull + a[1].mensSweep))
-      .map((value) => ({ team: value[0], points: value[1].mensScull + value[1].mensSweep })),
+      .map((value) => ({ team: value[0], points: value[1].mensScull + value[1].mensSweep, place: 0 })),
 
     womens: Array.from(results.entries())
       .sort((a, b) => b[1].womensScull + b[1].womensSweep - (a[1].womensScull + a[1].womensSweep))
-      .map((value) => ({ team: value[0], points: value[1].womensScull + value[1].womensSweep })),
+      .map((value) => ({ team: value[0], points: value[1].womensScull + value[1].womensSweep, place: 0 })),
   };
+
+  assignPlaces(sortedPoints.combined);
+  assignPlaces(sortedPoints.mens);
+  assignPlaces(sortedPoints.womens);
+
+  return sortedPoints;
 };
 
 /**

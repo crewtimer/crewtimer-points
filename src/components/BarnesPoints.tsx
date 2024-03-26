@@ -18,10 +18,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:nth-of-type(odd)': {
     backgroundColor: theme.palette.action.hover,
   },
-  // hide last border
-  '&:last-child td, &:last-child th': {
-    border: 0,
-  },
 }));
 
 const HeaderTableCell = styled(TableCell)(() => ({
@@ -45,15 +41,24 @@ const getTableRows = (
     const points = barnesFullPointsCalc(results, useScaledEvents, coedTeamsOnlyInCombined);
     return points.combined.map((_, idx) => (
       <StyledTableRow key={idx}>
-        <TableCell>{idx + 1}</TableCell>
+        <TableCell sx={{ borderLeft: '1px solid #808080' }}></TableCell>
+        <TableCell align='right'>{points.combined[idx].place}</TableCell>
         <TableCell>{points.combined[idx].team}</TableCell>
         <TableCell align='right'>{points.combined[idx].points}</TableCell>
+        <TableCell sx={{ borderLeft: '1px solid #808080' }}></TableCell>
+        <TableCell align='right'>{points.womensSweep[idx].place}</TableCell>
         <TableCell>{points.womensSweep[idx].team}</TableCell>
         <TableCell align='right'>{points.womensSweep[idx].points}</TableCell>
+        <TableCell sx={{ borderLeft: '1px solid #808080' }}></TableCell>
+        <TableCell align='right'>{points.mensSweep[idx].place}</TableCell>
         <TableCell>{points.mensSweep[idx].team}</TableCell>
         <TableCell align='right'>{points.mensSweep[idx].points}</TableCell>
+        <TableCell sx={{ borderLeft: '1px solid #808080' }}></TableCell>
+        <TableCell align='right'>{points.womensScull[idx].place}</TableCell>
         <TableCell>{points.womensScull[idx].team}</TableCell>
         <TableCell align='right'>{points.womensScull[idx].points}</TableCell>
+        <TableCell sx={{ borderLeft: '1px solid #808080' }}></TableCell>
+        <TableCell align='right'>{points.mensScull[idx].place}</TableCell>
         <TableCell>{points.mensScull[idx].team}</TableCell>
         <TableCell align='right'>{points.mensScull[idx].points}</TableCell>
       </StyledTableRow>
@@ -63,11 +68,16 @@ const getTableRows = (
   const points = barnesPointsCalc(results, useScaledEvents);
   return points.combined.map((_, idx) => (
     <StyledTableRow key={idx}>
-      <TableCell>{idx + 1}</TableCell>
+      <TableCell sx={{ borderLeft: '1px solid #808080' }}></TableCell>
+      <TableCell align='right'>{points.combined[idx].place}</TableCell>
       <TableCell>{points.combined[idx].team}</TableCell>
       <TableCell align='right'>{points.combined[idx].points}</TableCell>
+      <TableCell sx={{ borderLeft: '1px solid #808080' }}></TableCell>
+      <TableCell align='right'>{points.womens[idx].place}</TableCell>
       <TableCell>{points.womens[idx].team}</TableCell>
       <TableCell align='right'>{points.womens[idx].points}</TableCell>
+      <TableCell sx={{ borderLeft: '1px solid #808080' }}></TableCell>
+      <TableCell align='right'>{points.mens[idx].place}</TableCell>
       <TableCell>{points.mens[idx].team}</TableCell>
       <TableCell align='right'>{points.mens[idx].points}</TableCell>
     </StyledTableRow>
@@ -85,10 +95,9 @@ const BarnesPoints: React.FC<BarnesPointsProps> = ({
     <Table size='small'>
       <TableHead>
         <TableRow>
-          <HeaderTableCell key='place'>Place</HeaderTableCell>
           {pointsCategories.map((category) => [
-            <HeaderTableCell key={category}>{category}</HeaderTableCell>,
-            <HeaderTableCell key={category + '_padding'}></HeaderTableCell>,
+            <HeaderTableCell colSpan={2} align='right' key='place'>Place</HeaderTableCell>,
+            <HeaderTableCell colSpan={2} key={category}>{category}</HeaderTableCell>,
           ])}
         </TableRow>
       </TableHead>
