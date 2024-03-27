@@ -1,5 +1,6 @@
 import regattaResults from './data/crewtimer-results-dev-r12033-export-jr-nov-events.json';
 import simpleResults from './data/crewtimer-results-dev-final-counts.json';
+import barnesCoedAndSingleGender from './data/crewtimer-results-dev-r12033-export-coed-single-gender-teams.json';
 import {
   barnesFullPointsCalc,
   barnesPointsCalc,
@@ -160,6 +161,60 @@ it('barnes points traditional', async () => {
 
   // validate combined points value and order
   expect(points.combined.map((entry) => entry.points)).toEqual([78.75, 58.5, 56, 48.5, 41, 14, 7, 0]);
+});
+
+it('barnes points with coed and single gender teams', async () => {
+  const points = barnesFullPointsCalc(barnesCoedAndSingleGender as unknown as Results, true, true);
+  // check that non-scoring non-exhib-only teams are included in the display list
+  expect(points.combined.length).toEqual(8);
+  expect(points.womensScull.length).toEqual(8);
+  expect(points.mensScull.length).toEqual(8);
+  expect(points.womensSweep.length).toEqual(8);
+  expect(points.mensSweep.length).toEqual(8);
+
+  const sp = points.combined.find((entry) => entry.team == 'Slow Poke');
+  expect(sp).toBeDefined();
+  expect(sp?.points).toEqual(0);
+
+  const ifc = points.combined.find((entry) => entry.team == 'Illegally Fast Composite');
+  expect(ifc).toBeUndefined();
+
+  // check that single gender team does not get points in the combined trophy
+  let womensTeam = points.combined.find((entry) => entry.team === 'Exclusively Womens Events Team');
+  expect(womensTeam).toBeDefined();
+  expect(womensTeam?.points).toEqual(0);
+  womensTeam = points.womensSweep.find((entry) => entry.team === 'Exclusively Womens Events Team');
+  expect(womensTeam).toBeDefined();
+  expect(womensTeam?.points).toEqual(4.8);
+  womensTeam = points.womensScull.find((entry) => entry.team === 'Exclusively Womens Events Team');
+  expect(womensTeam).toBeDefined();
+  expect(womensTeam?.points).toEqual(1);
+  womensTeam = points.mensSweep.find((entry) => entry.team === 'Exclusively Womens Events Team');
+  expect(womensTeam).toBeDefined();
+  expect(womensTeam?.points).toEqual(0);
+  womensTeam = points.mensScull.find((entry) => entry.team === 'Exclusively Womens Events Team');
+  expect(womensTeam).toBeDefined();
+  expect(womensTeam?.points).toEqual(0);
+
+  // check that coed team that only scores in a single gender, does get points in combined
+  let coedTeam = points.combined.find((entry) => entry.team === 'Co-ed no womens points');
+  expect(coedTeam).toBeDefined();
+  expect(coedTeam?.points).toEqual(37.8);
+  coedTeam = points.womensSweep.find((entry) => entry.team === 'Co-ed no womens points');
+  expect(coedTeam).toBeDefined();
+  expect(coedTeam?.points).toEqual(0);
+  coedTeam = points.womensScull.find((entry) => entry.team === 'Co-ed no womens points');
+  expect(coedTeam).toBeDefined();
+  expect(coedTeam?.points).toEqual(0);
+  coedTeam = points.mensSweep.find((entry) => entry.team === 'Co-ed no womens points');
+  expect(coedTeam).toBeDefined();
+  expect(coedTeam?.points).toEqual(28.8);
+  coedTeam = points.mensScull.find((entry) => entry.team === 'Co-ed no womens points');
+  expect(coedTeam).toBeDefined();
+  expect(coedTeam?.points).toEqual(9);
+
+  // validate combined points value and order
+  expect(points.combined.map((entry) => entry.points)).toEqual([65.95, 53.9, 42.1, 37.8, 0, 0, 0, 0]);
 });
 
 it('barnes points by number of entries', async () => {

@@ -17,8 +17,9 @@ The visualizers utilize the [React framework](https://react.dev/) along with the
 
 * [ACA Regional and National Regattas](docs/ACA-SprintRacingRules-v2023.pdf)
 * [Traditional Barnes System](https://en.wikipedia.org/wiki/Julius_H._Barnes_Points_Trophy) Events of the same boat class across all rower experience level are weighted the same. For example, a varsity 8+ and a novice 8+ will both be worth 30 points.
-* **Barnes System - Michigan States** Varsity events are worth the full 100% of points for the event, Junior/2V events are 80%, Novice/Freshman/3V are worth 60%. This is the system used by Midwest Scholastic Rowing Association and Scholastic Rowing Association of Michigan.
-* **Barnes System - Mitten Series** Render team points calculated by the Barnes Points system for basic points categories.  An event's point values are scaled by Novice/Junior/Varsity category.
+* **Michigan States (Barnes System)** Varsity events are worth the full 100% of points for the event, Junior/2V events are 80%, Novice/Freshman/3V are worth 60%. This is the system used by Scholastic Rowing Association of Michigan.
+* **Midwest Scholastic (Barnes System)** Varsity events are worth the full 100% of points for the event, Junior/2V events are 80%, Novice/Freshman/3V are worth 60%. Only co-ed team who have entries in all gender events are elligible for combined points trophies. This is the system used by Midwest Scholastic Rowing Association.
+* **Mitten Series (Barnes System)** Render team points calculated by the Barnes Points system for basic points categories.  An event's point values are scaled by Novice/Junior/Varsity category.
 * [FIRA Points](docs/FIRAPointsRules.pdf) The FIRA points system is similar to the Barnes Weighted system in that there are max points on offer for specified events with a weighting system applied based on the number of finishers in the given event
 
 ## Adding a new points engine

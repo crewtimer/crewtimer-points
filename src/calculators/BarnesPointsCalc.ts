@@ -1,4 +1,4 @@
-import { Entry, Event, Results } from 'crewtimer-common';
+import { Entry, Event, Results, genPlaces } from 'crewtimer-common';
 import { isAFinal } from '../common/CrewTimerUtils';
 
 export type BarnesPointsTeamResults = {
@@ -9,9 +9,23 @@ export type BarnesPointsTeamResults = {
   womensSweep: number;
 };
 
+export type BarnesPointsTeamResultsRanked = {
+  combined: PointsPlace;
+  mensScull: PointsPlace;
+  womensScull: PointsPlace;
+  mensSweep: PointsPlace;
+  womensSweep: PointsPlace;
+};
+
+export type PointsPlace = {
+  points: number;
+  place: number;
+};
+
 export type TeamPoints = {
   team: string;
   points: number;
+  place: number;
 };
 
 export type BarnesFullCategoryResults = {
@@ -24,12 +38,15 @@ export type BarnesFullCategoryResults = {
 
 export type BarnesSimpleCategoryResults = {
   combined: TeamPoints[];
+  combinedSweep: TeamPoints[];
+  combinedScull: TeamPoints[];
   mens: TeamPoints[];
   womens: TeamPoints[];
 };
 
 const PLACEHOLD_TEAM_NAME = 'Empty';
 const EXHIB_PENALTY_CODE = 'Exhib';
+const WOMENS_EVENT_REGEX_MATCHERS = [/WOMEN/, /GIRL/];
 
 /**
  * The max possible number of points for this event given the boat class and event type
@@ -161,33 +178,54 @@ const trimCrewName = (crewName: string) => {
 };
 
 /**
+ * Assign places to an array of TeamPoints
+ *
+ * @param TeamPoints[]
+ */
+const assignPlaces = (teamPoints: TeamPoints[]) => {
+  const places = genPlaces(
+    teamPoints.map((teamEntry) => teamEntry.points),
+    'desc',
+  );
+  places.forEach((place, i) => (teamPoints[i].place = place));
+};
+
+/**
  * Sort teams in each category by number of points, including sweep/sculling split out
  *
  * @param results
  * @returns
  */
 const finalizeFullResults = (results: Map<string, BarnesPointsTeamResults>): BarnesFullCategoryResults => {
-  return {
+  const sortedPoints = {
     combined: Array.from(results.entries())
       .sort((a, b) => b[1].combined - a[1].combined)
-      .map((value) => ({ team: value[0], points: value[1].combined })),
+      .map((value) => ({ team: value[0], points: value[1].combined, place: 0 })),
 
     mensScull: Array.from(results.entries())
       .sort((a, b) => b[1].mensScull - a[1].mensScull)
-      .map((value) => ({ team: value[0], points: value[1].mensScull })),
+      .map((value) => ({ team: value[0], points: value[1].mensScull, place: 0 })),
 
     womensScull: Array.from(results.entries())
       .sort((a, b) => b[1].womensScull - a[1].womensScull)
-      .map((value) => ({ team: value[0], points: value[1].womensScull })),
+      .map((value) => ({ team: value[0], points: value[1].womensScull, place: 0 })),
 
     mensSweep: Array.from(results.entries())
       .sort((a, b) => b[1].mensSweep - a[1].mensSweep)
-      .map((value) => ({ team: value[0], points: value[1].mensSweep })),
+      .map((value) => ({ team: value[0], points: value[1].mensSweep, place: 0 })),
 
     womensSweep: Array.from(results.entries())
       .sort((a, b) => b[1].womensSweep - a[1].womensSweep)
-      .map((value) => ({ team: value[0], points: value[1].womensSweep })),
+      .map((value) => ({ team: value[0], points: value[1].womensSweep, place: 0 })),
   };
+
+  assignPlaces(sortedPoints.combined);
+  assignPlaces(sortedPoints.mensScull);
+  assignPlaces(sortedPoints.womensScull);
+  assignPlaces(sortedPoints.mensSweep);
+  assignPlaces(sortedPoints.womensSweep);
+
+  return sortedPoints;
 };
 
 /**
@@ -197,19 +235,33 @@ const finalizeFullResults = (results: Map<string, BarnesPointsTeamResults>): Bar
  * @returns
  */
 const finalizeResults = (results: Map<string, BarnesPointsTeamResults>) => {
-  return {
+  const sortedPoints = {
     combined: Array.from(results.entries())
       .sort((a, b) => b[1].combined - a[1].combined)
-      .map((value) => ({ team: value[0], points: value[1].combined })),
+      .map((value) => ({ team: value[0], points: value[1].combined, place: 0 })),
+
+    combinedSweep: Array.from(results.entries())
+      .sort((a, b) => b[1].womensSweep + b[1].mensSweep - (a[1].womensSweep + a[1].mensSweep))
+      .map((value) => ({ team: value[0], points: value[1].womensSweep + value[1].mensSweep, place: 0 })),
+
+    combinedScull: Array.from(results.entries())
+      .sort((a, b) => b[1].womensScull + b[1].mensSweep - (a[1].womensScull + a[1].mensScull))
+      .map((value) => ({ team: value[0], points: value[1].womensScull + value[1].mensScull, place: 0 })),
 
     mens: Array.from(results.entries())
       .sort((a, b) => b[1].mensScull + b[1].mensSweep - (a[1].mensScull + a[1].mensSweep))
-      .map((value) => ({ team: value[0], points: value[1].mensScull + value[1].mensSweep })),
+      .map((value) => ({ team: value[0], points: value[1].mensScull + value[1].mensSweep, place: 0 })),
 
     womens: Array.from(results.entries())
       .sort((a, b) => b[1].womensScull + b[1].womensSweep - (a[1].womensScull + a[1].womensSweep))
-      .map((value) => ({ team: value[0], points: value[1].womensScull + value[1].womensSweep })),
+      .map((value) => ({ team: value[0], points: value[1].womensScull + value[1].womensSweep, place: 0 })),
   };
+
+  assignPlaces(sortedPoints.combined);
+  assignPlaces(sortedPoints.mens);
+  assignPlaces(sortedPoints.womens);
+
+  return sortedPoints;
 };
 
 /**
@@ -262,17 +314,58 @@ export const calculateEventTeamPoints = (eventResult: Event, useScaledEvents: bo
 };
 
 /**
+ * Identify all teams which are entered in either only Men's or only Women's events and
+ * which could be elligible for exclusion from the Combined points table
+ */
+
+const getCoedTeams = (eventResults: Event[]): Set<string> => {
+  const womensTeams = new Set<string>();
+  const mensTeams = new Set<string>();
+
+  eventResults.forEach((eventResult) => {
+    if (womensEvent(eventResult.Event)) {
+      eventResult.entries.forEach((entry) => {
+        womensTeams.add(trimCrewName(entry.Crew));
+      });
+    } else {
+      eventResult.entries.forEach((entry) => {
+        mensTeams.add(trimCrewName(entry.Crew));
+      });
+    }
+  });
+
+  const coedTeams = new Set<string>();
+  womensTeams.forEach((team) => {
+    if (mensTeams.has(team)) {
+      coedTeams.add(team);
+    }
+  });
+
+  return coedTeams;
+};
+
+/**
+ * Return true if the event name indicated that this is a women's event
+ */
+export const womensEvent = (eventName: string): boolean => {
+  return WOMENS_EVENT_REGEX_MATCHERS.some((candidate) => eventName.toUpperCase().search(candidate) != -1);
+};
+
+/**
  * Calculate points based on the Barnes Scoring System, as described by MSRA:
  * https://sites.google.com/site/msrahome/regatta-rules/home
  */
 export const barnesPointsImpl = (
   resultData: Results,
   useScaledEvents: boolean,
+  coedTeamsOnlyInCombined?: boolean,
 ): Map<string, BarnesPointsTeamResults> => {
   const teamPoints = new Map<string, BarnesPointsTeamResults>();
+
+  const coedTeams = getCoedTeams(resultData.results);
+
   resultData.results.forEach((eventResult) => {
-    const candidateMatches = [/WOMEN/, /GIRL/];
-    const isWomensEvent = candidateMatches.some((candidate) => eventResult.Event.toUpperCase().search(candidate) != -1);
+    const isWomensEvent = womensEvent(eventResult.Event);
     const isScullingEvent = eventResult.Event.match(/[1234]x/) != null;
 
     const eventTeamPoints = calculateEventTeamPoints(eventResult, useScaledEvents);
@@ -283,7 +376,9 @@ export const barnesPointsImpl = (
 
       if (!teamEntry) {
         teamPoints.set(teamName, {
-          combined: points,
+          // if we only allow coed teams to get points towards the combined trophy, and this is not a coed team,
+          // give them 0 points towards the combined trophy
+          combined: coedTeamsOnlyInCombined && !coedTeams.has(teamName) ? 0 : points,
           womensScull: isWomensEvent && isScullingEvent ? points : 0,
           mensScull: !isWomensEvent && isScullingEvent ? points : 0,
           womensSweep: isWomensEvent && !isScullingEvent ? points : 0,
@@ -291,7 +386,7 @@ export const barnesPointsImpl = (
         });
       } else {
         teamPoints.set(teamName, {
-          combined: teamEntry.combined + points,
+          combined: coedTeamsOnlyInCombined && !coedTeams.has(teamName) ? 0 : teamEntry.combined + points,
           womensScull: teamEntry.womensScull + (isWomensEvent && isScullingEvent ? points : 0),
           mensScull: teamEntry.mensScull + (!isWomensEvent && isScullingEvent ? points : 0),
           womensSweep: teamEntry.womensSweep + (isWomensEvent && !isScullingEvent ? points : 0),
@@ -332,8 +427,12 @@ export const barnesPointsImpl = (
  * Calculate points based on the Barnes Scoring System, as described by MSRA:
  * https://sites.google.com/site/msrahome/regatta-rules/home
  */
-export const barnesFullPointsCalc = (resultData: Results, useScaledEvents: boolean): BarnesFullCategoryResults => {
-  const teamPoints = barnesPointsImpl(resultData, useScaledEvents);
+export const barnesFullPointsCalc = (
+  resultData: Results,
+  useScaledEvents: boolean,
+  coedTeamsOnlyInCombined?: boolean,
+): BarnesFullCategoryResults => {
+  const teamPoints = barnesPointsImpl(resultData, useScaledEvents, coedTeamsOnlyInCombined);
 
   return finalizeFullResults(teamPoints);
 };

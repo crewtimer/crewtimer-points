@@ -1,6 +1,7 @@
 import React from 'react';
 import simpleResults from '../../tests/data/crewtimer-results-dev-r12033-export.json';
 import barnesJrNovice from '../../tests/data/crewtimer-results-dev-r12033-export-jr-nov-events.json';
+import barnesCoedAndSingleGender from '../../tests/data/crewtimer-results-dev-r12033-export-coed-single-gender-teams.json';
 import barnesTraditional from '../../tests/data/crewtimer-results-dev-r12033-export-with-B-entries.json';
 import acaResults from '../../tests/data/crewtimer-results-aca-ted-houck-results.json';
 import firaResults from '../../tests/data/crewtimer-results-r12581-fira-export.json';
@@ -22,6 +23,7 @@ const [useTestPage] = UseDatum('ACA');
 
 const ResultsForViewer: { [key: string]: Results } = {
   Basic: simpleResults as unknown as Results,
+  BarnesFullWeightedCoedCombined: barnesCoedAndSingleGender as unknown as Results,
   BarnesFullWeighted: barnesJrNovice as unknown as Results,
   BarnesSimpleWeighted: barnesJrNovice as unknown as Results,
   BarnesTraditional: barnesTraditional as unknown as Results,
