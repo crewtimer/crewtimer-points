@@ -2305,10 +2305,10 @@ cosmiconfig@^7.0.0, cosmiconfig@^7.0.1:
     path-type "^4.0.0"
     yaml "^1.10.0"
 
-crewtimer-common@^1.0.9:
-  version "1.0.9"
-  resolved "https://registry.yarnpkg.com/crewtimer-common/-/crewtimer-common-1.0.9.tgz#fc7455c874b03c9492c846503d5d102b1156443e"
-  integrity sha512-RnF2Mdvug3x+OZqc4IRvODGjpkU132AJutfZHjCDmdBXhkmdN91h46zHonMBesEotzhcW0fj8Q0I+PL8NehsjQ==
+crewtimer-common@^1.0.10:
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/crewtimer-common/-/crewtimer-common-1.0.10.tgz#0f940b5ae08832f23ca44dadcdff4abbcf9200e4"
+  integrity sha512-0ROW59dAdEiZPxNQ6vUzb5KrQHAQxc/K5nQW7LLozN47C3Yf1hJKDR846WXHQM2OjLiDfSxxVLm39SE4Mq7LPw==
 
 cross-spawn@^7.0.2, cross-spawn@^7.0.3:
   version "7.0.3"
