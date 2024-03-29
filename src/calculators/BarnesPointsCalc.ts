@@ -9,14 +9,6 @@ export type BarnesPointsTeamResults = {
   womensSweep: number;
 };
 
-export type BarnesPointsTeamResultsRanked = {
-  combined: PointsPlace;
-  mensScull: PointsPlace;
-  womensScull: PointsPlace;
-  mensSweep: PointsPlace;
-  womensSweep: PointsPlace;
-};
-
 export type PointsPlace = {
   points: number;
   place: number;
@@ -258,6 +250,8 @@ const finalizeResults = (results: Map<string, BarnesPointsTeamResults>) => {
   };
 
   assignPlaces(sortedPoints.combined);
+  assignPlaces(sortedPoints.combinedScull);
+  assignPlaces(sortedPoints.combinedSweep);
   assignPlaces(sortedPoints.mens);
   assignPlaces(sortedPoints.womens);
 

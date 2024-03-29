@@ -35,26 +35,31 @@ const getTableRows = (
     const points = barnesFullPointsCalc(results, useScaledEvents, coedTeamsOnlyInCombined);
     return points.combined.map((_, idx) => (
       <StyledTableRow key={idx}>
-        <TableCell sx={{ borderLeft: '1px solid #808080' }}></TableCell>
-        <TableCell align='right'>{points.combined[idx].place}</TableCell>
+        <TableCell sx={{ borderLeft: '1px solid #808080' }} align='right'>
+          {points.combined[idx].place}
+        </TableCell>
         <TableCell>{points.combined[idx].team}</TableCell>
-        <TableCell align='right'>{points.combined[idx].points}</TableCell>
-        <TableCell sx={{ borderLeft: '1px solid #808080' }}></TableCell>
-        <TableCell align='right'>{points.womensSweep[idx].place}</TableCell>
+        <TableCell align='right'>{points.combined[idx].points.toFixed(1)}</TableCell>
+        <TableCell sx={{ borderLeft: '1px solid #808080' }} align='right'>
+          {points.womensSweep[idx].place}
+        </TableCell>
         <TableCell>{points.womensSweep[idx].team}</TableCell>
-        <TableCell align='right'>{points.womensSweep[idx].points}</TableCell>
-        <TableCell sx={{ borderLeft: '1px solid #808080' }}></TableCell>
-        <TableCell align='right'>{points.mensSweep[idx].place}</TableCell>
+        <TableCell align='right'>{points.womensSweep[idx].points.toFixed(1)}</TableCell>
+        <TableCell sx={{ borderLeft: '1px solid #808080' }} align='right'>
+          {points.mensSweep[idx].place}
+        </TableCell>
         <TableCell>{points.mensSweep[idx].team}</TableCell>
-        <TableCell align='right'>{points.mensSweep[idx].points}</TableCell>
-        <TableCell sx={{ borderLeft: '1px solid #808080' }}></TableCell>
-        <TableCell align='right'>{points.womensScull[idx].place}</TableCell>
+        <TableCell align='right'>{points.mensSweep[idx].points.toFixed(1)}</TableCell>
+        <TableCell sx={{ borderLeft: '1px solid #808080' }} align='right'>
+          {points.womensScull[idx].place}
+        </TableCell>
         <TableCell>{points.womensScull[idx].team}</TableCell>
-        <TableCell align='right'>{points.womensScull[idx].points}</TableCell>
-        <TableCell sx={{ borderLeft: '1px solid #808080' }}></TableCell>
-        <TableCell align='right'>{points.mensScull[idx].place}</TableCell>
+        <TableCell align='right'>{points.womensScull[idx].points.toFixed(1)}</TableCell>
+        <TableCell sx={{ borderLeft: '1px solid #808080' }} align='right'>
+          {points.mensScull[idx].place}
+        </TableCell>
         <TableCell>{points.mensScull[idx].team}</TableCell>
-        <TableCell align='right'>{points.mensScull[idx].points}</TableCell>
+        <TableCell align='right'>{points.mensScull[idx].points.toFixed(1)}</TableCell>
       </StyledTableRow>
     ));
   }
@@ -62,26 +67,31 @@ const getTableRows = (
   const points = barnesPointsCalc(results, useScaledEvents);
   return points.combined.map((_, idx) => (
     <StyledTableRow key={idx}>
-      <TableCell sx={{ borderLeft: '1px solid #808080' }}></TableCell>
-      <TableCell align='right'>{points.combined[idx].place}</TableCell>
+      <TableCell sx={{ borderLeft: '1px solid #808080' }} align='right'>
+        {points.combined[idx].place}
+      </TableCell>
       <TableCell>{points.combined[idx].team}</TableCell>
-      <TableCell align='right'>{points.combined[idx].points}</TableCell>
-      <TableCell sx={{ borderLeft: '1px solid #808080' }}></TableCell>
-      <TableCell align='right'>{points.combinedSweep[idx].place}</TableCell>
+      <TableCell align='right'>{points.combined[idx].points.toFixed(1)}</TableCell>
+      <TableCell sx={{ borderLeft: '1px solid #808080' }} align='right'>
+        {points.combinedSweep[idx].place}
+      </TableCell>
       <TableCell>{points.combinedSweep[idx].team}</TableCell>
-      <TableCell align='right'>{points.combinedSweep[idx].points}</TableCell>
-      <TableCell sx={{ borderLeft: '1px solid #808080' }}></TableCell>
-      <TableCell align='right'>{points.combinedScull[idx].place}</TableCell>
+      <TableCell align='right'>{points.combinedSweep[idx].points.toFixed(1)}</TableCell>
+      <TableCell sx={{ borderLeft: '1px solid #808080' }} align='right'>
+        {points.combinedScull[idx].place}
+      </TableCell>
       <TableCell>{points.combinedScull[idx].team}</TableCell>
-      <TableCell align='right'>{points.combinedScull[idx].points}</TableCell>
-      <TableCell sx={{ borderLeft: '1px solid #808080' }}></TableCell>
-      <TableCell align='right'>{points.womens[idx].place}</TableCell>
+      <TableCell align='right'>{points.combinedScull[idx].points.toFixed(1)}</TableCell>
+      <TableCell sx={{ borderLeft: '1px solid #808080' }} align='right'>
+        {points.womens[idx].place}
+      </TableCell>
       <TableCell>{points.womens[idx].team}</TableCell>
-      <TableCell align='right'>{points.womens[idx].points}</TableCell>
-      <TableCell sx={{ borderLeft: '1px solid #808080' }}></TableCell>
-      <TableCell align='right'>{points.mens[idx].place}</TableCell>
+      <TableCell align='right'>{points.womens[idx].points.toFixed(1)}</TableCell>
+      <TableCell sx={{ borderLeft: '1px solid #808080' }} align='right'>
+        {points.mens[idx].place}
+      </TableCell>
       <TableCell>{points.mens[idx].team}</TableCell>
-      <TableCell align='right'>{points.mens[idx].points}</TableCell>
+      <TableCell align='right'>{points.mens[idx].points.toFixed(1)}</TableCell>
     </StyledTableRow>
   ));
 };
@@ -97,11 +107,11 @@ const BarnesPoints: React.FC<BarnesPointsProps> = ({
     <Table size='small'>
       <TableHead>
         <TableRow>
-          <HeaderTableCell align='center' colSpan={pointsCategories.length * 4}>{`Points Trophies`}</HeaderTableCell>
+          <HeaderTableCell align='center' colSpan={pointsCategories.length * 3}>{`Points Trophies`}</HeaderTableCell>
         </TableRow>
         <TableRow>
           {pointsCategories.map((category) => [
-            <HeaderTableCell colSpan={2} align='right' key='place'>
+            <HeaderTableCell align='right' key='place'>
               Place
             </HeaderTableCell>,
             <HeaderTableCell colSpan={2} key={category}>
