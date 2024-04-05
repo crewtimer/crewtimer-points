@@ -25,7 +25,7 @@ const [useTestPage] = UseDatum('ACA');
 
 const ResultsForViewer: { [key: string]: Results } = {
   Basic: simpleResults as unknown as Results,
-  BarnesFullWeightedCoedCombined: barnesCoedAndSingleGender as unknown as Results,
+  MSRAChampionshipPoints: barnesCoedAndSingleGender as unknown as Results,
   BarnesFullWeighted: barnesJrNovice as unknown as Results,
   BarnesSimpleWeighted: barnesJrNovice as unknown as Results,
   BarnesTraditional: barnesTraditional as unknown as Results,

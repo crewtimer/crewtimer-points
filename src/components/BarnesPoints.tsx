@@ -22,6 +22,7 @@ export interface BarnesPointsProps {
   results: Results;
   useScaledEvents: boolean;
   useScullSweepCategories: boolean;
+  useEightLanePoints?: boolean;
   coedTeamsOnlyInCombined?: boolean;
 }
 
@@ -30,9 +31,10 @@ const getTableRows = (
   useScaledEvents: boolean,
   useScullSweepCategories: boolean,
   coedTeamsOnlyInCombined?: boolean,
+  useEightLanePoints?: boolean
 ) => {
   if (useScullSweepCategories === true) {
-    const points = barnesFullPointsCalc(results, useScaledEvents, coedTeamsOnlyInCombined);
+    const points = barnesFullPointsCalc(results, useScaledEvents, coedTeamsOnlyInCombined, useEightLanePoints);
     return points.combined.map((_, idx) => (
       <StyledTableRow key={idx}>
         <TableCell sx={{ borderLeft: '1px solid #808080' }} align='right'>
@@ -64,7 +66,7 @@ const getTableRows = (
     ));
   }
 
-  const points = barnesPointsCalc(results, useScaledEvents);
+  const points = barnesPointsCalc(results, useScaledEvents, useEightLanePoints);
   return points.combined.map((_, idx) => (
     <StyledTableRow key={idx}>
       <TableCell sx={{ borderLeft: '1px solid #808080' }} align='right'>
@@ -101,6 +103,7 @@ const BarnesPoints: React.FC<BarnesPointsProps> = ({
   useScaledEvents,
   useScullSweepCategories,
   coedTeamsOnlyInCombined,
+  useEightLanePoints,
 }) => {
   const pointsCategories = useScullSweepCategories ? categories : simpleCategories;
   return (
@@ -120,23 +123,31 @@ const BarnesPoints: React.FC<BarnesPointsProps> = ({
           ])}
         </TableRow>
       </TableHead>
-      <TableBody>{getTableRows(results, useScaledEvents, useScullSweepCategories, coedTeamsOnlyInCombined)}</TableBody>
+      <TableBody>
+        {getTableRows(
+          results,
+          useScaledEvents,
+          useScullSweepCategories,
+          coedTeamsOnlyInCombined,
+          useEightLanePoints)}
+      </TableBody>
     </Table>
   );
 };
 
 /**
  * Render team points calculated by the Barnes Points system for points categories including scull/sweep.
- * An event's point values are scaled by Novice/Junior/Varsity category.
+ * An event's point values are scaled by Novice/Junior/Varsity category. Allows eight lanes to earn points.
  *
  * @param points - An array of points results in sorted order.
  *
  */
-export const BarnesFullWeightedCoedCombined: React.FC<{ results: Results }> = ({ results }) => {
+export const MSRAChampionshipPoints: React.FC<{ results: Results }> = ({ results }) => {
   return (
     <BarnesPoints
       useScullSweepCategories={true}
       useScaledEvents={true}
+      useEightLanePoints={true}
       coedTeamsOnlyInCombined={true}
       results={results}
     />
