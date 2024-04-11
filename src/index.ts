@@ -5,7 +5,7 @@ import {
   BarnesPointsTraditional,
   BarnesFullWeighted,
   BarnesSimpleWeighted,
-  BarnesFullWeightedCoedCombined,
+  MSRAChampionshipPoints,
 } from './components/BarnesPoints';
 import { ACANationalsPoints, ACAPoints } from './components/ACATeamPoints';
 import { FIRAPointsTraditional } from './components/FIRAPoints';
@@ -37,9 +37,9 @@ export const PointsViewers: PointsViewerInfo[] = [
     ui: BarnesFullWeighted,
   },
   {
-    name: 'Midwest Scholastic Championship (Barnes System)',
-    key: 'BarnesFullWeightedCoedCombined',
-    ui: BarnesFullWeightedCoedCombined,
+    name: 'Midwest Scholastic Championship',
+    key: 'MSRAChampionshipPoints',
+    ui: MSRAChampionshipPoints,
   },
   {
     name: 'Michigan States Scholastic Championship (Barnes System)',

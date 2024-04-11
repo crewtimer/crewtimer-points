@@ -9,14 +9,6 @@ export type BarnesPointsTeamResults = {
   womensSweep: number;
 };
 
-export type BarnesPointsTeamResultsRanked = {
-  combined: PointsPlace;
-  mensScull: PointsPlace;
-  womensScull: PointsPlace;
-  mensSweep: PointsPlace;
-  womensSweep: PointsPlace;
-};
-
 export type PointsPlace = {
   points: number;
   place: number;
@@ -103,6 +95,20 @@ const percentageOfPoints: Map<number, number[]> = new Map([
 ]);
 
 /**
+ * Number of points for each place in a final,
+ * by the number of entries in the final.
+ */
+const percentageOfPoints8Lane: Map<number, number[]> = new Map([
+  [2, [1, 0.8]],
+  [3, [1, 0.8, 0.6]],
+  [4, [1, 0.8, 0.6, 0.4]],
+  [5, [1, 0.8, 0.6, 0.4, 0.3]],
+  [6, [1, 0.8, 0.6, 0.4, 0.3, 0.2]],
+  [7, [1, 0.8, 0.6, 0.4, 0.3, 0.2, 0.1]],
+  [8, [1, 0.8, 0.6, 0.4, 0.3, 0.2, 0.1, 0.05]],
+]);
+
+/**
  * Given the number of entries in an event and a boats placement,
  * determine the percentage of points for the given place
  *
@@ -110,17 +116,18 @@ const percentageOfPoints: Map<number, number[]> = new Map([
  * @param place
  * @returns (float) A pergentage between [0,1]
  */
-const scalePoints = (numberOfEntries: number, place: number) => {
+const scalePoints = (numberOfEntries: number, place: number, useEightLanePoints?: boolean) => {
   if (numberOfEntries < 2) {
     return 0;
   }
 
-  // snap to 6, even if there were more lanes
-  if (numberOfEntries > 6) {
-    numberOfEntries = 6;
+  // snap to max number of lanes with points, even if there were more lanes
+  const maxLanes = useEightLanePoints ? 8 : 6;
+  if (!useEightLanePoints && numberOfEntries > maxLanes) {
+    numberOfEntries = maxLanes;
   }
 
-  const scalars = percentageOfPoints.get(numberOfEntries);
+  const scalars = (useEightLanePoints ? percentageOfPoints8Lane : percentageOfPoints).get(numberOfEntries);
   if (!scalars || place > scalars.length) {
     return 0;
   }
@@ -183,8 +190,9 @@ const trimCrewName = (crewName: string) => {
  * @param TeamPoints[]
  */
 const assignPlaces = (teamPoints: TeamPoints[]) => {
+  // round to two decimals to account for float precision
   const places = genPlaces(
-    teamPoints.map((teamEntry) => teamEntry.points),
+    teamPoints.map((teamEntry) => Math.round(teamEntry.points * 100) / 100),
     'desc',
   );
   places.forEach((place, i) => (teamPoints[i].place = place));
@@ -258,6 +266,8 @@ const finalizeResults = (results: Map<string, BarnesPointsTeamResults>) => {
   };
 
   assignPlaces(sortedPoints.combined);
+  assignPlaces(sortedPoints.combinedScull);
+  assignPlaces(sortedPoints.combinedSweep);
   assignPlaces(sortedPoints.mens);
   assignPlaces(sortedPoints.womens);
 
@@ -274,7 +284,11 @@ export const calculateNumberOfEntries = (entries: Entry[]) => {
   return entries.filter((entry) => entry.PenaltyCode != 'Exhib').length;
 };
 
-export const calculateEventTeamPoints = (eventResult: Event, useScaledEvents: boolean): Map<string, number> => {
+export const calculateEventTeamPoints = (
+  eventResult: Event,
+  useScaledEvents: boolean,
+  useEightLanePoints?: boolean,
+): Map<string, number> => {
   const eventTeamPoints = new Map<string, number>();
 
   if (!isAFinal(eventResult.Event, eventResult.EventNum)) {
@@ -305,7 +319,7 @@ export const calculateEventTeamPoints = (eventResult: Event, useScaledEvents: bo
 
     placingTeams.add(teamName);
 
-    const points = maxPoints * scalePoints(numberOfEntries, entry.Place);
+    const points = maxPoints * scalePoints(numberOfEntries, entry.Place, useEightLanePoints);
 
     eventTeamPoints.set(teamName, points);
   });
@@ -359,6 +373,7 @@ export const barnesPointsImpl = (
   resultData: Results,
   useScaledEvents: boolean,
   coedTeamsOnlyInCombined?: boolean,
+  useEightLanePoints?: boolean,
 ): Map<string, BarnesPointsTeamResults> => {
   const teamPoints = new Map<string, BarnesPointsTeamResults>();
 
@@ -368,7 +383,7 @@ export const barnesPointsImpl = (
     const isWomensEvent = womensEvent(eventResult.Event);
     const isScullingEvent = eventResult.Event.match(/[1234]x/) != null;
 
-    const eventTeamPoints = calculateEventTeamPoints(eventResult, useScaledEvents);
+    const eventTeamPoints = calculateEventTeamPoints(eventResult, useScaledEvents, useEightLanePoints);
 
     // aggregate the points from this event into the whole team points table
     eventTeamPoints.forEach((points: number, teamName: string) => {
@@ -431,8 +446,9 @@ export const barnesFullPointsCalc = (
   resultData: Results,
   useScaledEvents: boolean,
   coedTeamsOnlyInCombined?: boolean,
+  useEightLanePoints?: boolean,
 ): BarnesFullCategoryResults => {
-  const teamPoints = barnesPointsImpl(resultData, useScaledEvents, coedTeamsOnlyInCombined);
+  const teamPoints = barnesPointsImpl(resultData, useScaledEvents, coedTeamsOnlyInCombined, useEightLanePoints);
 
   return finalizeFullResults(teamPoints);
 };
@@ -441,8 +457,12 @@ export const barnesFullPointsCalc = (
  * Calculate points based on the Barnes Scoring System, as described by MSRA:
  * https://sites.google.com/site/msrahome/regatta-rules/home
  */
-export const barnesPointsCalc = (resultData: Results, useScaledEvents: boolean): BarnesSimpleCategoryResults => {
-  const teamPoints = barnesPointsImpl(resultData, useScaledEvents);
+export const barnesPointsCalc = (
+  resultData: Results,
+  useScaledEvents: boolean,
+  useEightLanePoints?: boolean,
+): BarnesSimpleCategoryResults => {
+  const teamPoints = barnesPointsImpl(resultData, useScaledEvents, useEightLanePoints);
 
   return finalizeResults(teamPoints);
 };

@@ -1,10 +1,12 @@
 import React from 'react';
 import simpleResults from '../../tests/data/crewtimer-results-dev-r12033-export.json';
 import barnesJrNovice from '../../tests/data/crewtimer-results-dev-r12033-export-jr-nov-events.json';
-import barnesCoedAndSingleGender from '../../tests/data/crewtimer-results-dev-r12033-export-coed-single-gender-teams.json';
+// import barnesCoedAndSingleGender from '../../tests/data/crewtimer-results-dev-r12033-export-coed-single-gender-teams.json';
+import barnesCoedAndSingleGender from '../../tests/data/crewtimer-results-r12648.json';
 import barnesTraditional from '../../tests/data/crewtimer-results-dev-r12033-export-with-B-entries.json';
 import acaResults from '../../tests/data/crewtimer-results-aca-ted-houck-results.json';
 import firaResults from '../../tests/data/crewtimer-results-r12581-fira-export.json';
+import midwestResults from '../../tests/data/crewtimer-results-r12648.json';
 
 import { Results } from 'crewtimer-common';
 import Box from '@mui/material/Box';
@@ -23,13 +25,14 @@ const [useTestPage] = UseDatum('ACA');
 
 const ResultsForViewer: { [key: string]: Results } = {
   Basic: simpleResults as unknown as Results,
-  BarnesFullWeightedCoedCombined: barnesCoedAndSingleGender as unknown as Results,
+  MSRAChampionshipPoints: barnesCoedAndSingleGender as unknown as Results,
   BarnesFullWeighted: barnesJrNovice as unknown as Results,
   BarnesSimpleWeighted: barnesJrNovice as unknown as Results,
   BarnesTraditional: barnesTraditional as unknown as Results,
   ACA: acaResults as unknown as Results,
   ACANat: acaResults as unknown as Results,
   FIRATraditional: firaResults as unknown as Results,
+  MSRAPointsByDivision: midwestResults as unknown as Results,
 };
 
 const Viewers = [{ key: 'Live', name: 'Live Data', ui: LiveData }, ...PointsViewers];
