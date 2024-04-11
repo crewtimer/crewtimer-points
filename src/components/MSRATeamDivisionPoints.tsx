@@ -4,8 +4,9 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Box,
   CardActionArea,
-  IconButton,
+  Icon,
   Stack,
   TableBody,
   TableCell,
@@ -76,24 +77,18 @@ export const MSRAPointsByDivision: React.FC<{ results: Results }> = ({ results }
     };
 
     divisionTables.push(
-      <Accordion square>
+      <Accordion key={divisionResults[0]} square>
         <CardActionArea onClick={() => setOpenForDivision()}>
-          <AccordionSummary
-            expandIcon={
-              <IconButton aria-label='expand row' size='medium'>
-                {isOpen() ? '-' : '+'}
-              </IconButton>
-            }
-          >
-            <Typography>
-              {'Division ' + divisionResults[0] + ' '}
+          <AccordionSummary expandIcon={<Icon>{isOpen() ? '-' : '+'}</Icon>}>
+            <Box display='flex' flexDirection='column'>
+              <Typography variant='subtitle1'>{'Division ' + divisionResults[0]}</Typography>
               <Typography variant='subtitle2'>
                 {(minAthletes < Number.MAX_VALUE ? minAthletes : 'unknown number of') +
                   (minAthletes < Number.MAX_VALUE ? (maxAthletes < Number.MAX_VALUE ? '-' : '+') : '') +
                   (maxAthletes < Number.MAX_VALUE && maxAthletes > Number.MIN_VALUE ? maxAthletes : '') +
                   ' athletes'}
               </Typography>
-            </Typography>
+            </Box>
           </AccordionSummary>
         </CardActionArea>
         <AccordionDetails>

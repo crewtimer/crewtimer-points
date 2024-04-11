@@ -5,7 +5,7 @@ import {
   AccordionDetails,
   AccordionSummary,
   CardActionArea,
-  IconButton,
+  Icon,
   Stack,
   TableBody,
   TableCell,
@@ -158,13 +158,7 @@ export const MSRAChampionshipPoints: React.FC<{ results: Results }> = ({ results
     <Stack>
       <Accordion square defaultExpanded sx={{ marginBottom: '25px' }}>
         <CardActionArea onClick={() => setOpen(!open)}>
-          <AccordionSummary
-            expandIcon={
-              <IconButton aria-label='expand row' size='medium' onClick={() => setOpen(!open)}>
-                {open ? '-' : '+'}
-              </IconButton>
-            }
-          >
+          <AccordionSummary expandIcon={<Icon>{open ? '-' : '+'}</Icon>}>
             <Typography>Team Points Trophies</Typography>
           </AccordionSummary>
         </CardActionArea>
