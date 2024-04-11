@@ -1,8 +1,22 @@
 import React from 'react';
 import Table from '@mui/material/Table';
-import { TableBody, TableCell, TableHead, TableRow, styled } from '@mui/material';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  CardActionArea,
+  IconButton,
+  Stack,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Typography,
+  styled,
+} from '@mui/material';
 import { Results } from 'crewtimer-common';
 import { barnesFullPointsCalc, barnesPointsCalc } from '../calculators/BarnesPointsCalc';
+import { MSRAPointsByDivision } from './MSRATeamDivisionPoints';
 
 const categories = ['Combined', "Women's Sweep", "Men's Sweep", "Women's Scull", "Men's Scull"];
 
@@ -31,7 +45,7 @@ const getTableRows = (
   useScaledEvents: boolean,
   useScullSweepCategories: boolean,
   coedTeamsOnlyInCombined?: boolean,
-  useEightLanePoints?: boolean
+  useEightLanePoints?: boolean,
 ) => {
   if (useScullSweepCategories === true) {
     const points = barnesFullPointsCalc(results, useScaledEvents, coedTeamsOnlyInCombined, useEightLanePoints);
@@ -124,12 +138,7 @@ const BarnesPoints: React.FC<BarnesPointsProps> = ({
         </TableRow>
       </TableHead>
       <TableBody>
-        {getTableRows(
-          results,
-          useScaledEvents,
-          useScullSweepCategories,
-          coedTeamsOnlyInCombined,
-          useEightLanePoints)}
+        {getTableRows(results, useScaledEvents, useScullSweepCategories, coedTeamsOnlyInCombined, useEightLanePoints)}
       </TableBody>
     </Table>
   );
@@ -143,14 +152,34 @@ const BarnesPoints: React.FC<BarnesPointsProps> = ({
  *
  */
 export const MSRAChampionshipPoints: React.FC<{ results: Results }> = ({ results }) => {
+  const [open, setOpen] = React.useState(true);
+
   return (
-    <BarnesPoints
-      useScullSweepCategories={true}
-      useScaledEvents={true}
-      useEightLanePoints={true}
-      coedTeamsOnlyInCombined={true}
-      results={results}
-    />
+    <Stack>
+      <Accordion square defaultExpanded sx={{ marginBottom: '25px' }}>
+        <CardActionArea onClick={() => setOpen(!open)}>
+          <AccordionSummary
+            expandIcon={
+              <IconButton aria-label='expand row' size='medium' onClick={() => setOpen(!open)}>
+                {open ? '-' : '+'}
+              </IconButton>
+            }
+          >
+            <Typography>Team Points Trophies</Typography>
+          </AccordionSummary>
+        </CardActionArea>
+        <AccordionDetails>
+          <BarnesPoints
+            useScullSweepCategories={true}
+            useScaledEvents={true}
+            useEightLanePoints={true}
+            coedTeamsOnlyInCombined={true}
+            results={results}
+          />
+        </AccordionDetails>
+      </Accordion>
+      <MSRAPointsByDivision results={results} />
+    </Stack>
   );
 };
 

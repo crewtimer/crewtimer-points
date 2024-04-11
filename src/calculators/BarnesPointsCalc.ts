@@ -284,7 +284,11 @@ export const calculateNumberOfEntries = (entries: Entry[]) => {
   return entries.filter((entry) => entry.PenaltyCode != 'Exhib').length;
 };
 
-export const calculateEventTeamPoints = (eventResult: Event, useScaledEvents: boolean, useEightLanePoints?: boolean): Map<string, number> => {
+export const calculateEventTeamPoints = (
+  eventResult: Event,
+  useScaledEvents: boolean,
+  useEightLanePoints?: boolean,
+): Map<string, number> => {
   const eventTeamPoints = new Map<string, number>();
 
   if (!isAFinal(eventResult.Event, eventResult.EventNum)) {
@@ -369,27 +373,22 @@ export const barnesPointsImpl = (
   resultData: Results,
   useScaledEvents: boolean,
   coedTeamsOnlyInCombined?: boolean,
-  useEightLanePoints?: boolean
+  useEightLanePoints?: boolean,
 ): Map<string, BarnesPointsTeamResults> => {
   const teamPoints = new Map<string, BarnesPointsTeamResults>();
 
   const coedTeams = getCoedTeams(resultData.results);
 
-  console.log("useEightLanePoints: " + useEightLanePoints)
   resultData.results.forEach((eventResult) => {
     const isWomensEvent = womensEvent(eventResult.Event);
     const isScullingEvent = eventResult.Event.match(/[1234]x/) != null;
 
     const eventTeamPoints = calculateEventTeamPoints(eventResult, useScaledEvents, useEightLanePoints);
 
-    console.log("+++++++ Event: " + eventResult.Event + "++++++++")
     // aggregate the points from this event into the whole team points table
     eventTeamPoints.forEach((points: number, teamName: string) => {
       const teamEntry = teamPoints.get(teamName);
 
-      if (eventResult.Event.indexOf('Final') != 0) {
-        console.log(teamName + ": " + points)
-      }
       if (!teamEntry) {
         teamPoints.set(teamName, {
           // if we only allow coed teams to get points towards the combined trophy, and this is not a coed team,
@@ -447,7 +446,7 @@ export const barnesFullPointsCalc = (
   resultData: Results,
   useScaledEvents: boolean,
   coedTeamsOnlyInCombined?: boolean,
-  useEightLanePoints?: boolean
+  useEightLanePoints?: boolean,
 ): BarnesFullCategoryResults => {
   const teamPoints = barnesPointsImpl(resultData, useScaledEvents, coedTeamsOnlyInCombined, useEightLanePoints);
 
@@ -461,7 +460,8 @@ export const barnesFullPointsCalc = (
 export const barnesPointsCalc = (
   resultData: Results,
   useScaledEvents: boolean,
-  useEightLanePoints?: boolean): BarnesSimpleCategoryResults => {
+  useEightLanePoints?: boolean,
+): BarnesSimpleCategoryResults => {
   const teamPoints = barnesPointsImpl(resultData, useScaledEvents, useEightLanePoints);
 
   return finalizeResults(teamPoints);

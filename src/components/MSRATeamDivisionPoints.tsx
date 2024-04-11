@@ -1,6 +1,20 @@
 import React from 'react';
 import Table from '@mui/material/Table';
-import { Stack, TableBody, TableCell, TableHead, TableRow, styled } from '@mui/material';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  CardActionArea,
+  IconButton,
+  Stack,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Typography,
+  styled,
+} from '@mui/material';
+
 import { Results } from 'crewtimer-common';
 import { DIVISION_SIZES, pointsByDivision } from '../calculators/MSRATeamDivisionPointsCalc';
 
@@ -21,7 +35,14 @@ export interface PointsByDivisionProps {
 export const MSRAPointsByDivision: React.FC<{ results: Results }> = ({ results }) => {
   const divisionTables: JSX.Element[] = [];
 
-  for (const divisionResults of pointsByDivision(results)) {
+  const points = pointsByDivision(results);
+
+  // since we can't call useState in the loop, we need to create a state object to manage all
+  const [open, setOpen] = React.useState(
+    new Map<string, boolean>(Array.from(points.keys()).map((key) => [key, false])),
+  );
+
+  for (const divisionResults of points) {
     const teamsForDivision: JSX.Element[] = [];
 
     // skip if there are no teams in this division
@@ -44,38 +65,62 @@ export const MSRAPointsByDivision: React.FC<{ results: Results }> = ({ results }
     const minAthletes = DIVISION_SIZES.get(divisionResults[0])?.min || 0;
     const maxAthletes = DIVISION_SIZES.get(divisionResults[0])?.max || Number.MAX_VALUE;
 
+    const isOpen = () => {
+      return open.get(divisionResults[0]);
+    };
+
+    const setOpenForDivision = () => {
+      setOpen(
+        new Map(Array.from(open).map((entry) => (entry[0] == divisionResults[0] ? [entry[0], !entry[1]] : entry))),
+      );
+    };
+
     divisionTables.push(
-      <Table size='small' sx={{ width: 'auto', marginBottom: '25px' }}>
-        <TableHead>
-          <TableRow>
-            <HeaderTableCell align='left' colSpan={3}>
-              Division {divisionResults[0]}
-            </HeaderTableCell>
-            <TableCell align='left' colSpan={2}>
-              {minAthletes < Number.MAX_VALUE ? minAthletes : 'unknown number of'}
-              {minAthletes < Number.MAX_VALUE ? (maxAthletes < Number.MAX_VALUE ? '-' : '+') : ''}
-              {maxAthletes < Number.MAX_VALUE && maxAthletes > Number.MIN_VALUE ? maxAthletes : ''} athletes
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <HeaderTableCell colSpan={2} align='right' key='place'>
-              Place
-            </HeaderTableCell>
-            <HeaderTableCell colSpan={1} key='team'>
-              Team
-            </HeaderTableCell>
-            <HeaderTableCell colSpan={1} align='right' key='teamSize'>
-              Team Size
-            </HeaderTableCell>
-            <HeaderTableCell colSpan={1} align='right' key='points'>
-              Points
-            </HeaderTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>{teamsForDivision}</TableBody>
-      </Table>,
+      <Accordion square>
+        <CardActionArea onClick={() => setOpenForDivision()}>
+          <AccordionSummary
+            expandIcon={
+              <IconButton aria-label='expand row' size='medium'>
+                {isOpen() ? '-' : '+'}
+              </IconButton>
+            }
+          >
+            <Typography>
+              {'Division ' + divisionResults[0] + ' '}
+              <Typography variant='subtitle2'>
+                {(minAthletes < Number.MAX_VALUE ? minAthletes : 'unknown number of') +
+                  (minAthletes < Number.MAX_VALUE ? (maxAthletes < Number.MAX_VALUE ? '-' : '+') : '') +
+                  (maxAthletes < Number.MAX_VALUE && maxAthletes > Number.MIN_VALUE ? maxAthletes : '') +
+                  ' athletes'}
+              </Typography>
+            </Typography>
+          </AccordionSummary>
+        </CardActionArea>
+        <AccordionDetails>
+          <Table size='small'>
+            <TableHead>
+              <TableRow>
+                <HeaderTableCell colSpan={2} align='right' key='place'>
+                  Place
+                </HeaderTableCell>
+                <HeaderTableCell colSpan={1} key='team'>
+                  Team
+                </HeaderTableCell>
+                <HeaderTableCell colSpan={1} align='right' key='teamSize'>
+                  Team Size
+                </HeaderTableCell>
+                <HeaderTableCell colSpan={1} align='right' key='points'>
+                  Points
+                </HeaderTableCell>
+              </TableRow>
+            </TableHead>
+
+            <TableBody>{teamsForDivision}</TableBody>
+          </Table>
+        </AccordionDetails>
+      </Accordion>,
     );
   }
 
-  return <Stack alignItems='center'>{divisionTables}</Stack>;
+  return <Stack alignItems='left'>{divisionTables}</Stack>;
 };

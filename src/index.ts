@@ -9,7 +9,6 @@ import {
 } from './components/BarnesPoints';
 import { ACANationalsPoints, ACAPoints } from './components/ACATeamPoints';
 import { FIRAPointsTraditional } from './components/FIRAPoints';
-import { MSRAPointsByDivision } from './components/MSRATeamDivisionPoints';
 
 export interface PointsViewerInfo {
   name: string; /// User presentable string
@@ -61,10 +60,5 @@ export const PointsViewers: PointsViewerInfo[] = [
     name: 'FIRA Points Traditional (Mitchell System)',
     key: 'FIRATraditional',
     ui: FIRAPointsTraditional,
-  },
-  {
-    name: 'MSRA Team Size Division',
-    key: 'MSRAPointsByDivision',
-    ui: MSRAPointsByDivision,
   },
 ];
