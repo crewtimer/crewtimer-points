@@ -18,14 +18,14 @@ The visualizers utilize the [React framework](https://react.dev/) along with the
 * [ACA Regional and National Regattas](docs/ACA-SprintRacingRules-v2023.pdf)
 * [Traditional Barnes System](https://en.wikipedia.org/wiki/Julius_H._Barnes_Points_Trophy) Events of the same boat class across all rower experience level are weighted the same. For example, a varsity 8+ and a novice 8+ will both be worth 30 points.
 * **Michigan States (Barnes System)** Varsity events are worth the full 100% of points for the event, Junior/2V events are 80%, Novice/Freshman/3V are worth 60%. This is the system used by Scholastic Rowing Association of Michigan.
-* [Midwest Scholastic Rowing Association Champtionship](docs/MRSA-Championship-RegattaRules.20240401.pdf) Varsity events are worth the full 100% of points for the event, Junior/2V events are 80%, Novice/Freshman/3V are worth 60%. Only co-ed team who have entries in all gender events are elligible for combined points trophies. Seprate ranking are provided for each division, split by team size, if a JSON blob is provided in the Admin Panel which maps all competing team's names to the number of athletes entered in the event. See the below example. This is the system used by Midwest Scholastic Rowing Association. 
+* [Midwest Scholastic Rowing Association Champtionship](docs/MRSA-Championship-RegattaRules.20240401.pdf) Varsity events are worth the full 100% of points for the event, Junior/2V events are 80%, Novice/Freshman/3V are worth 60%. Only co-ed team who have entries in all gender events are elligible for combined points trophies. Seprate ranking are provided for each division, split by team size, if a JSON blob is provided in the Admin Panel which maps all competing team's names to the number of athletes entered in the event. See the below example. This is the system used by Midwest Scholastic Rowing Association.
 ```json
 {"teamSizes":{"Skyline High School": 53,"Ann Arbor Pioneer": 68}}
 ```
 * **Mitten Series (Barnes System)** Render team points calculated by the Barnes Points system for basic points categories.  Varsity events are worth the full 100% of points for the event, Junior/2V events are 80%, Novice/Freshman/3V are worth 60%.
 * [FIRA Points](docs/FIRAPointsRules.pdf) The FIRA points system is similar to the Barnes Weighted system in that there are max points on offer for specified events with a weighting system applied based on the number of finishers in the given event
 * [Hebda Cup](docs/HebdaScoring.pdf) This system awards points to the top 3 finishers of each final of four or more entries, top 2 for three entries, and first place only for a two-boat final. Full points are awarded for each boat class, regardless of event level.
-* [Wy-Hi Regatta](docs/WyHiScoring.pdf) This points system uses a modified version of the Barnes System and awards scaled points based on if races are finals only or if heats were necessary. Full points are awarded for each boat class, regardless of event level. 
+* [Wy-Hi Regatta](docs/WyHiScoring.pdf) This points system uses a modified version of the Barnes System and awards scaled points based on if races are finals only or if heats were necessary. Full points are awarded for each boat class, regardless of event level.
 
 
 ## Adding a new points engine
@@ -62,7 +62,7 @@ yarn clean && yarn build && yarn start
 
 Open web browser to [http://localhost:1234](http://localhost:1234).
 
-If you get error 404 after using ```yarn start```, try running ```yarn clean`````` and starting it again.
+If you get error 404 after using ```yarn start```, try running ```yarn clean``` and starting it again.
 
 ### Add your code
 
@@ -74,7 +74,8 @@ If you get error 404 after using ```yarn start```, try running ```yarn clean````
 6. Optionally reference your visualizer from example/App.tsx.  Regardless, your viewer will be available under 'Live Data' test page after adding to index.ts.  `yarn clean` may be needd to see your changes to index.ts or App.ts.
 7. Test your code (see Running Jest Tests below).
 8. Lint and format your code: ```yarn prepublishOnly```
-9. Commit your changes and do a pull request to crewtimer-points. (see Makig a pull requewst below)
+9. Bump the version in package.json.
+10. Commit your changes and do a pull request to crewtimer-points. (see Makig a pull requewst below)
 
 ## Running Jest Tests
 
