@@ -9,6 +9,7 @@ import {
 } from './components/BarnesPoints';
 import { ACANationalsPoints, ACAPoints } from './components/ACATeamPoints';
 import { FIRAPointsTraditional } from './components/FIRAPoints';
+import { HebdaPoints, WyHiPoints } from './components/WyandottePoints';
 
 export interface PointsViewerInfo {
   name: string; /// User presentable string
@@ -60,5 +61,15 @@ export const PointsViewers: PointsViewerInfo[] = [
     name: 'FIRA Points Traditional (Mitchell System)',
     key: 'FIRATraditional',
     ui: FIRAPointsTraditional,
+  },
+  {
+    name: 'Hebda Cup',
+    key: 'HebdaPoints',
+    ui: HebdaPoints,
+  },
+  {
+    name: 'Wy-Hi Regatta',
+    key: 'WyHiPoints',
+    ui: WyHiPoints,
   },
 ];
