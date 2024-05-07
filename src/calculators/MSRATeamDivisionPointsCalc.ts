@@ -6,7 +6,7 @@ type DivisionDetails = {
   max: number;
 };
 
-export var DIVISION_SIZES = new Map<string, DivisionDetails>([
+export const DIVISION_SIZES = new Map<string, DivisionDetails>([
   ['I', { min: 55, max: Number.MAX_VALUE }],
   ['II', { min: 22, max: 55 }],
   ['III', { min: 0, max: 22 }],
@@ -29,10 +29,10 @@ const getDivisionByTeamSize = (teamSize: number): string => {
 };
 
 /**
- * Given a json mapping from the division name to the min number of athletes required to be in that division, 
+ * Given a json mapping from the division name to the min number of athletes required to be in that division,
  * adjust the division boundaries. If the provided map doesn't include values for DI and DII, use the
  * defaults. DIII is assumed to be the lowest starting at 0 athletes.
- * 
+ *
  * @param divisionMinimums json mapping division name to the min number of athletes
  */
 const maybeAdjustDivisions = (divisionMinimums: any) => {
@@ -40,10 +40,10 @@ const maybeAdjustDivisions = (divisionMinimums: any) => {
     return;
   }
 
-  DIVISION_SIZES.set('I', { min: divisionMinimums['I'] || 55, max: Number.MAX_VALUE })
-  DIVISION_SIZES.set('II', { min: divisionMinimums['II'] || 22, max: divisionMinimums['I'] || 55 })
-  DIVISION_SIZES.set('III', { min: 0, max: divisionMinimums['II'] || 22 })
-}
+  DIVISION_SIZES.set('I', { min: divisionMinimums['I'] || 55, max: Number.MAX_VALUE });
+  DIVISION_SIZES.set('II', { min: divisionMinimums['II'] || 22, max: divisionMinimums['I'] || 55 });
+  DIVISION_SIZES.set('III', { min: 0, max: divisionMinimums['II'] || 22 });
+};
 
 export type TeamResult = {
   teamName: string;
@@ -61,7 +61,7 @@ export type TeamResult = {
  */
 export const pointsByDivision = (resultsData: Results): Map<string, TeamResult[]> => {
   const regattaInfoJson = JSON.parse(resultsData.regattaInfo.json || '{}');
-  console.log(typeof (regattaInfoJson))
+  console.log(typeof regattaInfoJson);
   const teamSizes = regattaInfoJson?.teamSizes || {};
   const teamDivisionOverrides = regattaInfoJson?.divisionOverrides || {};
   const divisionMinimums = regattaInfoJson?.divisionMinimums || {};
@@ -79,7 +79,7 @@ export const pointsByDivision = (resultsData: Results): Map<string, TeamResult[]
 
   allTeamPoints.forEach((teamBarnesResults, teamName) => {
     const teamSize = teamSizes[teamName] || 0;
-    var division = teamDivisionOverrides[teamName] || getDivisionByTeamSize(teamSize);
+    const division = teamDivisionOverrides[teamName] || getDivisionByTeamSize(teamSize);
 
     finalPoints.get(division)?.push({
       teamName: teamName,
