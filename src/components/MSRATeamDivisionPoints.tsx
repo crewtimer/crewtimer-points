@@ -85,7 +85,7 @@ export const MSRAPointsByDivision: React.FC<{ results: Results }> = ({ results }
               <Typography variant='subtitle2'>
                 {(minAthletes < Number.MAX_VALUE ? minAthletes : 'unknown number of') +
                   (minAthletes < Number.MAX_VALUE ? (maxAthletes < Number.MAX_VALUE ? '-' : '+') : '') +
-                  (maxAthletes < Number.MAX_VALUE && maxAthletes > Number.MIN_VALUE ? maxAthletes : '') +
+                  (maxAthletes < Number.MAX_VALUE && maxAthletes > Number.MIN_VALUE ? maxAthletes - 1 : '') +
                   ' athletes'}
               </Typography>
             </Box>
