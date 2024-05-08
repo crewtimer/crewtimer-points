@@ -61,7 +61,6 @@ export type TeamResult = {
  */
 export const pointsByDivision = (resultsData: Results): Map<string, TeamResult[]> => {
   const regattaInfoJson = JSON.parse(resultsData.regattaInfo.json || '{}');
-  console.log(typeof regattaInfoJson);
   const teamSizes = regattaInfoJson?.teamSizes || {};
   const teamDivisionOverrides = regattaInfoJson?.divisionOverrides || {};
   const divisionMinimums = regattaInfoJson?.divisionMinimums || {};
