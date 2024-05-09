@@ -9,7 +9,7 @@ type DivisionDetails = {
 export const DIVISION_SIZES = new Map<string, DivisionDetails>([
   ['I', { min: 55, max: Number.MAX_VALUE }],
   ['II', { min: 22, max: 55 }],
-  ['III', { min: 0, max: 22 }],
+  ['III', { min: 1, max: 22 }],
   ['unknown', { min: Number.MAX_VALUE, max: Number.MIN_VALUE }], // nothing can match this in normal processing
 ]);
 
