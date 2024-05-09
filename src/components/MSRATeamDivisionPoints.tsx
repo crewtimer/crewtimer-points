@@ -63,7 +63,7 @@ export const MSRAPointsByDivision: React.FC<{ results: Results }> = ({ results }
       );
     });
 
-    const minAthletes = DIVISION_SIZES.get(divisionResults[0])?.min || 0;
+    const minAthletes = DIVISION_SIZES.get(divisionResults[0])?.min || 1;
     const maxAthletes = DIVISION_SIZES.get(divisionResults[0])?.max || Number.MAX_VALUE;
 
     const isOpen = () => {
