@@ -67,7 +67,7 @@ export const pointsByDivision = (resultsData: Results): Map<string, TeamResult[]
 
   maybeAdjustDivisions(divisionMinimums);
 
-  const allTeamPoints = barnesPointsImpl(resultsData, true);
+  const allTeamPoints = barnesPointsImpl(resultsData, true, false, true);
 
   const finalPoints = new Map<string, TeamResult[]>();
   DIVISION_SIZES.forEach((_, divName) => finalPoints.set(divName, []));
