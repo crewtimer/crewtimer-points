@@ -18,7 +18,7 @@ import { Results } from 'crewtimer-common';
 import { barnesFullPointsCalc, barnesPointsCalc } from '../calculators/BarnesPointsCalc';
 import { MSRAPointsByDivision } from './MSRATeamDivisionPoints';
 
-const categories = ['Combined', "Women's Sweep", "Men's Sweep", "Women's Scull", "Men's Scull"];
+const categories = ['Overall', "Women's Sweep", "Men's Sweep", "Women's Scull", "Men's Scull"];
 
 const simpleCategories = ['Combined', 'Combined Sweep', 'Combined Scull', 'Women', 'Men'];
 
@@ -196,7 +196,14 @@ export const BarnesFullWeighted: React.FC<{ results: Results }> = ({ results }) 
  *
  */
 export const BarnesSimpleWeighted: React.FC<{ results: Results }> = ({ results }) => {
-  return <BarnesPoints useScullSweepCategories={false} useScaledEvents={true} results={results} />;
+  return (
+    <BarnesPoints
+      useScullSweepCategories={true}
+      useScaledEvents={true}
+      coedTeamsOnlyInCombined={false}
+      results={results}
+    />
+  );
 };
 
 /**

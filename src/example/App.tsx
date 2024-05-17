@@ -1,6 +1,7 @@
 import React from 'react';
 import simpleResults from '../../tests/data/crewtimer-results-dev-r12033-export.json';
-import barnesJrNovice from '../../tests/data/crewtimer-results-dev-r12033-export-jr-nov-events.json';
+import barnesJrNovice from '../../tests/data/crewtimer-results-r12649.json';
+// import barnesJrNovice from '../../tests/data/crewtimer-results-dev-r12033-export-jr-nov-events.json';
 // import barnesCoedAndSingleGender from '../../tests/data/crewtimer-results-dev-r12033-export-coed-single-gender-teams.json';
 import barnesCoedAndSingleGender from '../../tests/data/crewtimer-results-r12648.json';
 import barnesTraditional from '../../tests/data/crewtimer-results-dev-r12033-export-with-B-entries.json';
