@@ -10,6 +10,7 @@ import firaResults from '../../tests/data/crewtimer-results-r12581-fira-export.j
 import midwestResults from '../../tests/data/crewtimer-results-r12648.json';
 import hebdaResults from '../../tests/data/crewtimer-results-r12672-hebda23.json';
 import wyHiResults from '../../tests/data/crewtimer-results-r12676-wyhi23.json';
+import sprintsResults from '../../tests/data/crewtimer-results-r12676-wyhi23.json';
 
 import { Results } from 'crewtimer-common';
 import Box from '@mui/material/Box';
@@ -38,6 +39,7 @@ const ResultsForViewer: { [key: string]: Results } = {
   MSRAPointsByDivision: midwestResults as unknown as Results,
   HebdaPoints: hebdaResults as unknown as Results,
   WyHiPoints: wyHiResults as unknown as Results,
+  SprintsPoints: sprintsResults as unknown as Results,
 };
 
 const Viewers = [{ key: 'Live', name: 'Live Data', ui: LiveData }, ...PointsViewers];
