@@ -10,6 +10,7 @@ import {
 import { ACANationalsPoints, ACAPoints } from './components/ACATeamPoints';
 import { FIRAPointsTraditional } from './components/FIRAPoints';
 import { HebdaPoints, WyHiPoints } from './components/WyandottePoints';
+import { SprintsPointsTraditional } from './components/SprintsPoints';
 
 export interface PointsViewerInfo {
   name: string; /// User presentable string
@@ -71,5 +72,10 @@ export const PointsViewers: PointsViewerInfo[] = [
     name: 'Wy-Hi Regatta',
     key: 'WyHiPoints',
     ui: WyHiPoints,
+  },
+  {
+    name: 'Chicago Sprints',
+    key: 'SprintsPoints',
+    ui: SprintsPointsTraditional,
   },
 ];
