@@ -26,7 +26,7 @@ The visualizers utilize the [React framework](https://react.dev/) along with the
 * [FIRA Points](docs/FIRAPointsRules.pdf) The FIRA points system is similar to the Barnes Weighted system in that there are max points on offer for specified events with a weighting system applied based on the number of finishers in the given event
 * [Hebda Cup](docs/HebdaScoring.pdf) This system awards points to the top 3 finishers of each final of four or more entries, top 2 for three entries, and first place only for a two-boat final. Full points are awarded for each boat class, regardless of event level.
 * [Wy-Hi Regatta](docs/WyHiScoring.pdf) This points system uses a modified version of the Barnes System and awards scaled points based on if races are finals only or if heats were necessary. Full points are awarded for each boat class, regardless of event level.
-* [Chicago Sprints](docs/SprintsPoints.pdf) This points system uses a modified version of the Barnes System. The maximum points for an event is determined by the boat class and subsequent points are scaled based on the number of entries in the event. 
+* [Chicago Sprints](docs/SprintsPoints.pdf) This points system uses a modified version of the Barnes System. The maximum points for an event is determined by the boat class and subsequent points are scaled based on the number of entries in the event.
 
 
 ## Adding a new points engine
@@ -75,8 +75,11 @@ If you get error 404 after using ```yarn start```, try running ```yarn clean``` 
 6. Optionally reference your visualizer from example/App.tsx.  Regardless, your viewer will be available under 'Live Data' test page after adding to index.ts.  `yarn clean` may be needd to see your changes to index.ts or App.ts.
 7. Test your code (see Running Jest Tests below).
 8. Lint and format your code: ```yarn prepublishOnly```
-9. Bump the version in package.json.
-10. Commit your changes and do a pull request to crewtimer-points. (see Makig a pull requewst below)
+9. Bump the 'version' field in package.json.
+10. Edit README.md to add a reference to your new points engine.
+11. Commit your changes and do a pull request to crewtimer-points. (see Making a pull request below)
+
+Once a pull request is received, an admin will review your pull request and either make suggestions for change or accept your pull request.   Once your pull request is accepted it will become live on crewtimer.com shortly thereafter.
 
 ## Running Jest Tests
 
@@ -94,6 +97,8 @@ from the command line.
 2. Set a breakpoint in your jest test.
 3. Click on the debug icon and select Debug Jest Tests.
 4. Click on the Play icon.
+
+For an even better experience, you can also install the 'Jest' VSCode Extionsion by Orta.  This will allow you to run and debug your tests by looking for the helper actions on the beginning line of your test.
 
 ## Making a pull request
 
@@ -126,10 +131,17 @@ yarn install && yarn clean && yarn build
 
 ## Publishing a new npm version (maintainers only)
 
-1. Update the version in package.json
-2. First check for any errors by running ```yarn prepublishOnly```
-3. ```npm login``` as crewtimer
-4. If no errors: ```npm publish```
+1. Update the version in package.json if necessary
+2. Check for any errors by running ```yarn prepublishOnly```
+3. If necessary, log in to npm as crewtimer user  ```npm login```
+4. Publish to npm repository via ```npm publish```
+
+Once published, go to the crewtimer-admin and crewtimer-results projects and execute the following for each project:
+
+```bash
+yarn add crewtimer-points # Update to latest version
+yarn deploy-prod-gui      # Update production server gui
+```
 
 ## Contributors
 
