@@ -55,7 +55,7 @@ const Trophies: { [key: string]: string } = {
   Bantam: 'Columbia-Murphy Trophy',
   '(Masters)': 'Jack Blendinger Trophy',
   Junior: 'Black Anvil Trophy',
-  Senior: 'Washington  Canoe Club Trophy',
+  Senior: 'Washington Canoe Club Trophy',
   C4: 'Coach Bill Bragg Trophy',
   'Mens K4': 'Chris Barlow Trophy',
   'Womens K4': 'Alan Anderson Trophy',

@@ -149,6 +149,11 @@ export const acaPointsCalc = (resultData: Results): ACAPointsResult => {
   const paddlerPointsByClass: { [eventClass: string]: { [paddler: string]: number } } = {};
   const paddlerPoints: { [paddler: string]: number } = {};
 
+  // Interpret configuration struct such as '{"excludedClubsForPoints":["GHCKRT"],"minEntriesForPoints":{"Bantam":100}}'
+  const regattaConfig = JSON.parse(resultData.regattaInfo.json || '{}');
+  const minEntriesForPoints: { [level: string]: number } = regattaConfig.minEntriesForPoints || {};
+  const excludedClubsForPoints: string[] = regattaConfig.excludedClubsForPoints || [];
+
   const trophies: TrophyWinner[] = [];
   // Cache trophy attributes
   for (const trophy of trophyDefinitions) {
@@ -197,6 +202,12 @@ export const acaPointsCalc = (resultData: Results): ACAPointsResult => {
     const eventClass = eventLevelFromName(eventName);
     const gender = genderFromEventName(eventName);
 
+    // Ignore races without the required minimum number of entries
+    const numEntries = eventResult.entries?.length || 0;
+    if (numEntries === 0 || numEntries < (minEntriesForPoints[eventClass] || 0)) {
+      return;
+    }
+
     // For each entry in this event, accumulate points according to the
     // criteria for placement and length of race.
     eventResult.entries?.forEach((entry) => {
@@ -210,6 +221,12 @@ export const acaPointsCalc = (resultData: Results): ACAPointsResult => {
           }
           return s;
         });
+
+      // Check if any paddlers are from an excluded club (e.g. International at nationals)
+      const hasExcludedClub = clubs.some((club) => excludedClubsForPoints.includes(club));
+      if (hasExcludedClub) {
+        return;
+      }
 
       // Extract and normalize athlete names
       const athletes = entry.Crew.split(';').map((c) => c.trim().replace(' ', ''));
