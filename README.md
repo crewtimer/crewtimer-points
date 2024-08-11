@@ -25,7 +25,6 @@ The visualizers utilize the [React framework](https://react.dev/) along with the
 * [Wy-Hi Regatta](docs/WyHiScoring.pdf) This points system uses a modified version of the Barnes System and awards scaled points based on if races are finals only or if heats were necessary. Full points are awarded for each boat class, regardless of event level.
 * [Chicago Sprints](docs/SprintsPoints.pdf) This points system uses a modified version of the Barnes System. The maximum points for an event is determined by the boat class and subsequent points are scaled based on the number of entries in the event.
 
-
 ## Adding a new points engine
 
 ### Prerequisites

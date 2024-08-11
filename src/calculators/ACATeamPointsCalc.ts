@@ -30,7 +30,7 @@ const trophyDefinitions = [
   'Winner of the C1 200 U18 (Junior)Men -Andy Toro Award',
   'Winner of the K1 1000 U18 (Junior)Men -Greg Barton Award',
   'Winner of the K1 1000 Senior Men -Donald Dodge Memorial Award',
-  'Winner of the K2 200 Senior Men-Eugene & Henry Krawczyk Award',
+  'Winner of the K2 500 Senior Men-Eugene & Henry Krawczyk Award', // Note, rules has a typo and lists 200m instead of 500m
   'Winner of the K2 1000 Senior Men -Beachem & Van Dyke Award',
   'Winner of the K4 500 (was 1000)Senior Men -Eric Feicht Memorial Award',
   'Winner of the K1 500 Senior Women -Marcia Smoke Award',
@@ -41,6 +41,12 @@ const trophyDefinitions = [
   'Winner of the C1 500 U18(Junior)Women -Debby Smith Page Award',
   'Winner of the C1 1000 Senior Men -Jim Terrell Award',
 ];
+
+interface ACAPointsJson {
+  excludedClubs?: string[];
+  minEntriesForLevel?: { [boatClass: string]: number };
+  minEntries?: number;
+}
 
 interface ACAResultRecord {
   index: string;
@@ -149,10 +155,12 @@ export const acaPointsCalc = (resultData: Results): ACAPointsResult => {
   const paddlerPointsByClass: { [eventClass: string]: { [paddler: string]: number } } = {};
   const paddlerPoints: { [paddler: string]: number } = {};
 
-  // Interpret configuration struct such as '{"excludedClubsForPoints":["GHCKRT"],"minEntriesForPoints":{"Bantam":100}}'
+  // Interpret configuration struct such as '{"excludedClubsForPoints":["GHCKRT"],"minEntriesForPoints":{"Bantam":100},"minEntries":3}'
   const regattaConfig = JSON.parse(resultData.regattaInfo.json || '{}');
-  const minEntriesForPoints: { [level: string]: number } = regattaConfig.minEntriesForPoints || {};
-  const excludedClubsForPoints: string[] = regattaConfig.excludedClubsForPoints || [];
+  const pointsConfig = (regattaConfig.points || {}) as ACAPointsJson;
+  const minEntriesForLevel: { [level: string]: number } = pointsConfig.minEntriesForLevel || {};
+  const excludedClubsForPoints: string[] = pointsConfig.excludedClubs || [];
+  const minEntriesRequired: number = pointsConfig.minEntries || 1;
 
   const trophies: TrophyWinner[] = [];
   // Cache trophy attributes
@@ -203,8 +211,49 @@ export const acaPointsCalc = (resultData: Results): ACAPointsResult => {
     const gender = genderFromEventName(eventName);
 
     // Ignore races without the required minimum number of entries
-    const numEntries = eventResult.entries?.length || 0;
-    if (numEntries === 0 || numEntries < (minEntriesForPoints[eventClass] || 0)) {
+    const validEntries = eventResult.entries?.filter((entry) => {
+      if (entry.Stroke.match(/^(indep|indiv)/i)) {
+        return false;
+      }
+      const clubs = entry.Stroke.replace(/,/g, ';')
+        .split(';')
+        .map((s) => {
+          s = s.replace(/\(.*/g, '');
+          s = s.trim();
+          if (s.match(/^(indep|indiv)/i)) {
+            s = 'IND';
+          }
+          return s;
+        });
+
+      const hasExcludedClub = clubs.some((club) => excludedClubsForPoints.includes(club));
+      if (hasExcludedClub) {
+        return false;
+      }
+
+      if (entry.AdjTime === 'DNF') {
+        // still counts as a competition
+        return true;
+      }
+
+      if (!entry.Place) {
+        return false;
+      }
+      return true;
+    });
+
+    const validEntriesCount = validEntries?.length || 0;
+    if (
+      !eventResult.Event.toLowerCase().includes('para') &&
+      (validEntriesCount === 0 || validEntriesCount < (minEntriesForLevel[eventClass] || 0))
+    ) {
+      return;
+    }
+    if (
+      !eventResult.Event.toLowerCase().includes('para') &&
+      validEntriesCount < minEntriesRequired &&
+      minEntriesForLevel[eventClass] === undefined
+    ) {
       return;
     }
 
@@ -215,6 +264,7 @@ export const acaPointsCalc = (resultData: Results): ACAPointsResult => {
       const clubs = entry.Stroke.replace(/,/g, ';')
         .split(';')
         .map((s) => {
+          s = s.replace(/\(.*/g, '');
           s = s.trim();
           if (s.match(/^(indep|indiv)/i)) {
             s = 'IND';
