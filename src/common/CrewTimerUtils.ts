@@ -230,3 +230,7 @@ export const genPlaces = (inputList: number[], dir: 'asc' | 'desc' = 'asc') => {
   });
   return places;
 };
+
+export const getRegattaYearFromDate = (date: string) => {
+  return new Date(date).getFullYear();
+};

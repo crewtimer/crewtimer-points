@@ -40,26 +40,19 @@ const PreferredLevelOrder = [
   'Juvenile',
   'Junior',
   'Senior',
+  'Open',
+  'ParaCanoe',
+  '(Masters)',
+  'C4',
+  'Mens K4',
+  'Womens K4',
   'Masters',
   'MastersA',
   'MastersB',
   'MastersC',
   'MastersD',
   'MastersE',
-  'Open',
-  'ParaCanoe',
 ];
-
-const Trophies: { [key: string]: string } = {
-  Juvenile: 'Thomas Horton Trophy',
-  Bantam: 'Columbia-Murphy Trophy',
-  '(Masters)': 'Jack Blendinger Trophy',
-  Junior: 'Black Anvil Trophy',
-  Senior: 'Washington Canoe Club Trophy',
-  C4: 'Coach Bill Bragg Trophy',
-  'Mens K4': 'Chris Barlow Trophy',
-  'Womens K4': 'Alan Anderson Trophy',
-};
 
 const PlaceColors = [
   undefined,
@@ -71,6 +64,7 @@ const PlaceColors = [
 export interface ACATeamPointsProps {
   results: Results;
   nationals?: boolean;
+  showMastersDetail?: boolean;
 }
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
@@ -92,7 +86,7 @@ const HeaderTableCell = styled(TableCell)(() => ({
  * @param results - Results from the regatta.
  *
  */
-export const ACATeamPoints: React.FC<ACATeamPointsProps> = ({ results, nationals }) => {
+export const ACATeamPoints: React.FC<ACATeamPointsProps> = ({ results, nationals, showMastersDetail = false }) => {
   const points = acaPointsCalc(results);
   let paddlers = 0;
   let total = 0;
@@ -102,8 +96,14 @@ export const ACATeamPoints: React.FC<ACATeamPointsProps> = ({ results, nationals
   const wk4 = points.genderLevelTotals['Womens K4'] || [];
 
   if (nationals) {
-    levelColumns = [...levelColumns, 'C4', 'Mens K4', 'Womens K4'];
+    levelColumns = orderList([...levelColumns, 'C4', 'Mens K4', 'Womens K4'], PreferredLevelOrder);
   }
+
+  // Filter out columns starting with 'Masters' if not showing masters detail
+  const filteredLevelColumns = showMastersDetail
+    ? levelColumns
+    : levelColumns.filter((lvl) => !lvl.startsWith('Masters'));
+
   const levelTotals = nationals
     ? { ...points.levelTotals, C4: c4, 'Mens K4': mk4, 'Womens K4': wk4 }
     : points.levelTotals;
@@ -126,9 +126,9 @@ export const ACATeamPoints: React.FC<ACATeamPointsProps> = ({ results, nationals
             </HeaderTableCell>
             <HeaderTableCell align='center'>{nationals ? 'National Champions Yonkers Trophy' : ''}</HeaderTableCell>
 
-            {levelColumns.map((l) => (
+            {filteredLevelColumns.map((l) => (
               <HeaderTableCell key={l} align='center'>
-                {(nationals && Trophies[l]) || ''}
+                {(nationals && points.trophiesByLevel[l]?.name) || ''}
               </HeaderTableCell>
             ))}
           </TableRow>
@@ -137,7 +137,7 @@ export const ACATeamPoints: React.FC<ACATeamPointsProps> = ({ results, nationals
             <HeaderTableCell>Club</HeaderTableCell>
             <HeaderTableCell align='center'>Paddlers</HeaderTableCell>
             <HeaderTableCell align='center'>Club Score</HeaderTableCell>
-            {levelColumns.map((level) => (
+            {filteredLevelColumns.map((level) => (
               <HeaderTableCell align='center' key={level}>
                 {level}
               </HeaderTableCell>
@@ -157,7 +157,7 @@ export const ACATeamPoints: React.FC<ACATeamPointsProps> = ({ results, nationals
                 <TableCell align='center' sx={{ backgroundColor: PlaceColors[clubpoints.place || 0] }}>
                   {clubpoints.points}
                 </TableCell>
-                {levelColumns.map((level) => {
+                {filteredLevelColumns.map((level) => {
                   const clubResult = levelTotals[level]?.find((lvlPoints) => lvlPoints.index === clubpoints.index);
                   return (
                     <TableCell
@@ -179,7 +179,7 @@ export const ACATeamPoints: React.FC<ACATeamPointsProps> = ({ results, nationals
             <HeaderTableCell align='right'>Totals:</HeaderTableCell>
             <HeaderTableCell align='center'>{paddlers}</HeaderTableCell>
             <HeaderTableCell align='center'>{total}</HeaderTableCell>
-            <TableCell colSpan={levelColumns.length}></TableCell>
+            <TableCell colSpan={filteredLevelColumns.length}></TableCell>
           </StyledTableRow>
         </TableBody>
       </Table>
@@ -217,13 +217,18 @@ export const ACATeamPoints: React.FC<ACATeamPointsProps> = ({ results, nationals
  * Render individual points for an ACA regatta.
  * @returns {React.ReactElement}
  */
-export const ACAIndividualPoints: React.FC<ACATeamPointsProps> = ({ results }) => {
+export const ACAIndividualPoints: React.FC<ACATeamPointsProps> = ({ results, showMastersDetail = false }) => {
   const points = acaPointsCalc(results);
   const levelColumns = orderList(Object.keys(points.levelTotals), PreferredLevelOrder);
   const paddlerClub: { [paddler: string]: string } = {};
   Object.keys(points.paddlersByClub).forEach((club) =>
     points.paddlersByClub[club].forEach((paddler) => (paddlerClub[paddler] = club)),
   );
+
+  // Filter out columns starting with 'Masters' if not showing masters detail
+  const filteredLevelColumns = showMastersDetail
+    ? levelColumns
+    : levelColumns.filter((lvl) => !lvl.startsWith('Masters'));
 
   return (
     <Table size='small'>
@@ -246,7 +251,7 @@ export const ACAIndividualPoints: React.FC<ACATeamPointsProps> = ({ results }) =
           <HeaderTableCell>Club</HeaderTableCell>
           <HeaderTableCell>Total</HeaderTableCell>
 
-          {levelColumns.map((level) => (
+          {filteredLevelColumns.map((level) => (
             <HeaderTableCell align='center' key={level}>
               {level}
             </HeaderTableCell>
@@ -262,7 +267,7 @@ export const ACAIndividualPoints: React.FC<ACATeamPointsProps> = ({ results }) =
               <TableCell align='center' sx={{ backgroundColor: PlaceColors[paddler.place || 0] }}>
                 {paddler.points}
               </TableCell>
-              {levelColumns.map((level) => {
+              {filteredLevelColumns.map((level) => {
                 const levelPoints = points.paddlerClassTotals[level] || [];
                 const paddlerResult = levelPoints?.find((lvlPoints) => lvlPoints.index === paddler.index);
                 return (
@@ -295,6 +300,7 @@ export const ACAIndividualPoints: React.FC<ACATeamPointsProps> = ({ results }) =
  */
 export const ACAPoints: React.FC<ACATeamPointsProps> = ({ nationals, results }) => {
   const [showPaddlers, setShowPaddlers] = useShowPaddlers();
+  const [showMastersDetail, setShowMastersDetail] = React.useState(false);
   const Viewer = showPaddlers ? ACAIndividualPoints : ACATeamPoints;
   return (
     <Stack alignItems='center'>
@@ -312,8 +318,22 @@ export const ACAPoints: React.FC<ACATeamPointsProps> = ({ nationals, results }) 
           }
           label='Show Paddlers'
         />
+        <FormControlLabel
+          labelPlacement='start'
+          control={
+            <Switch
+              size='small'
+              checked={showMastersDetail}
+              onChange={(event) => setShowMastersDetail(event.target.checked)}
+              name='showMastersDetail'
+              color='primary'
+            />
+          }
+          label='Show Masters Detail'
+          sx={{ ml: 2 }}
+        />
       </Stack>
-      <Viewer nationals={nationals} results={results} />
+      <Viewer nationals={nationals} results={results} showMastersDetail={showMastersDetail} />
     </Stack>
   );
 };

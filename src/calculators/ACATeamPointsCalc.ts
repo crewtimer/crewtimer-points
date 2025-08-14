@@ -5,6 +5,7 @@ import {
   distanceFromName,
   genPlaces,
   genderFromEventName,
+  getRegattaYearFromDate,
   isAFinal,
   numSeatsFromName,
   uppercaseLastLetter,
@@ -23,24 +24,47 @@ import {
 const nonDistancePoints = [9, 7, 5, 3, 2, 1];
 const distancePoints = [12, 10, 8, 6, 5, 4, 3, 2, 1];
 
+interface TrophyDefinition {
+  name: string;
+  firstValidYear: number;
+  lastValidYear: number;
+}
+
 // Winner of the C1 1000 Senior Men -Jim Terrell Award.
-const trophyDefinitions = [
-  'Winner of the K1 500 U16 (Juvenile)Women -Francine Fox Award',
-  'Winner of the K1 500 U18 (Junior)Women -Mimi LeBeau Memorial Award',
-  'Winner of the C1 200 U18 (Junior)Men -Andy Toro Award',
-  'Winner of the K1 1000 U18 (Junior)Men -Greg Barton Award',
-  'Winner of the K1 1000 Senior Men -Donald Dodge Memorial Award',
-  'Winner of the K2 500 Senior Men-Eugene & Henry Krawczyk Award', // Note, rules has a typo and lists 200m instead of 500m
-  'Winner of the K2 1000 Senior Men -Beachem & Van Dyke Award',
-  'Winner of the K4 500 (was 1000)Senior Men -Eric Feicht Memorial Award',
-  'Winner of the K1 500 Senior Women -Marcia Smoke Award',
-  'Winner of the K4 500 Senior Women',
-  'Winner of the C1 5000 Senior Men -Frank Havens Award',
+const trophyDefinitions: TrophyDefinition[] = [
+  { name: 'Winner of the K1 500 U16 (Juvenile)Women -Francine Fox Award', firstValidYear: 0, lastValidYear: 0 },
+  { name: 'Winner of the K1 500 U18 (Junior)Women -Mimi LeBeau Memorial Award', firstValidYear: 0, lastValidYear: 0 },
+  { name: 'Winner of the C1 200 U18 (Junior)Men -Andy Toro Award', firstValidYear: 0, lastValidYear: 0 },
+  { name: 'Winner of the K1 1000 U18 (Junior)Men -Greg Barton Award', firstValidYear: 0, lastValidYear: 0 },
+  { name: 'Winner of the K1 1000 Senior Men -Donald Dodge Memorial Award', firstValidYear: 0, lastValidYear: 0 },
+  { name: 'Winner of the K2 500 Senior Men-Eugene & Henry Krawczyk Award', firstValidYear: 0, lastValidYear: 0 }, // Note, rules has a typo and lists 200m instead of 500m
+  { name: 'Winner of the K2 1000 Senior Men -Beachem & Van Dyke Award', firstValidYear: 0, lastValidYear: 2024 },
+  { name: 'Winner of the K2 1000 Senior Men -The Barton Bellingham Award', firstValidYear: 2025, lastValidYear: 0 },
+  {
+    name: 'Winner of the K4 500 (was 1000)Senior Men -Eric Feicht Memorial Award',
+    firstValidYear: 0,
+    lastValidYear: 0,
+  },
+  { name: 'Winner of the K1 500 Senior Women -Marcia Smoke Award', firstValidYear: 0, lastValidYear: 0 },
+  { name: 'Winner of the K4 500 Senior Women', firstValidYear: 0, lastValidYear: 0 },
+  { name: 'Winner of the C1 5000 Senior Men -Frank Havens Award', firstValidYear: 0, lastValidYear: 0 },
   // Award20.53.Burgee Awards at  National  Championships
-  'Winner of the C1 500 U16(Juvenile)Women -Nancy Kalafus Award',
-  'Winner of the C1 500 U18(Junior)Women -Debby Smith Page Award',
-  'Winner of the C1 1000 Senior Men -Jim Terrell Award',
+  { name: 'Winner of the C1 500 U16(Juvenile)Women -Nancy Kalafus Award', firstValidYear: 0, lastValidYear: 0 },
+  { name: 'Winner of the C1 500 U18(Junior)Women -Debby Smith Page Award', firstValidYear: 0, lastValidYear: 2024 },
+  { name: 'Winner of the C1 1000 Senior Men -Jim Terrell Award', firstValidYear: 0, lastValidYear: 0 },
 ];
+
+const Trophies: { [key: string]: TrophyDefinition } = {
+  Juvenile: { name: 'Thomas Horton Trophy', firstValidYear: 0, lastValidYear: 0 },
+  Bantam: { name: 'Columbia-Murphy Trophy', firstValidYear: 0, lastValidYear: 0 },
+  '(Masters)': { name: 'Jack Blendinger Trophy', firstValidYear: 0, lastValidYear: 0 },
+  Junior: { name: 'Black Anvil Trophy', firstValidYear: 0, lastValidYear: 0 },
+  Senior: { name: 'Washington Canoe Club Trophy', firstValidYear: 0, lastValidYear: 0 },
+  C4: { name: 'Coach Bill Bragg Trophy', firstValidYear: 0, lastValidYear: 0 },
+  'Mens K4': { name: 'Chris Barlow Trophy', firstValidYear: 0, lastValidYear: 0 },
+  'Womens K4': { name: 'Alan Anderson Trophy', firstValidYear: 0, lastValidYear: 0 },
+  ParaCanoe: { name: 'Debbie Page Trophy', firstValidYear: 2025, lastValidYear: 0 }, // First year is 2025
+};
 
 interface ACAPointsJson {
   excludedClubs?: string[];
@@ -76,6 +100,7 @@ export type ACAPointsResult = {
   paddlerTotals: ACAResultRecord[];
   paddlerClassTotals: { [paddler: string]: ACAResultRecord[] };
   trophies: TrophyWinner[];
+  trophiesByLevel: { [key: string]: TrophyDefinition };
 };
 
 /**
@@ -161,19 +186,27 @@ export const acaPointsCalc = (resultData: Results): ACAPointsResult => {
   const minEntriesForLevel: { [level: string]: number } = pointsConfig.minEntriesForLevel || {};
   const excludedClubsForPoints: string[] = pointsConfig.excludedClubs || [];
   const minEntriesRequired: number = pointsConfig.minEntries || 1;
+  const regattaYear = getRegattaYearFromDate(resultData.regattaInfo.Date);
 
   const trophies: TrophyWinner[] = [];
   // Cache trophy attributes
-  for (const trophy of trophyDefinitions) {
-    const names = trophy.split('-').map((name) => name.trim());
+  for (const trophyDef of trophyDefinitions) {
+    // Omit if outside year range
+    if (
+      (trophyDef.firstValidYear && regattaYear < trophyDef.firstValidYear) ||
+      (trophyDef.lastValidYear && regattaYear > trophyDef.lastValidYear)
+    ) {
+      continue;
+    }
+    const names = trophyDef.name.split('-').map((name) => name.trim());
 
     trophies.push({
       name: names[1] || 'Unnamed',
       criteria: names[0],
-      distance: distanceFromName(trophy),
-      boatClass: boatClassFromName(trophy),
-      level: eventLevelFromName(trophy),
-      gender: genderFromEventName(trophy),
+      distance: distanceFromName(trophyDef.name),
+      boatClass: boatClassFromName(trophyDef.name),
+      level: eventLevelFromName(trophyDef.name),
+      gender: genderFromEventName(trophyDef.name),
       winner: '',
       winnerClub: '',
       winnerTime: '',
@@ -380,6 +413,17 @@ export const acaPointsCalc = (resultData: Results): ACAPointsResult => {
   const paddlerClassTotals = sortAndSummarize(paddlerPointsByClass);
   const paddlerTotals = summarizePoints(paddlerPoints);
 
+  // Filter trophiesByLevel by regattaYear
+  const filteredTrophiesByLevel: { [key: string]: TrophyDefinition } = {};
+  Object.keys(Trophies).forEach((level) => {
+    const t = Trophies[level];
+    if (
+      (t.firstValidYear === 0 || regattaYear >= t.firstValidYear) &&
+      (t.lastValidYear === 0 || regattaYear <= t.lastValidYear)
+    ) {
+      filteredTrophiesByLevel[level] = t;
+    }
+  });
   return {
     paddlerTotals,
     paddlerClassTotals,
@@ -389,5 +433,6 @@ export const acaPointsCalc = (resultData: Results): ACAPointsResult => {
     genderLevelTotals,
     paddlersByClub,
     trophies,
+    trophiesByLevel: filteredTrophiesByLevel,
   };
 };
