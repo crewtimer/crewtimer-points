@@ -46,12 +46,17 @@ const trophyDefinitions: TrophyDefinition[] = [
     lastValidYear: 0,
   },
   { name: 'Winner of the K1 500 Senior Women -Marcia Smoke Award', firstValidYear: 0, lastValidYear: 0 },
-  { name: 'Winner of the K4 500 Senior Women', firstValidYear: 0, lastValidYear: 0 },
+  {
+    name: 'Winner of the K4 500 Senior Women -K4 500 Senior Women National Champion',
+    firstValidYear: 0,
+    lastValidYear: 0,
+  },
   { name: 'Winner of the C1 5000 Senior Men -Frank Havens Award', firstValidYear: 0, lastValidYear: 0 },
   // Award20.53.Burgee Awards at  National  Championships
   { name: 'Winner of the C1 500 U16(Juvenile)Women -Nancy Kalafus Award', firstValidYear: 0, lastValidYear: 0 },
-  { name: 'Winner of the C1 500 U18(Junior)Women -Debby Smith Page Award', firstValidYear: 0, lastValidYear: 2024 },
+  { name: 'Winner of the C1 500 U18(Junior)Women -Debby Smith Page Award', firstValidYear: 0, lastValidYear: 2025 },
   { name: 'Winner of the C1 1000 Senior Men -Jim Terrell Award', firstValidYear: 0, lastValidYear: 0 },
+  { name: 'Individual with the most Para points -Debbie Page Trophy', firstValidYear: 2025, lastValidYear: 0 },
 ];
 
 const Trophies: { [key: string]: TrophyDefinition } = {
@@ -63,7 +68,7 @@ const Trophies: { [key: string]: TrophyDefinition } = {
   C4: { name: 'Coach Bill Bragg Trophy', firstValidYear: 0, lastValidYear: 0 },
   'Mens K4': { name: 'Chris Barlow Trophy', firstValidYear: 0, lastValidYear: 0 },
   'Womens K4': { name: 'Alan Anderson Trophy', firstValidYear: 0, lastValidYear: 0 },
-  ParaCanoe: { name: 'Debbie Page Trophy', firstValidYear: 2025, lastValidYear: 0 }, // First year is 2025
+  // Para: { name: 'Debbie Page Trophy', firstValidYear: 2025, lastValidYear: 0 }, // First year is 2025
 };
 
 interface ACAPointsJson {
@@ -103,6 +108,15 @@ export type ACAPointsResult = {
   trophiesByLevel: { [key: string]: TrophyDefinition };
 };
 
+function findClubByAthlete(paddlersByClub: { [club: string]: Set<string> }, athlete: string): string | undefined {
+  for (const [club, paddlers] of Object.entries(paddlersByClub)) {
+    if (paddlers.has(athlete)) {
+      return club;
+    }
+  }
+  return undefined; // athlete not found
+}
+
 /**
  * Given an event name, attempt to extract the 'level' of the race (bantam, junior, etc)
  *
@@ -113,7 +127,7 @@ export type ACAPointsResult = {
  */
 export const eventLevelFromName = (eventName: string) => {
   eventName = eventName.toLowerCase();
-  const matches = [/bantam/, /juv/, /junior/, /senior/, /u23/, /masters ?[abcdef]/, /open/, /paracanoe/, / dev/];
+  const matches = [/bantam/, /juv/, /junior/, /senior/, /u23/, /masters ?[abcdef]/, /open/, /para/, / dev/];
   for (let i = 0; i < matches.length; i++) {
     const match = eventName.match(matches[i]);
     if (match) {
@@ -125,6 +139,7 @@ export const eventLevelFromName = (eventName: string) => {
       return eventLevel;
     }
   }
+  console.log(`Level ${eventName} assigned to Other`);
   return 'Other';
 };
 
@@ -347,6 +362,7 @@ export const acaPointsCalc = (resultData: Results): ACAPointsResult => {
             trophy.gender === gender &&
             trophy.level === eventClass,
         );
+
         if (trophyIndex >= 0) {
           let trophy = trophies[trophyIndex];
           if (trophy?.winner) {
@@ -360,6 +376,7 @@ export const acaPointsCalc = (resultData: Results): ACAPointsResult => {
           trophy.winnerRaceNum = entry.EventNum;
         }
       }
+      // console.log(JSON.stringify(trophies, null, 2));
 
       // For a given place and distance, get the number of points available
       const pointsAvail = distance <= 1000 ? nonDistancePoints[place - 1] : distancePoints[place - 1];
@@ -402,6 +419,31 @@ export const acaPointsCalc = (resultData: Results): ACAPointsResult => {
       });
     }); // forEach entry
   }); // forEach event
+
+  if (regattaConfig.showPoints === undefined || regattaConfig.showPoints === true) {
+    trophies.forEach((trophy) => {
+      if (trophy.criteria.includes('Individual')) {
+        const scores = paddlerPointsByClass[trophy.level];
+        if (scores) {
+          const maxPoints = Math.max(...Object.values(scores));
+
+          const result: {
+            name: string[];
+            points: number;
+          } = {
+            name: Object.entries(scores)
+              .filter(([_, points]) => points === maxPoints)
+              .map(([name]) => name),
+            points: maxPoints,
+          };
+          trophy.winner = result.name.join('; ');
+          trophy.winnerTime = `${result.points} points`;
+          trophy.winnerRaceNum = '';
+          trophy.winnerClub = result.name.map((n) => findClubByAthlete(paddlersByClub, n) || '').join(';');
+        }
+      }
+    });
+  }
 
   // Organize points for export
   const clubTotals = summarizePoints(clubPoints);

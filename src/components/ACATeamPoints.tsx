@@ -41,7 +41,7 @@ const PreferredLevelOrder = [
   'Junior',
   'Senior',
   'Open',
-  'ParaCanoe',
+  'Para',
   '(Masters)',
   'C4',
   'Mens K4',
@@ -65,6 +65,7 @@ export interface ACATeamPointsProps {
   results: Results;
   nationals?: boolean;
   showMastersDetail?: boolean;
+  showPoints?: boolean;
 }
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
@@ -86,7 +87,12 @@ const HeaderTableCell = styled(TableCell)(() => ({
  * @param results - Results from the regatta.
  *
  */
-export const ACATeamPoints: React.FC<ACATeamPointsProps> = ({ results, nationals, showMastersDetail = false }) => {
+export const ACATeamPoints: React.FC<ACATeamPointsProps> = ({
+  results,
+  nationals,
+  showMastersDetail = false,
+  showPoints = false,
+}) => {
   const points = acaPointsCalc(results);
   let paddlers = 0;
   let total = 0;
@@ -110,79 +116,83 @@ export const ACATeamPoints: React.FC<ACATeamPointsProps> = ({ results, nationals
 
   return (
     <Stack>
-      <Table size='small'>
-        <TableHead>
-          <TableRow>
-            <HeaderTableCell colSpan={3}>
-              <Stack>
-                <Box>Combined Points By Club by Level</Box>
-                <Stack direction='row'>
-                  <Box>Key:</Box>
-                  <Box sx={{ textAlign: 'center', width: '4em', backgroundColor: PlaceColors[1] }}>1st</Box>
-                  <Box sx={{ textAlign: 'center', width: '4em', backgroundColor: PlaceColors[2] }}>2nd</Box>
-                  <Box sx={{ textAlign: 'center', width: '4em', backgroundColor: PlaceColors[3] }}>3rd</Box>
+      {showPoints ? (
+        <Table size='small'>
+          <TableHead>
+            <TableRow>
+              <HeaderTableCell colSpan={3}>
+                <Stack>
+                  <Box>Combined Points By Club by Level</Box>
+                  <Stack direction='row'>
+                    <Box>Key:</Box>
+                    <Box sx={{ textAlign: 'center', width: '4em', backgroundColor: PlaceColors[1] }}>1st</Box>
+                    <Box sx={{ textAlign: 'center', width: '4em', backgroundColor: PlaceColors[2] }}>2nd</Box>
+                    <Box sx={{ textAlign: 'center', width: '4em', backgroundColor: PlaceColors[3] }}>3rd</Box>
+                  </Stack>
                 </Stack>
-              </Stack>
-            </HeaderTableCell>
-            <HeaderTableCell align='center'>{nationals ? 'National Champions Yonkers Trophy' : ''}</HeaderTableCell>
+              </HeaderTableCell>
+              <HeaderTableCell align='center'>{nationals ? 'National Champions Yonkers Trophy' : ''}</HeaderTableCell>
 
-            {filteredLevelColumns.map((l) => (
-              <HeaderTableCell key={l} align='center'>
-                {(nationals && points.trophiesByLevel[l]?.name) || ''}
-              </HeaderTableCell>
-            ))}
-          </TableRow>
-          <TableRow>
-            <HeaderTableCell align='center'>Place</HeaderTableCell>
-            <HeaderTableCell>Club</HeaderTableCell>
-            <HeaderTableCell align='center'>Paddlers</HeaderTableCell>
-            <HeaderTableCell align='center'>Club Score</HeaderTableCell>
-            {filteredLevelColumns.map((level) => (
-              <HeaderTableCell align='center' key={level}>
-                {level}
-              </HeaderTableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {points.clubTotals.map((clubpoints) => {
-            const numPaddlers = points.paddlersByClub[clubpoints.index].size;
-            paddlers += numPaddlers;
-            total += clubpoints.points;
-            return (
-              <StyledTableRow key={clubpoints.index}>
-                <TableCell align='center'>{clubpoints.place}</TableCell>
-                <TableCell sx={{ whiteSpace: 'nowrap' }}>{clubpoints.index}</TableCell>
-                <TableCell align='center'>{numPaddlers}</TableCell>
-                <TableCell align='center' sx={{ backgroundColor: PlaceColors[clubpoints.place || 0] }}>
-                  {clubpoints.points}
-                </TableCell>
-                {filteredLevelColumns.map((level) => {
-                  const clubResult = levelTotals[level]?.find((lvlPoints) => lvlPoints.index === clubpoints.index);
-                  return (
-                    <TableCell
-                      align='center'
-                      key={level}
-                      sx={{
-                        backgroundColor: PlaceColors[clubResult?.place || 0],
-                      }}
-                    >
-                      {clubResult?.points || ''}
-                    </TableCell>
-                  );
-                })}
-              </StyledTableRow>
-            );
-          })}
-          <StyledTableRow key={'summary'}>
-            <TableCell></TableCell>
-            <HeaderTableCell align='right'>Totals:</HeaderTableCell>
-            <HeaderTableCell align='center'>{paddlers}</HeaderTableCell>
-            <HeaderTableCell align='center'>{total}</HeaderTableCell>
-            <TableCell colSpan={filteredLevelColumns.length}></TableCell>
-          </StyledTableRow>
-        </TableBody>
-      </Table>
+              {filteredLevelColumns.map((l) => (
+                <HeaderTableCell key={l} align='center'>
+                  {(nationals && points.trophiesByLevel[l]?.name) || ''}
+                </HeaderTableCell>
+              ))}
+            </TableRow>
+            <TableRow>
+              <HeaderTableCell align='center'>Place</HeaderTableCell>
+              <HeaderTableCell>Club</HeaderTableCell>
+              <HeaderTableCell align='center'>Paddlers</HeaderTableCell>
+              <HeaderTableCell align='center'>Club Score</HeaderTableCell>
+              {filteredLevelColumns.map((level) => (
+                <HeaderTableCell align='center' key={level}>
+                  {level}
+                </HeaderTableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {points.clubTotals.map((clubpoints) => {
+              const numPaddlers = points.paddlersByClub[clubpoints.index].size;
+              paddlers += numPaddlers;
+              total += clubpoints.points;
+              return (
+                <StyledTableRow key={clubpoints.index}>
+                  <TableCell align='center'>{clubpoints.place}</TableCell>
+                  <TableCell sx={{ whiteSpace: 'nowrap' }}>{clubpoints.index}</TableCell>
+                  <TableCell align='center'>{numPaddlers}</TableCell>
+                  <TableCell align='center' sx={{ backgroundColor: PlaceColors[clubpoints.place || 0] }}>
+                    {clubpoints.points}
+                  </TableCell>
+                  {filteredLevelColumns.map((level) => {
+                    const clubResult = levelTotals[level]?.find((lvlPoints) => lvlPoints.index === clubpoints.index);
+                    return (
+                      <TableCell
+                        align='center'
+                        key={level}
+                        sx={{
+                          backgroundColor: PlaceColors[clubResult?.place || 0],
+                        }}
+                      >
+                        {clubResult?.points || ''}
+                      </TableCell>
+                    );
+                  })}
+                </StyledTableRow>
+              );
+            })}
+            <StyledTableRow key={'summary'}>
+              <TableCell></TableCell>
+              <HeaderTableCell align='right'>Totals:</HeaderTableCell>
+              <HeaderTableCell align='center'>{paddlers}</HeaderTableCell>
+              <HeaderTableCell align='center'>{total}</HeaderTableCell>
+              <TableCell colSpan={filteredLevelColumns.length}></TableCell>
+            </StyledTableRow>
+          </TableBody>
+        </Table>
+      ) : (
+        <div>Points pending publication</div>
+      )}
       {nationals && (
         <Table size='small' sx={{ marginTop: '2em', pageBreakInside: 'avoid' }}>
           <TableHead>
@@ -301,39 +311,44 @@ export const ACAIndividualPoints: React.FC<ACATeamPointsProps> = ({ results, sho
 export const ACAPoints: React.FC<ACATeamPointsProps> = ({ nationals, results }) => {
   const [showPaddlers, setShowPaddlers] = useShowPaddlers();
   const [showMastersDetail, setShowMastersDetail] = React.useState(false);
+  const regattaConfig = JSON.parse(results.regattaInfo.json || '{}');
+  const showPoints = regattaConfig.showPoints === undefined || regattaConfig.showPoints === true;
+
   const Viewer = showPaddlers ? ACAIndividualPoints : ACATeamPoints;
   return (
     <Stack alignItems='center'>
-      <Stack direction='row' className='noprint'>
-        <FormControlLabel
-          labelPlacement='start'
-          control={
-            <Switch
-              size='small'
-              checked={showPaddlers}
-              onChange={(event) => setShowPaddlers(event.target.checked)}
-              name='showPaddlers'
-              color='primary'
-            />
-          }
-          label='Show Paddlers'
-        />
-        <FormControlLabel
-          labelPlacement='start'
-          control={
-            <Switch
-              size='small'
-              checked={showMastersDetail}
-              onChange={(event) => setShowMastersDetail(event.target.checked)}
-              name='showMastersDetail'
-              color='primary'
-            />
-          }
-          label='Show Masters Detail'
-          sx={{ ml: 2 }}
-        />
-      </Stack>
-      <Viewer nationals={nationals} results={results} showMastersDetail={showMastersDetail} />
+      {showPoints && (
+        <Stack direction='row' className='noprint'>
+          <FormControlLabel
+            labelPlacement='start'
+            control={
+              <Switch
+                size='small'
+                checked={showPaddlers}
+                onChange={(event) => setShowPaddlers(event.target.checked)}
+                name='showPaddlers'
+                color='primary'
+              />
+            }
+            label='Show Paddlers'
+          />
+          <FormControlLabel
+            labelPlacement='start'
+            control={
+              <Switch
+                size='small'
+                checked={showMastersDetail}
+                onChange={(event) => setShowMastersDetail(event.target.checked)}
+                name='showMastersDetail'
+                color='primary'
+              />
+            }
+            label='Show Masters Detail'
+            sx={{ ml: 2 }}
+          />
+        </Stack>
+      )}
+      <Viewer nationals={nationals} results={results} showMastersDetail={showMastersDetail} showPoints={showPoints} />
     </Stack>
   );
 };
