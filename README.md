@@ -67,8 +67,8 @@ If you get error 404 after using ```yarn start```, try running ```yarn clean``` 
 2. Add your custom calculator under src/calculators. See [FIRA Points](src/calculators/FIRAPointsCalc.ts) or [Barnes Points](src/calculators/BarnesPointsCalc.ts). Be sure to deal with ties in calculation results.  For example, a tie for second place would result in omission of a third place result. Use the [genPlaces helper](https://github.com/crewtimer/crewtimer-points/blob/main/src/calculators/FIRAPointsCalc.ts#L180C3-L183C67).  See other helpers dealing with event names in [src/common/CrewTimerUtils.ts](src/common/CrewTimerUtils.ts).
 3. Add a jest test under tests/.  To use actual test data from a regatta (recommended), start the demo and select Live Data and export a json file for an existing regatta.
 4. Add a [React visualizer](https://react.dev/) under src/components. See [FIRA Points](src/components/FIRAPoints.tsx) or [Barnes Points](src/components/BarnesPoints.tsx). If you are unfamiliar with React and don't want to learn React, ask Glenn to do this for you or get you started based on an example you provide.  React components from the [Material UI](https://mui.com/material-ui/getting-started/) project are utilized.
-5. Add export references for your new points viewer in [src/index.ts](src/index.ts).
-6. Optionally reference your visualizer from example/App.tsx.  Regardless, your viewer will be available under 'Live Data' test page after adding to index.ts.  `yarn clean` may be needd to see your changes to index.ts or App.ts.
+5. Add references for your new points viewer in [src/index.ts](src/index.ts) to the PointsViewers array.
+6. `yarn clean` may be needd to see your changes to index.ts or App.ts.
 7. Test your code (see Running Jest Tests below).
 8. Lint and format your code: ```yarn prepublishOnly```
 9. Bump the 'version' field in package.json.
@@ -76,6 +76,65 @@ If you get error 404 after using ```yarn start```, try running ```yarn clean``` 
 11. Commit your changes and do a pull request to crewtimer-points. (see Making a pull request below)
 
 Once a pull request is received, an admin will review your pull request and either make suggestions for change or accept your pull request.   Once your pull request is accepted it will become live on crewtimer.com shortly thereafter.
+
+## Utility helpers
+
+There are a number of utility functions to help with various calculation scenarios.  See [CrewTimerUtils.ts](src/common/CrewTimerUtils.ts) for other useful functions.
+
+| Function | Description |
+| --- | --- |
+|  capitalizeFirstLetter | Capitalize the first letter of a string. |
+| uppercaseLastLetter | Capitalize the last letter of a string. |
+| genderFromEventName | Return Womens, Mens, Mixed, or Unknown |
+| boatClassFromName | Return one of 8+, 8x, 4+, 4x, 4-, 2x, 2-, 1x, k1, k2, k4, c1, c2, c4 |
+| numSeatsFromName | Return the number of seats in boat based on name |
+| distanceFromName | Return numbers like 250, 500, 1000, 3000.  Min 3 digits |
+| decodeEventName | Return {eventName: string, bracket: string bracketType: string, bracketIndex: number} where brackets are related to progression such as TT, H1, SAB etc |
+| getFinalLevel | Determine if an event is a final and which level (A, B, C etc). |
+| isAFinal | Determine if an event is an A final |
+| genPlaces | Give a list of numbers, return an array representing 'place' where 1 represents first place. The sort can be one of 'asc' or 'desc' with 'desc' being the usual value. |
+
+### Filtering by A Final
+
+To only include races that are A finals (eliminating Heats, Time Trials etc) use the isAFinal function:
+
+```
+import { isAFinal } from '../common/CrewTimerUtils';
+
+...
+for (const ev of results.results ?? []) {
+    // Only count A finals. API uses the event name and event number strings.
+    if (!isAFinal(ev.Event, ev.EventNum)) continue;
+
+    // snip
+}
+```
+
+### Calculating places
+
+When calculating places one must account for ties.  The genPlaces helper function will do this for you.
+
+```
+import { genPlaces } from '../common/CrewTimerUtils';
+
+// snip
+
+const pointsPerCategory : {place: number; points:number; name: string }[] = [];
+
+// snip - calculate points for each name
+
+// sort by points
+pointsPerCategory.sort((a, b) => b[1].points - a[1].points);
+
+// extract just the points
+const pointsArray = pointsPerCategory.map(item=>item.points);
+
+// generate places for each point level
+const places = genPlaces(points, 'desc');  // turn points into place
+
+// inject places into each entry
+places.map((place,index) => pointsPerCategory[index].place = place);
+```
 
 ## Running Jest Tests
 

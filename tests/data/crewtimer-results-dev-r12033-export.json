@@ -126,10 +126,7 @@
         "s": "00"
       }
     },
-    "Waypoints": [
-      "Start",
-      "Finish"
-    ]
+    "Waypoints": ["Start", "Finish"]
   },
   "lastUpdatedEvent": "5",
   "regattaInfo": {
@@ -139,9 +136,7 @@
     "CustomCodes": "",
     "DataSource": "GoogleSheets",
     "Date": "2023-03-24",
-    "DayList": [
-      "Saturday"
-    ],
+    "DayList": ["Saturday"],
     "Finished": "",
     "FlightRaces": "",
     "HasRoster": false,
@@ -166,14 +161,7 @@
   "results": [
     {
       "Day": "Saturday",
-      "DispOrder": [
-        5,
-        1,
-        2,
-        4,
-        3,
-        0
-      ],
+      "DispOrder": [5, 1, 2, 4, 3, 0],
       "Event": "1 Womens Varsity 8+ H1",
       "EventInfo": "",
       "EventNum": "1",
@@ -217,7 +205,7 @@
           "Place": 2,
           "RawTime": "00:20.808",
           "S_time": "21:55:39.966",
-          "Stroke": "O'Neil C."
+          "Stroke": "O'Neil C. B"
         },
         {
           "AdjTime": "00:20.973",
@@ -235,7 +223,7 @@
           "Place": 3,
           "RawTime": "00:20.973",
           "S_time": "21:55:39.966",
-          "Stroke": "Replogle M."
+          "Stroke": "Replogle M. B"
         },
         {
           "AdjTime": "00:22.473",
@@ -253,7 +241,7 @@
           "Place": 5,
           "RawTime": "00:22.473",
           "S_time": "21:55:39.966",
-          "Stroke": "Trost R."
+          "Stroke": "Trost R. B"
         },
         {
           "AdjTime": "00:21.725",
@@ -271,7 +259,7 @@
           "Place": 4,
           "RawTime": "00:21.725",
           "S_time": "21:55:39.966",
-          "Stroke": "Walker K."
+          "Stroke": "Walker K. C"
         },
         {
           "AdjTime": "00:20.424",
@@ -297,14 +285,7 @@
     },
     {
       "Day": "Saturday",
-      "DispOrder": [
-        1,
-        0,
-        4,
-        2,
-        3,
-        5
-      ],
+      "DispOrder": [1, 0, 4, 2, 3, 5],
       "Event": "2 Womens Varsity 8+ H2",
       "EventInfo": "",
       "EventNum": "2",
@@ -428,15 +409,7 @@
     },
     {
       "Day": "Saturday",
-      "DispOrder": [
-        5,
-        2,
-        1,
-        4,
-        3,
-        6,
-        0
-      ],
+      "DispOrder": [5, 2, 1, 4, 3, 6, 0],
       "Event": "3 Womens Varsity 8+ FA",
       "EventInfo": "",
       "EventNum": "3",
@@ -464,7 +437,7 @@
           "Place": "",
           "RawTime": "In Progress",
           "S_time": "21:59:29.588",
-          "Stroke": "Trost R."
+          "Stroke": "Trost R. B"
         },
         {
           "AdjTime": "00:17.410",
@@ -484,7 +457,7 @@
           "Place": 3,
           "RawTime": "00:17.410",
           "S_time": "21:59:29.588",
-          "Stroke": "Walker K."
+          "Stroke": "Walker K. C"
         },
         {
           "AdjTime": "00:17.144",
@@ -544,7 +517,7 @@
           "Place": 4,
           "RawTime": "00:17.977",
           "S_time": "21:59:29.588",
-          "Stroke": "O'Neil C."
+          "Stroke": "O'Neil C. B"
         },
         {
           "AdjTime": "00:16.744",
@@ -564,7 +537,7 @@
           "Place": 1,
           "RawTime": "00:16.744",
           "S_time": "21:59:29.588",
-          "Stroke": "Replogle M."
+          "Stroke": "Replogle M. B"
         },
         {
           "AdjTime": "00:19.009",
@@ -592,14 +565,7 @@
     },
     {
       "Day": "Saturday",
-      "DispOrder": [
-        5,
-        1,
-        2,
-        4,
-        3,
-        0
-      ],
+      "DispOrder": [5, 1, 2, 4, 3, 0],
       "Event": "4 Womens Varsity 8+ FB",
       "EventInfo": "",
       "EventNum": "4",
@@ -735,14 +701,7 @@
     },
     {
       "Day": "Saturday",
-      "DispOrder": [
-        5,
-        4,
-        2,
-        1,
-        0,
-        3
-      ],
+      "DispOrder": [5, 4, 2, 1, 0, 3],
       "Event": "5 Mens Varsity 4+",
       "EventInfo": "",
       "EventNum": "5",
@@ -810,7 +769,7 @@
           "Place": 3,
           "RawTime": "00:28.746",
           "S_time": "21:59:34.319",
-          "Stroke": "O'Neil C."
+          "Stroke": "O'Neil C. B"
         },
         {
           "AdjTime": "00:30.824",
