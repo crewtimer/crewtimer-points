@@ -11,7 +11,9 @@ calculated results and are written in Typescript.  Results are updated real-time
 
 The visualizers utilize the [React framework](https://react.dev/) along with the [Material UI open-source React component library](https://mui.com/material-ui/getting-started/overview/).
 
-**Contributions for other points or award systems are welcome!**  More details on how you can contribute your custom solution are described below.
+> [You can use AI to help create a custom points engine](docs/aiquery.md)
+>
+> **Contributions for other points or award systems are welcome!**  More details on how you can contribute your custom solution are described below.
 
 ## Currently supported points engines
 
