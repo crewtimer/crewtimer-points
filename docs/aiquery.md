@@ -24,6 +24,7 @@ Create a new points system called GrandMaster Points:
 - Only count races that are A finals using isAFinal(eventName, eventNum).
 - Group and sum by category AA,A–K. Sort descending by points inside each category.
 - Use genPlaces(points, 'desc') to compute placement (tie aware).
+- Use MUI for ui components
 
 Build:
 
