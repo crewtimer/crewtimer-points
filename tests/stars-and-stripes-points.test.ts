@@ -1,11 +1,11 @@
 import { expect, it } from '@jest/globals';
 import { Entry, Event, Results } from 'crewtimer-common';
 import {
-  clubPointsCalc,
+  starsAndStripesPointsCalc,
   isCompositeCrew,
   isExcludedEventNum,
   normalizeBoatClass,
-} from '../src/calculators/ClubPointsCalc';
+} from '../src/calculators/StarsAndStripesPointsCalc';
 
 const makeEntry = (Crew: string, Place: number): Entry =>
   ({
@@ -42,8 +42,9 @@ it('detects excluded #N event numbers', () => {
   expect(isExcludedEventNum('#5')).toBe(false);
 });
 
-it('detects composite crews', () => {
+it('detects composite crews separated by / or ;', () => {
   expect(isCompositeCrew('Mercer Island/Sammamish')).toBe(true);
+  expect(isCompositeCrew('Mercer Island;Sammamish')).toBe(true);
   expect(isCompositeCrew('Mount Baker')).toBe(false);
 });
 
@@ -59,7 +60,7 @@ it('awards points by boat class and place', () => {
     makeEvent('2 Womens Varsity 8+', '2', [makeEntry('Mount Baker', 1), makeEntry('Pocock', 2)]),
   ]);
 
-  const points = clubPointsCalc(results);
+  const points = starsAndStripesPointsCalc(results);
 
   const mb = points.find((entry) => entry.team === 'Mount Baker');
   expect(mb?.points).toEqual(6 + 16); // 1st in 1x + 1st in 8+
@@ -78,20 +79,32 @@ it('awards points by boat class and place', () => {
 it('excludes events whose EventNum ends in a numbered N suffix', () => {
   const results = makeResults([makeEvent('1 Womens Varsity 1x', '#5N', [makeEntry('Mount Baker', 1)])]);
 
-  const points = clubPointsCalc(results);
+  const points = starsAndStripesPointsCalc(results);
   expect(points).toEqual([]);
 });
 
-it('excludes composite crews from team points', () => {
+it('excludes composite crews (separated by /) from team points', () => {
   const results = makeResults([
     makeEvent('1 Womens Varsity 2x', '1', [makeEntry('Mercer Island/Sammamish', 1), makeEntry('Mount Baker', 2)]),
   ]);
 
-  const points = clubPointsCalc(results);
+  const points = starsAndStripesPointsCalc(results);
   expect(points.find((entry) => entry.team.includes('Mercer'))).toBeUndefined();
 
   const mb = points.find((entry) => entry.team === 'Mount Baker');
   expect(mb?.points).toEqual(6); // scored at its actual recorded place (2nd) even though 1st place is a non-scoring composite
+});
+
+it('excludes composite crews (separated by ;) from team points', () => {
+  const results = makeResults([
+    makeEvent('1 Womens Varsity 2x', '1', [makeEntry('Mercer Island;Sammamish', 1), makeEntry('Mount Baker', 2)]),
+  ]);
+
+  const points = starsAndStripesPointsCalc(results);
+  expect(points.find((entry) => entry.team.includes('Mercer'))).toBeUndefined();
+
+  const mb = points.find((entry) => entry.team === 'Mount Baker');
+  expect(mb?.points).toEqual(6);
 });
 
 it('collapses A/B boat entries from the same team to a single score', () => {
@@ -103,7 +116,7 @@ it('collapses A/B boat entries from the same team to a single score', () => {
     ]),
   ]);
 
-  const points = clubPointsCalc(results);
+  const points = starsAndStripesPointsCalc(results);
   const mb = points.find((entry) => entry.team === 'Mount Baker');
   expect(mb?.points).toEqual(12); // only the higher-placing A entry counts
 });

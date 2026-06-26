@@ -11,7 +11,7 @@ import { ACANationalsPoints, ACAPoints } from './components/ACATeamPoints';
 import { FIRAPointsTraditional } from './components/FIRAPoints';
 import { HebdaPoints, WyHiPoints } from './components/WyandottePoints';
 import { SprintsPointsTraditional } from './components/SprintsPoints';
-import { ClubPoints } from './components/ClubPoints';
+import { StarsAndStripesPoints } from './components/StarsAndStripesPoints';
 
 export interface PointsViewerInfo {
   name: string; /// User presentable string
@@ -80,8 +80,8 @@ export const PointsViewers: PointsViewerInfo[] = [
     ui: SprintsPointsTraditional,
   },
   {
-    name: 'Club Points',
-    key: 'ClubPoints',
-    ui: ClubPoints,
+    name: 'Stars and Stripes Regatta Points',
+    key: 'StarsAndStripesPoints',
+    ui: StarsAndStripesPoints,
   },
 ];

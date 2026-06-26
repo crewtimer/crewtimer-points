@@ -1,12 +1,12 @@
 import { Entry, Event, Results, genPlaces } from 'crewtimer-common';
 
-export type ClubTeamPoints = {
+export type StarsAndStripesTeamPoints = {
   team: string;
   points: number;
   place: number;
 };
 
-export type ClubPointsResult = ClubTeamPoints[];
+export type StarsAndStripesPointsResult = StarsAndStripesTeamPoints[];
 
 const PLACEHOLD_TEAM_NAME = 'Empty';
 const EXHIB_PENALTY_CODE = 'Exhib';
@@ -82,11 +82,12 @@ const trimCrewName = (crewName: string) => {
 
 /**
  * A crew is a composite if its Crew name lists more than one club, separated
- * by a '/'. For example, 'Mercer Island/Sammamish' is a composite of two clubs.
+ * by a '/' or ';'. For example, 'Mercer Island/Sammamish' and
+ * 'Mercer Island;Sammamish' are both composites of two clubs.
  * Composite crews are ineligible to score points toward team trophies.
  */
 export const isCompositeCrew = (crewName: string): boolean => {
-  return crewName.split('/').length > 1;
+  return crewName.split(/[/;]/).length > 1;
 };
 
 /**
@@ -154,7 +155,7 @@ export const calculateEventTeamPoints = (eventResult: Event): Map<string, number
  * Accumulate per-event team points into a single team:points map across the
  * whole regatta.
  */
-export const clubPointsImpl = (resultData: Results): Map<string, number> => {
+export const starsAndStripesPointsImpl = (resultData: Results): Map<string, number> => {
   const teamPoints = new Map<string, number>();
 
   resultData.results.forEach((eventResult) => {
@@ -168,7 +169,7 @@ export const clubPointsImpl = (resultData: Results): Map<string, number> => {
 };
 
 /**
- * Calculate team points based on a simple club scoring system:
+ * Calculate team points based on the Stars and Stripes Regatta scoring system:
  *
  * 1x:    1st=6,  2nd=4,  3rd=3, 4th=2
  * 2x/2-: 1st=8,  2nd=6,  3rd=4, 4th=3, 5th=2
@@ -177,10 +178,10 @@ export const clubPointsImpl = (resultData: Results): Map<string, number> => {
  *
  * All races are assumed to be finals. Events whose EventNum ends in a
  * numbered 'N' suffix (e.g. '#5N') are excluded. Composite crews (Crew name
- * containing a '/' separating more than one club) are ineligible for points.
+ * listing more than one club, separated by '/' or ';') are ineligible for points.
  */
-export const clubPointsCalc = (resultData: Results): ClubPointsResult => {
-  const teamPoints = clubPointsImpl(resultData);
+export const starsAndStripesPointsCalc = (resultData: Results): StarsAndStripesPointsResult => {
+  const teamPoints = starsAndStripesPointsImpl(resultData);
 
   const sorted = Array.from(teamPoints.entries())
     .sort((a, b) => b[1] - a[1])

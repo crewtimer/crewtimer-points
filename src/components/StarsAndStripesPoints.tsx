@@ -2,14 +2,14 @@ import React from 'react';
 import Table from '@mui/material/Table';
 import { TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 import { Results } from 'crewtimer-common';
-import { clubPointsCalc } from '../calculators/ClubPointsCalc';
+import { starsAndStripesPointsCalc } from '../calculators/StarsAndStripesPointsCalc';
 
 /**
- * Render club team points based on the simple per-boat-class scoring
- * system defined in ClubPointsCalc.
+ * Render team points for the Stars and Stripes Regatta, based on the
+ * per-boat-class scoring system defined in StarsAndStripesPointsCalc.
  */
-export const ClubPoints: React.FC<{ results: Results }> = ({ results }) => {
-  const points = clubPointsCalc(results);
+export const StarsAndStripesPoints: React.FC<{ results: Results }> = ({ results }) => {
+  const points = starsAndStripesPointsCalc(results);
 
   return (
     <Table>
