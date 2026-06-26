@@ -11,6 +11,7 @@ import { ACANationalsPoints, ACAPoints } from './components/ACATeamPoints';
 import { FIRAPointsTraditional } from './components/FIRAPoints';
 import { HebdaPoints, WyHiPoints } from './components/WyandottePoints';
 import { SprintsPointsTraditional } from './components/SprintsPoints';
+import { ClubPoints } from './components/ClubPoints';
 
 export interface PointsViewerInfo {
   name: string; /// User presentable string
@@ -77,5 +78,10 @@ export const PointsViewers: PointsViewerInfo[] = [
     name: 'Chicago Sprints',
     key: 'SprintsPoints',
     ui: SprintsPointsTraditional,
+  },
+  {
+    name: 'Club Points',
+    key: 'ClubPoints',
+    ui: ClubPoints,
   },
 ];
