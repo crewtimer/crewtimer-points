@@ -432,7 +432,7 @@ export const acaPointsCalc = (resultData: Results): ACAPointsResult => {
             points: number;
           } = {
             name: Object.entries(scores)
-              .filter(([_, points]) => points === maxPoints)
+              .filter(([, points]) => points === maxPoints)
               .map(([name]) => name),
             points: maxPoints,
           };

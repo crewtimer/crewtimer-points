@@ -66,7 +66,7 @@ const LiveData: React.FC = () => {
     if (!data) {
       return;
     }
-    data.P = { S: {}, Waypoints: [] }; // not useful
+    data.P = { S: {}, Waypoints: [], TrackingStations: [] }; // not useful
     downloadAsJson(data, `crewtimer-results-${mobileId}.json`);
   };
 
