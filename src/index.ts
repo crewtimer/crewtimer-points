@@ -12,6 +12,7 @@ import { FIRAPointsTraditional } from './components/FIRAPoints';
 import { HebdaPoints, WyHiPoints } from './components/WyandottePoints';
 import { SprintsPointsTraditional } from './components/SprintsPoints';
 import { StarsAndStripesPoints } from './components/StarsAndStripesPoints';
+import { HRAPoints } from './components/HRAPoints';
 
 export interface PointsViewerInfo {
   name: string; /// User presentable string
@@ -83,5 +84,10 @@ export const PointsViewers: PointsViewerInfo[] = [
     name: 'Stars and Stripes Regatta Points',
     key: 'StarsAndStripesPoints',
     ui: StarsAndStripesPoints,
+  },
+  {
+    name: 'HRA Masters Points Series',
+    key: 'HRAPoints',
+    ui: HRAPoints,
   },
 ];
