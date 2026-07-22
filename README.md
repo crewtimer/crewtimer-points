@@ -26,7 +26,7 @@ The visualizers utilize the [React framework](https://react.dev/) along with the
 * [Hebda Cup](docs/HebdaScoring.pdf) This system awards points to the top 3 finishers of each final of four or more entries, top 2 for three entries, and first place only for a two-boat final. Full points are awarded for each boat class, regardless of event level.
 * [Wy-Hi Regatta](docs/WyHiScoring.pdf) This points system uses a modified version of the Barnes System and awards scaled points based on if races are finals only or if heats were necessary. Full points are awarded for each boat class, regardless of event level.
 * [Chicago Sprints](docs/SprintsPoints.pdf) This points system uses a modified version of the Barnes System. The maximum points for an event is determined by the boat class and subsequent points are scaled based on the number of entries in the event.
-
+* [HRA Masters Points Series] (https://www.floridarowing.org/fmra/clubpnts.html) A modified US Rowing Points System for Florida masters regattas. Points are awarded to all non-composite finishers across sweep and sculling events, with separate overall, sweep, and sculling standings.
 ## Adding a new points engine
 
 ### Prerequisites

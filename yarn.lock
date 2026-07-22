@@ -2774,25 +2774,10 @@ cosmiconfig@^7.0.0, cosmiconfig@^7.0.1:
     path-type "^4.0.0"
     yaml "^1.10.0"
 
-crewtimer-common@^1.0.19, crewtimer-common@^1.0.24:
+crewtimer-common@^1.0.24:
   version "1.0.24"
   resolved "https://registry.yarnpkg.com/crewtimer-common/-/crewtimer-common-1.0.24.tgz#6cf5b65f01ca22fc961d9b3cf004369850b949b3"
   integrity sha512-KoC3lAFLmel3WJggFZdNIlOAkB9p3qtaYmPDP7KbibEFyu8i5bB1EcpSbfDsOB7/Zh3LfHORZxXPM96HIu17fQ==
-
-crewtimer-points@^1.0.27:
-  version "1.0.27"
-  resolved "https://registry.yarnpkg.com/crewtimer-points/-/crewtimer-points-1.0.27.tgz#1ac53a6f0b8afdb14259fbd5a300329d5c75a928"
-  integrity sha512-J0/UKfCTvxCXC83eBwUejzmCKhIqW6G50wOovXG3RIbMu3oTZY1yNX2q7393hJz7J+bg858UFyFhXvtyBm/+sw==
-  dependencies:
-    "@emotion/react" "^11.10.6"
-    "@emotion/styled" "^11.10.6"
-    "@mui/lab" "^5.0.0-alpha.124"
-    "@mui/material" "^5.11.13"
-    "@mui/styles" "^5.11.13"
-    crewtimer-common "^1.0.19"
-    react "^18.2.0"
-    react-dom "^18.2.0"
-    react-usedatum "^1.0.7"
 
 cross-spawn@^7.0.2, cross-spawn@^7.0.3:
   version "7.0.3"
