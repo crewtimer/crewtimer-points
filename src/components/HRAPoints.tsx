@@ -8,8 +8,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:nth-of-type(odd)': {
     backgroundColor: theme.palette.action.hover,
   },
-  '&:last-child th': {
-    border: 0,
+  '&:last-child td, &:last-child th': {
+    borderBottom: '1px solid #808080',
   },
 }));
 
@@ -61,7 +61,14 @@ export const HRAPoints: React.FC<{ results: Results }> = ({ results }) => {
   return (
     <Stack alignItems='center' spacing={1}>
       <Typography variant='h6'>HRA Masters Points Series</Typography>
-      <Table size='small' sx={{ width: 'auto' }}>
+      <Table
+        size='small'
+        sx={{
+          width: 'auto',
+          borderTop: '1px solid #808080',
+          borderRight: '1px solid #808080',
+        }}
+      >
         <TableHead>
           <TableRow>
             <HeaderTableCell align='center' colSpan={3} sx={{ borderLeft: '1px solid #808080' }}>
