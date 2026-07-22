@@ -24,7 +24,6 @@ export interface PointsViewerInfo {
  * A list of points viewers.
  */
 export const PointsViewers: PointsViewerInfo[] = [
-  // Roughly alphabetic order
   {
     name: 'ACA Regatta',
     key: 'ACA',
@@ -90,4 +89,4 @@ export const PointsViewers: PointsViewerInfo[] = [
     key: 'HRAPoints',
     ui: HRAPoints,
   },
-];
+].sort((a, b) => a.name.localeCompare(b.name));
