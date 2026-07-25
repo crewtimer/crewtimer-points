@@ -129,25 +129,25 @@ export const calcEventPoints = (event: Event): Map<string, number> => {
     return teamPoints; // unrecognised boat class — skip
   }
 
-  const seenTeams = new Set<string>();
-
   const sortedEntries = [...(event.entries ?? [])].sort(
     (a, b) => (a.Place ?? Number.MAX_VALUE) - (b.Place ?? Number.MAX_VALUE),
   );
 
   for (const entry of sortedEntries) {
-    if (!entry.Place) continue; // DNF / DNS / DQ / no result
+    if (!entry.Place) continue;          // DNF / DNS / DQ / no result
     if (isComposite(entry.Crew)) continue; // composite — ineligible (Section 5)
 
     const team = normalizeTeamName(entry.Crew);
-    if (seenTeams.has(team)) continue; // only first entry per team counts
-    seenTeams.add(team);
-
     const pts = base * multiplierForPlace(entry.Place);
+    // Per Section 6: all non-composite boats earn points, regardless of
+    // how many boats the team has entered in this event.
     if (pts > 0) {
-      teamPoints.set(team, pts);
+      teamPoints.set(team, (teamPoints.get(team) ?? 0) + pts);
     }
   }
+
+
+
 
   return teamPoints;
 };
