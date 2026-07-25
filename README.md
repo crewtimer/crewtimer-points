@@ -174,6 +174,14 @@ git remote add upstream git@github.com:crewtimer/crewtimer-points.git
 git pull upstream main
 ```
 
+If your fork has diverged and you want to just reset to back to the crewtimer-points main branch:
+
+```bash
+git remote add upstream git@github.com:crewtimer/crewtimer-points.git
+git fetch upstream  
+git reset --hard upstream/main
+```
+
 If you have committed any changes to your local repo, you can rebase your changes on top of the latest crewtimer-points repo:
 
 ```bash
