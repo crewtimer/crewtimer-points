@@ -79,17 +79,17 @@ describe('calcEventPoints – heat is excluded', () => {
   test('heat returns empty map', () => expect(result.size).toBe(0));
 });
 
-describe('calcEventPoints – only first entry per team counts', () => {
+describe('calcEventPoints – multiple boats per team all score (Section 6)', () => {
   const event = makeEvent('Men 2x Masters A Final', '4A', [
     { name: 'Tampa Bay Rowing A', place: 1 },
     { name: 'Tampa Bay Rowing B', place: 2 }, // same team, B boat
     { name: 'Sarasota Crew', place: 3 },
   ]);
   const result = calcEventPoints(event as any);
-  // "Tampa Bay Rowing A" and "Tampa Bay Rowing B" both strip to "Tampa Bay Rowing"
-  test('B-boat does not give team double credit', () => expect(result.get('Tampa Bay Rowing')).toBeCloseTo(12.0));
-  test('3rd place crew gets 3rd-place points (effectively 2nd unique team)', () =>
-    expect(result.get('Sarasota Crew')).toBeCloseTo(7.2));
+  // Both Tampa Bay boats normalize to "Tampa Bay Rowing" and their
+  // points are summed: 1st (12.0) + 2nd (9.6) = 21.6
+  test('team earns combined points for both boats', () => expect(result.get('Tampa Bay Rowing')).toBeCloseTo(21.6));
+  test('3rd place crew still earns its own points', () => expect(result.get('Sarasota Crew')).toBeCloseTo(7.2));
 });
 
 // ─── Integration: hraPointsCalc ─────────────────────────────────────────────
